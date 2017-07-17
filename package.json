@@ -8,7 +8,8 @@
     "react-history": "^0.18.2",
     "react-router": "^4.1.1",
     "react-router-dom": "^4.1.1",
-    "react-scripts": "1.0.10"
+    "react-scripts": "1.0.10",
+    "semantic-ui-css": "^2.2.11"
   },
   "scripts": {
     "start": "react-scripts start",
