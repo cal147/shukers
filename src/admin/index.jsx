@@ -2,8 +2,8 @@ import React, {Component} from 'react';
 import adminUserStore from './AdminStores/AdminUserStore';
 import AdminLogin from './AdminPages/AdminLogin';
 
-
-const Page = ()=>{
+//This will make up the layout for the admin part of the site
+const View = ()=>{
 
     return(
         <div>This is a page</div>
@@ -11,7 +11,7 @@ const Page = ()=>{
 
 };
 
-
+//Checks to see if the user is logged in. If so directs user to the admin section, if not the login page.
 export default class MainPage extends Component{
 
     constructor(){
@@ -24,7 +24,7 @@ export default class MainPage extends Component{
         };
 
         if(this.state.user.isLoggedIn){
-            this.state.display = <Page />;
+            this.state.display = <View />;
         }else{
             this.state.display = <AdminLogin error={this.state.user.logInError}/>;
         }
