@@ -4,8 +4,8 @@ import {BrowserRouter, Link, Route} from "react-router-dom";
 
 import {Dropdown, Input, Menu} from "semantic-ui-react";
 
-import home from "./Pages/Home/Home";
-import About from "./Pages/About/About";
+import home from "./site/Pages/Home/Home";
+import About from "./site/Pages/About/About";
 
 export default class App extends Component {
 
