@@ -3,10 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "flux": "^3.1.2",
     "react": "^15.6.1",
     "react-dom": "^15.6.1",
-    "react-history": "^0.18.2",
-    "react-router": "^4.1.1",
     "react-router-dom": "^4.1.1",
     "react-scripts": "1.0.10",
     "semantic-ui-css": "^2.2.11"
@@ -18,7 +17,6 @@
     "eject": "react-scripts eject"
   },
   "devDependencies": {
-    "semantic-ui": "^2.2.11",
     "semantic-ui-react": "^0.71.0"
   }
 }
