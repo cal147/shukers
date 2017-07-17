@@ -5,6 +5,7 @@ import {BrowserRouter, Route, Switch} from "react-router-dom";
 import home from "./site/Pages/Home/Home";
 import About from "./site/Pages/About/About";
 import SiteLayout from './site/Layout/layout'
+import MainPage from './admin/index';
 
 
 
@@ -24,6 +25,15 @@ const Site = ()=>{
 
 };
 
+const Admin = ()=>{
+    return(
+        <BrowserRouter>
+                <Switch>
+                    <Route exact path="/admin" component={MainPage}/>
+                </Switch>
+        </BrowserRouter>
+    );
+};
 
 
 
@@ -33,7 +43,7 @@ export default class App extends Component {
         super();
 
         if(document.location.pathname === '/admin'){
-            //this.setState({siteToShow: null});
+            this.state = {siteToShow: <Admin/>};
         }else{
             this.state = {siteToShow: <Site/>}
         }
