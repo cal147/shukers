@@ -1,6 +1,12 @@
+/*
+    This is the display for the login window.
+ */
+
 import React, {Component} from 'react';
 import * as AdminUserAction from '../AdminActions/AdminUserAction';
 import {Form, Container, Button, Header} from 'semantic-ui-react'
+
+
 
 export default class AdminLogin extends Component{
 
@@ -11,7 +17,7 @@ export default class AdminLogin extends Component{
             width: "25%",
             height:"Auto",
             marginLeft:"37.5%",
-            marginTop: "20%",
+            marginTop: "10%",
             padding:"40px",
             border: "1px solid #e6e6e6",
             backgroundColor: "#e6e6e6",
@@ -26,8 +32,8 @@ export default class AdminLogin extends Component{
 
    }
 
-
-    handleSubmit = (e)=>{
+    //This handles the submit from the form. sends the users imput of for validation.
+    handleSubmit (e){
         e.preventDefault();
         AdminUserAction.userLogin(this.refs.userName.value, this.refs.password.value);
     };

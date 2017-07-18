@@ -1,16 +1,22 @@
+/*
+    This is the data store that is used to store the data for the user that is logged in. The data store will communicate with the server
+    to update its data upon request.
+ */
+
 import { EventEmitter } from 'events';
 import Dispatcher from '../../dispatcher';
 
 class AdminUserStore extends EventEmitter{
 
+
     constructor() {
         super();
         //TODO Ajax call to see if user is already logged in
         this.user = {
-            id: null,
-            userName: null,
-            firstName: null,
-            surName: null,
+            id: 1,
+            userName: 'Admin',
+            firstName: 'Administrator',
+            surName: 'Administrator',
             isLoggedIn: false,
             Staff: true, //TODO Need to change this. For dev only need to come from database
             logInError: false,
@@ -19,6 +25,7 @@ class AdminUserStore extends EventEmitter{
 
     }//End of constructor
 
+    //Queries the database and sets the datafields with the users information.
     loginUser(name, password){
         //TODO Ajax call to the data base to log in user
         if(name === "carl" && password==="123456"){
@@ -31,17 +38,31 @@ class AdminUserStore extends EventEmitter{
 
     }//End of login user
 
+    //TODO Nulls all the fields in the dataStore
+    logoutUser(){
+        if(this.user.isLoggedIn){
+            //TODO log out user
+            this.user.isLoggedIn = false;
+
+            this.emit("change");
+        }
+    }
+
+    //Returns the data currently held for a user
     getUser(){
         return this.user;
     }//End of get user
 
+    //Listens for dispatched. when a dispatch comes in the relevant method is called.
     handleActions(action){
 
         switch(action.type){
             case "USER_LOGIN":
                 this.loginUser(action.name, action.password);
                 break;
-
+            case "USER_LOGOUT":
+                this.logoutUser();
+                break;
 
             default: break;
         }

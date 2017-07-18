@@ -1,0 +1,10 @@
+
+/*
+    this css file is included in index.jsx file so all child components of this file will have access to it.
+ */
+
+
+.pagePosition{
+    padding-top: 80px;
+    margin-left: 250px;
+}

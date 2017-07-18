@@ -8,7 +8,7 @@ import SiteLayout from './site/Layout/layout'
 import MainPage from './admin/index';
 
 
-
+//This component will do the routing for the public side of the app.
 const Site = ()=>{
   return(
       <BrowserRouter>
@@ -25,16 +25,6 @@ const Site = ()=>{
 
 };
 
-const Admin = ()=>{
-    return(
-        <BrowserRouter>
-                <Switch>
-                    <Route exact path="/admin" component={MainPage}/>
-                </Switch>
-        </BrowserRouter>
-    );
-};
-
 
 
 export default class App extends Component {
@@ -42,8 +32,8 @@ export default class App extends Component {
     constructor(){
         super();
 
-        if(document.location.pathname === '/admin'){
-            this.state = {siteToShow: <Admin/>};
+        if(document.location.pathname.includes('/admin')){
+            this.state = {siteToShow: <MainPage/>}; //The MainPage is the admin application.
         }else{
             this.state = {siteToShow: <Site/>}
         }
@@ -55,7 +45,6 @@ export default class App extends Component {
 
 
         return (
-
             <div>{this.state.siteToShow}</div>
         );
 
