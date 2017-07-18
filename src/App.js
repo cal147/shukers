@@ -10,6 +10,9 @@ import MainPage from './admin/index';
 
 //This component will do the routing for the public side of the app.
 const Site = ()=>{
+                            //*******************************************************
+                            //          Chris put your routes in here               *
+                            //*******************************************************
   return(
       <BrowserRouter>
         <div>
