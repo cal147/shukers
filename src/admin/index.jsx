@@ -2,7 +2,6 @@
  This class is the access point to the admin application. This will be responsible for rendering either the page requested.
  This listens to the user action data store for changes to the user details. A user needs to be a staff member and logged
  in to pass the login screen.
-
  There is error checking in this page which stops users just entering the a url and bypassing the login system.
  */
 
