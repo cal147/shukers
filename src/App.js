@@ -1,6 +1,6 @@
 import React, {Component} from "react";
 import "./App.css";
-import {BrowserRouter, Route, Switch} from "react-router-dom";
+import {HashRouter, Route, Switch} from "react-router-dom";
 
 import home from "./site/Pages/Home/Home";
 import About from "./site/Pages/About/About";
@@ -14,7 +14,7 @@ const Site = ()=>{
                             //          Chris put your routes in here              *
                             //******************************************************
   return(
-      <BrowserRouter>
+      <HashRouter>
         <div>
             <SiteLayout/>
             <hr/>
@@ -23,7 +23,7 @@ const Site = ()=>{
                 <Route path="/about" component={About}/>
             </Switch>
         </div>
-    </BrowserRouter>
+    </HashRouter>
   );
 
 };
