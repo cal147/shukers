@@ -10,9 +10,6 @@ import MainPage from './admin/index';
 
 //This component will do the routing for the public side of the app.
 const Site = ()=>{
-                            //******************************************************
-                            //          Chris put your routes in here              *
-                            //******************************************************
   return(
       <HashRouter>
         <div>
@@ -22,6 +19,7 @@ const Site = ()=>{
                 <Route exact path="/" component={home}/>
                 <Route path="/about" component={About}/>
             </Switch>
+
         </div>
     </HashRouter>
   );
@@ -34,7 +32,6 @@ export default class App extends Component {
 
     constructor(){
         super();
-        console.log(document.location.hash);
         if(document.location.hash.includes('/admin')){
             this.state = {siteToShow: <MainPage/>}; //The MainPage is the admin application.
         }else{

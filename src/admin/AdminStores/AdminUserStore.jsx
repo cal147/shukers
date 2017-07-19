@@ -5,6 +5,7 @@
 
 import { EventEmitter } from 'events';
 import Dispatcher from '../../dispatcher';
+import {serverScripts} from '../../shared/urls';
 
 class AdminUserStore extends EventEmitter{
 
@@ -35,6 +36,23 @@ class AdminUserStore extends EventEmitter{
             this.user.logInError = true;
             this.emit("change");
         }
+
+        fetch(serverScripts+"admin/UserStoreController.php", {
+            method: 'POST',
+            headers:{"Content-type": "application/x-www-form-urlencoded; charset=UTF-8"},
+            body: JSON.stringify({
+                action: "LOGIN_USER",
+                name: name,
+                password: password
+            }),
+            mode: 'cors'
+        }).then((response)=>response.json()).then((data)=>{
+                console.log(data);
+        }).catch((err)=>{
+            console.error(err);
+        });
+
+
 
     }//End of login user
 
