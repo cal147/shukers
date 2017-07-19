@@ -6,7 +6,7 @@
  */
 
 import React, {Component} from 'react';
-import {BrowserRouter, Route, Switch} from "react-router-dom";
+import {HashRouter, Route, Switch} from "react-router-dom";
 
 import adminUserStore from './AdminStores/AdminUserStore';
 import AdminLogin from './AdminPages/AdminLogin';
@@ -20,7 +20,7 @@ const Routes = ()=>{
     this.state = adminUserStore.getUser();
 
     return(
-        <BrowserRouter>
+        <HashRouter>
             <AdminLayout>
                 <Switch>
                     <Route exact path="/admin" component={AdminHome}/>
@@ -28,7 +28,7 @@ const Routes = ()=>{
 
                 </Switch>
             </AdminLayout>
-        </BrowserRouter>
+        </HashRouter>
     );
 
 };
