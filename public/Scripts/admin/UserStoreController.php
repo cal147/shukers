@@ -16,9 +16,6 @@ if($_postData['action'] == 'LOGIN_USER'){
     $name = $_postData['name'];
     $pass = $_postData['password'];
 
-    $fail =['fail' => 'true'];
-
-
     $loginCont = new loginControl();
 
     if($loginCont->validateUser($name, $pass)){
@@ -27,15 +24,13 @@ if($_postData['action'] == 'LOGIN_USER'){
 
         if($userInformation != null) {
             $_SESSION['loggedIn'] = true;
-            if(isset($userInformation['isStaff'])){
-                if($_SESSION['isStaff'])$_SESSION['isStaff'] = true;
-            }
+            if($userInformation['isStaff'])$_SESSION['isStaff'] = true;
 
             echo json_encode($userInformation);
 
         }
     }else{
-        echo json_encode($fail);
+        echo json_encode(['fail' => 'Incorect user details', 'success' => false]);
     }
 
 }//END of login user

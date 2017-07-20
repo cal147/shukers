@@ -1,11 +1,5 @@
 <?php
 
-/**
- * Created by PhpStorm.
- * User: carl
- * Date: 19/07/2017
- * Time: 17:18
- */
 
 include 'dataBaseConn.php';
 
@@ -20,26 +14,29 @@ class loginControl{
         $db = new Database();
         $this->conn = $db->getConn();
     }
-    //TODO This method is faulty
+
     //Queries the database for the user that has requested login and validates their password.
     public function validateUser($name, $pass){
 
         $cleanName = $this->conn->real_escape_string($name);
+        $cleanPass = $this->conn->real_escape_string($pass);
 
-        $sql = "SELECT password FROM users WHERE loginId = $cleanName";
-        if($result = $this->conn->query($sql)){
-            if($result->num_rows === 0){
-                return false;
-
-            }else{
-                $data = $result->fetch_assoc();
-                $hashPass = $data['password'];
-                if(password_verify ( $pass , $hashPass )){
-                    $this->loginId = $name;
+        try{
+            $stmt = $this->conn->prepare("SELECT password, loginId FROM users WHERE loginId = ?");
+            $stmt->bind_param("s", $cleanName);
+            $stmt->execute();
+            $res = $stmt->get_result();
+            $row = $res->fetch_assoc();
+            $hashPass = $row['password'];
+            if(password_verify ( $cleanPass , $hashPass ) == 1){
+                    $this->loginId = $cleanName;
                     return true;
                 }
-            }
+
+        }catch (Exception $e){
+            return false;
         }
+
        return false;
     }//EOF
 
@@ -47,7 +44,7 @@ class loginControl{
     //lodinId will be present in the class.
     public function getUserDetails(){
 
-         $userArray = [];
+        // $userArray = [];
 
         if($this->loginId != null){
             $sql = "select u.id, u.loginId, u.forname, u.surname, u.contactNumber, u.isStaff, a.houseNum, a.firstLine, a.secondLine, a.postcode, a.home, a.delivery from users as u inner join address as a on u.id = a.userId where u.loginId = \"$this->loginId\"";
@@ -65,16 +62,18 @@ class loginControl{
                         'adFirstLine'=> $row['firstLine'],
                         'adSecondLine'=> $row['secondLine'],
                         'postcode'=> $row['postcode'],
-                        'homeAddress'=> $row['home'],
-                        'deliveryAddress'=> $row['delivery'],
+                        'homeAddress'=> boolval($row['home']),
+                        'deliveryAddress'=> boolval($row['delivery']),
                     ];
                 }
+            }else{
+                $userArray =[];
             }
         }
 
 
-       // return $userArray;
-        return  [$userArray];
+        return $userArray;
+        //return  [$userArray];
 
     }//EOF
 
