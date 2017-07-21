@@ -128,9 +128,6 @@ export default class SiteLayout extends Component {
 
                 </div>
             );
-
         }
     }
-
 }
-
