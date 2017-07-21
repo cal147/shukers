@@ -5,18 +5,18 @@
     margin-bottom: 0.5%;
 }
 
-.header{
+.siteHeader{
     height: 180px;
     width: auto;
 }
 
-.header-Logo{
+.siteHeader-Logo{
     width: 160px;
     margin-bottom: 0.5%;
     float: left;
 }
 
-.header-Text{
+.siteHeader-Text{
     line-height: 180px;
     text-align: center;
     font-size: 3vw;
@@ -25,7 +25,7 @@
 }
 
 @media (max-width: 800px) {
-    .header-Text {
+    .siteHeader-Text {
         text-align: center;
         font-size: x-large;
         line-height: normal;
@@ -36,7 +36,7 @@
 }
 
 @media (max-width: 350px) {
-    .header-Text {
+    .siteHeader-Text {
         text-align: center;
         font-size: x-large;
         line-height: normal;
@@ -46,7 +46,7 @@
     }
 }
 
-.footer {
+.siteFooter {
     clear: both;
     bottom: 0.5%;
     position: fixed;
