@@ -15,9 +15,9 @@ export default class AdminLayout extends Component{
 
         return(
             <div>
-                <HeaDer/>
                 <SideBar/>
-                <div className="pagePosition"> {this.props.children}</div>
+                <HeaDer/>
+               <div className="pagePosition"> {this.props.children}</div>
             </div>
         );
     }
