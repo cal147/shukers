@@ -35,7 +35,6 @@ export default class App extends Component {
 
     constructor(){
         super();
-        console.log(document.location.hash);
         if(document.location.hash.includes('/admin')){
             this.state = {siteToShow: <MainPage/>}; //The MainPage is the admin application.
         }else{

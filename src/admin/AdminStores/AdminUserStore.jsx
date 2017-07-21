@@ -61,7 +61,6 @@ class AdminUserStore extends EventEmitter{
             this.user.isLoggedIn = true;
             this.user.logInError = false;
 
-            console.log(this.user);
             this.emit("change");
 
         }).catch((err)=>{

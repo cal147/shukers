@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Menu, Input, Icon, Header} from 'semantic-ui-react';
+import {Menu, Input, Icon, Header, Search} from 'semantic-ui-react';
 
 import * as AdminUserAction from '../../AdminActions/AdminUserAction';
 import adminUserStore from '../../AdminStores/AdminUserStore';
@@ -37,10 +37,9 @@ export default class HeaDer extends Component{
         return(
             <Menu secondary inverted color={this.state.color} className="fixed">
                 <Menu.Item>
-                    <Input icon placeholder='Search...' onKeyPress={this.handleKeyPress.bind(this)}>
-                        <input id="searchBar" />
-                        <Icon name='search' />
-                    </Input>
+                    <Search placeholder='Search...' id="searchBar" onKeyPress={this.handleKeyPress.bind(this)}/>
+
+
                 </Menu.Item>
                 <Menu.Item> <Header style={{color:"white"}} size={"huge"}>Shukers Butchers staff portal</Header> </Menu.Item>
                 <Menu.Menu position='right'>
