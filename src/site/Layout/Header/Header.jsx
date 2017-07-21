@@ -9,9 +9,9 @@ export default class Header extends Component{
 
 
         return(
-            <div className="header">
-            <img src={Logo} className="header-Logo" alt="Shukers Butchers Jackson Street - Logo"/>
-                <h1 className="header-Text">Shukers Butchers Jackson Street</h1>
+            <div className="siteHeader">
+            <img src={Logo} className="siteHeader-Logo" alt="Shukers Butchers Jackson Street - Logo"/>
+                <h1 className="siteHeader-Text">Shukers Butchers Jackson Street</h1>
 
 
             </div>
