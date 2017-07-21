@@ -1,7 +1,10 @@
 <?php
-session_start();
+
 
 $_postData = json_decode(file_get_contents("php://input"), true);
+
+if(isset($_postData['sessionId'])) session_id($_postData['sessionId']);
+session_start();
 
  //echo password_hash('Pa$$w0rd', PASSWORD_DEFAULT)."\n";
 
@@ -27,6 +30,7 @@ if($_postData['action'] == 'LOGIN_USER'){
             if($userInformation['isStaff'])$_SESSION['isStaff'] = true;
 
             echo json_encode($userInformation);
+
 
         }
     }else{

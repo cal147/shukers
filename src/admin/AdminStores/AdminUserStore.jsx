@@ -27,9 +27,44 @@ class AdminUserStore extends EventEmitter{
             Staff: false,
             isLoggedIn: false,
             logInError: false,
+            serverSession : null
         };
+     /*****************************************************************************************************************************************************/
+     //TODO********************  Delete this fetch between the *'s this code bypasses the login screen for testing only  *********************************
+        fetch(serverScripts+"admin/UserStoreController.php", {
+            method: 'POST',
+            headers:{"Content-type": "application/x-www-form-urlencoded; charset=UTF-8"},
+            body: JSON.stringify({
+                action: "LOGIN_USER",
+                name: 'Admin',
+                password: 'Pa$$w0rd'
+            }),
+            mode: 'cors'
+        }).then((response)=>response.json()).then((data)=>{
 
+            this.user.id = data['id'];
+            this.user.userName = data['loginId'];
+            this.user.firstName = data['forName'];
+            this.user.surName = data['surName'];
+            this.user.contactNum = data['contactNum'];
+            this.user.houseNum = data['houseNum'];
+            this.user.addressL1 = data['adFirstLine'];
+            this.user.addressL2 = data['adSecondLine'];
+            this.user.postcode = data['postcode'];
+            this.user.isHome = data['homeAddress'];
+            this.user.isDelivery = data['deliveryAddress'];
+            this.user.Staff = data['isStaff'];
+            this.user.isLoggedIn = true;
+            this.user.logInError = false;
+            this.user.serverSession = data['sessionId'];
 
+            this.emit("change");
+
+        }).catch((err)=>{
+            console.error(err);
+        });
+
+    /********************************************************************************************************************************************************/
     }//End of constructor
 
     //Queries the database and sets the datafields with the users information.
@@ -60,6 +95,7 @@ class AdminUserStore extends EventEmitter{
             this.user.Staff = data['isStaff'];
             this.user.isLoggedIn = true;
             this.user.logInError = false;
+            this.user.serverSession = data['sessionId'];
 
             this.emit("change");
 
@@ -74,26 +110,45 @@ class AdminUserStore extends EventEmitter{
 
     logoutUser(){
 
-        //TODO ajax call to the user store controller action LOGOUT.
         if(this.user.isLoggedIn){
-            this.user = {
-                id: null,
-                userName: null,
-                firstName: null,
-                surName: null,
-                contactNum: null,
-                houseNum: null,
-                addressL1: null,
-                addressL2: null,
-                postcode: null,
-                isHome: null,
-                isDelivery: null,
-                Staff: false,
-                isLoggedIn: false,
-                logInError: false,
-            };
 
-            this.emit("change");
+            let serverCallComplete;
+
+            fetch(serverScripts+"admin/UserStoreController.php", {
+                method: 'POST',
+                headers:{"Content-type": "application/x-www-form-urlencoded; charset=UTF-8"},
+                body: JSON.stringify({
+                    action: "LOGOUT",
+                    sessionId : this.user.serverSession
+                }),
+                mode: 'cors'
+            }).then((response)=>response.json()).then((data)=>{
+                    console.log(data.success);
+                    serverCallComplete = data.success;
+
+                    if(serverCallComplete) {
+                        this.user.id = null;
+                        this.user.userName = null;
+                        this.user.firstName = null;
+                        this.user.surName = null;
+                        this.user.contactNum = null;
+                        this.user.houseNum = null;
+                        this.user.addressL1 = null;
+                        this.user.addressL2 = null;
+                        this.user.postcode = null;
+                        this.user.isHome = null;
+                        this.user.isDelivery = null;
+                        this.user.Staff = false;
+                        this.user.isLoggedIn = false;
+                        this.user.logInError = false;
+
+                        this.emit("change");
+                    }
+
+            }).catch((err)=>{
+                console.error(err);
+            });
+
         }
     }
 

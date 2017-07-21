@@ -8,7 +8,7 @@ import React, {Component} from 'react';
 import '../AdminMaster.css';
 
 
-export default class AdminHome extends Component{
+export default class Dashboard extends Component{
 
 
     render(){

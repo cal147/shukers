@@ -70,6 +70,7 @@ class loginControl{
                             'postcode' => $row['postcode'],
                             'homeAddress' => boolval($row['home']),
                             'deliveryAddress' => boolval($row['delivery']),
+                            'sessionId' => session_id()
                         ];
                     }
                 } else {
@@ -82,7 +83,6 @@ class loginControl{
 
 
         return $userArray;
-        //return  [$userArray];
 
     }//EOF
 
