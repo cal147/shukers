@@ -75,7 +75,7 @@ class AdminUserStore extends EventEmitter{
 
     logoutUser(){
 
-        //TODO ajax call to the user store controller action LOGOUT
+        //TODO ajax call to the user store controller action LOGOUT.
         if(this.user.isLoggedIn){
             this.user = {
                 id: null,
