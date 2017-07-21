@@ -12,59 +12,46 @@ class AdminUserStore extends EventEmitter{
 
     constructor() {
         super();
-        this.user = {
-            id: null,
-            userName: null,
-            firstName: null,
-            surName: null,
-            contactNum: null,
-            houseNum: null,
-            addressL1: null,
-            addressL2: null,
-            postcode: null,
-            isHome: null,
-            isDelivery: null,
-            Staff: false,
-            isLoggedIn: false,
-            logInError: false,
-            serverSession : null
-        };
-     /*****************************************************************************************************************************************************/
-     //TODO********************  Delete this fetch between the *'s this code bypasses the login screen for testing only  *********************************
-        fetch(serverScripts+"admin/UserStoreController.php", {
-            method: 'POST',
-            headers:{"Content-type": "application/x-www-form-urlencoded; charset=UTF-8"},
-            body: JSON.stringify({
-                action: "LOGIN_USER",
-                name: 'Admin',
-                password: 'Pa$$w0rd'
-            }),
-            mode: 'cors'
-        }).then((response)=>response.json()).then((data)=>{
+       if(localStorage.getItem('userData') === null) {
+           this.user = {
+               id: null,
+               userName: null,
+               firstName: null,
+               surName: null,
+               contactNum: null,
+               houseNum: null,
+               addressL1: null,
+               addressL2: null,
+               postcode: null,
+               isHome: null,
+               isDelivery: null,
+               Staff: false,
+               isLoggedIn: false,
+               logInError: false,
+               serverSession: null
+           };
+       }else{
+           let data = JSON.parse(localStorage.getItem('userData'));
+           this.user = {
+               id : data['id'],
+               userName : data['loginId'],
+               firstName : data['forName'],
+               surName : data['surName'],
+               contactNum : data['contactNum'],
+               houseNum : data['houseNum'],
+               addressL1 : data['adFirstLine'],
+               addressL2 : data['adSecondLine'],
+               postcode : data['postcode'],
+               isHome : data['homeAddress'],
+               isDelivery : data['deliveryAddress'],
+               Staff : data['isStaff'],
+               isLoggedIn : true,
+               logInError : false,
+               serverSession : data['sessionId']
+       };
 
-            this.user.id = data['id'];
-            this.user.userName = data['loginId'];
-            this.user.firstName = data['forName'];
-            this.user.surName = data['surName'];
-            this.user.contactNum = data['contactNum'];
-            this.user.houseNum = data['houseNum'];
-            this.user.addressL1 = data['adFirstLine'];
-            this.user.addressL2 = data['adSecondLine'];
-            this.user.postcode = data['postcode'];
-            this.user.isHome = data['homeAddress'];
-            this.user.isDelivery = data['deliveryAddress'];
-            this.user.Staff = data['isStaff'];
-            this.user.isLoggedIn = true;
-            this.user.logInError = false;
-            this.user.serverSession = data['sessionId'];
+       }    //TODO must clear the localstorage on page exit.
 
-            this.emit("change");
-
-        }).catch((err)=>{
-            console.error(err);
-        });
-
-    /********************************************************************************************************************************************************/
     }//End of constructor
 
     //Queries the database and sets the datafields with the users information.
@@ -97,6 +84,8 @@ class AdminUserStore extends EventEmitter{
             this.user.logInError = false;
             this.user.serverSession = data['sessionId'];
 
+            localStorage.setItem("userData", JSON.stringify(data));
+            console.log("in login local data is " + localStorage.getItem('userData'));
             this.emit("change");
 
         }).catch((err)=>{
@@ -123,7 +112,6 @@ class AdminUserStore extends EventEmitter{
                 }),
                 mode: 'cors'
             }).then((response)=>response.json()).then((data)=>{
-                    console.log(data.success);
                     serverCallComplete = data.success;
 
                     if(serverCallComplete) {
@@ -142,6 +130,7 @@ class AdminUserStore extends EventEmitter{
                         this.user.isLoggedIn = false;
                         this.user.logInError = false;
 
+                        localStorage.clear();
                         this.emit("change");
                     }
 

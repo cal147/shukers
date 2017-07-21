@@ -9,12 +9,15 @@ export default class SideBar extends Component{
         super();
         this.state = {
             activeItem: "dashboard",
-        }
+        };
 
+        this.handleItemClick = this.handleItemClick.bind(this)
 
     }
 
-    handleItemClick = (e, { name }) => this.setState({ activeItem: name })
+    handleItemClick(e, { name }){
+        this.setState({ activeItem: name });
+    }
 
 
     render(){
@@ -24,14 +27,14 @@ export default class SideBar extends Component{
         return(
             <Menu pointing vertical style={{position:"fixed", top:"60px"}} inverted color={"red"} className="left fixed menu">
 
-                <Menu.Item as={Link} to="admin/dashboard" name='dashboard' icon="dashboard" active={activeItem === 'dashboard'} onClick={this.handleItemClick}  className="menu-spacing"/>
-                <Menu.Item as={Link} to="admin/orders" name='orders'  active={activeItem === 'orders'} onClick={this.handleItemClick} className="menu-spacing">
+                <Menu.Item as={Link} to="/" name='dashboard' icon="dashboard" active={activeItem === 'dashboard'} onClick={this.handleItemClick}  className="menu-spacing"/>
+                <Menu.Item as={Link} to="/orders" name='orders'  active={activeItem === 'orders'} onClick={this.handleItemClick} className="menu-spacing">
                     Orders <Icon name="info circle" />
                 </Menu.Item>
-                <Menu.Item as={Link} to="admin/products" name='products' icon="product hunt" active={activeItem === 'products'} onClick={this.handleItemClick} className="menu-spacing"/>
-                <Menu.Item as={Link} to="admin/customers" name='customers' icon="users" active={activeItem === 'customers'} onClick={this.handleItemClick} className="menu-spacing"/>
-                <Menu.Item as={Link} to="admin/orderhistory" name='order history' icon="archive" active={activeItem === 'order history'} onClick={this.handleItemClick} className="menu-spacing"/>
-                <Menu.Item as={Link} to="admin/offers" name='offers' icon="wizard" active={activeItem === 'offers'} onClick={this.handleItemClick} className="menu-spacing"/>
+                <Menu.Item as={Link} to="/products" name='products' icon="product hunt" active={activeItem === 'products'} onClick={this.handleItemClick} className="menu-spacing"/>
+                <Menu.Item as={Link} to="/customers" name='customers' icon="users" active={activeItem === 'customers'} onClick={this.handleItemClick} className="menu-spacing"/>
+                <Menu.Item as={Link} to="/orderhistory" name='order history' icon="archive" active={activeItem === 'order history'} onClick={this.handleItemClick} className="menu-spacing"/>
+                <Menu.Item as={Link} to="/offers" name='offers' icon="wizard" active={activeItem === 'offers'} onClick={this.handleItemClick} className="menu-spacing"/>
             </Menu>
         );
     }

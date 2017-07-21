@@ -15,7 +15,7 @@ export default class Dashboard extends Component{
 
         return(
             <div >
-                <h1>This is the home page</h1>
+                <h1>This is the dashboard</h1>
             </div>
         );
     }

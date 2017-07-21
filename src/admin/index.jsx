@@ -25,15 +25,15 @@ const Routes = ()=>{
     this.state = adminUserStore.getUser();
 
     return(
-        <HashRouter>
+        <HashRouter basename="/admin">
             <AdminLayout>
                 <Switch>
-                    <Route exact path="/admin" component={Dashboard}/>
-                    <Route path="/orders" component={Orders}/>
-                    <Route path="/products" component={Products}/>
-                    <Route path="/customers" component={Customers}/>
-                    <Route path="/orderhistory" component={OrderHistory}/>
-                    <Route path="/offers" component={Offers}/>
+                    <Route exact path="/" component={Dashboard}/>
+                    <Route exact path="/orders" component={Orders}/>
+                    <Route exact path="/products" component={Products}/>
+                    <Route exact path="/customers" component={Customers}/>
+                    <Route exact path="/orderhistory" component={OrderHistory}/>
+                    <Route exact path="/offers" component={Offers}/>
                 </Switch>
             </AdminLayout>
         </HashRouter>
