@@ -74,6 +74,8 @@ class AdminUserStore extends EventEmitter{
 
 
     logoutUser(){
+
+        //
         if(this.user.isLoggedIn){
             this.user = {
                 id: null,
