@@ -1,0 +1,53 @@
+.publicPageLayout{
+    width: 90%;
+    margin-left: 5%;
+    margin-top: 0.5%;
+    margin-bottom: 0.5%;
+}
+
+.header{
+    height: 180px;
+    width: auto;
+}
+
+.header-Logo{
+    width: 160px;
+    margin-bottom: 0.5%;
+    float: left;
+}
+
+.header-Text{
+    line-height: 180px;
+    text-align: center;
+    font-size: 3vw;
+    color: red;
+    text-shadow: 0.1vw 0.1vw black;
+}
+
+@media (max-width: 800px) {
+    .header-Text {
+        text-align: center;
+        font-size: x-large;
+        line-height: normal;
+        padding-top: 3ch;
+        color: red;
+        text-shadow: 0.1vw 0.1vw black;
+    }
+}
+
+@media (max-width: 350px) {
+    .header-Text {
+        text-align: center;
+        font-size: x-large;
+        line-height: normal;
+        padding-top: 2ch;
+        color: red;
+        text-shadow: 0.1vw 0.1vw black;
+    }
+}
+
+.footer {
+    clear: both;
+    bottom: 0.5%;
+    position: fixed;
+}
