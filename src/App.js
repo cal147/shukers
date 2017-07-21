@@ -16,7 +16,7 @@ const Site = ()=>{
                             //******************************************************
   return(
       <HashRouter>
-        <div className="publicPageLayout" >
+        <div className="publicPageLayout1" >
             <SiteLayout>
                 <Switch>
                     <Route exact path="/" component={home}/>
