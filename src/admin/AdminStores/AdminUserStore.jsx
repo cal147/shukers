@@ -12,14 +12,20 @@ class AdminUserStore extends EventEmitter{
 
     constructor() {
         super();
-        //TODO Ajax call to see if user is already logged in
         this.user = {
-            id: 1,
-            userName: 'Admin',
-            firstName: 'Administrator',
-            surName: 'Administrator',
+            id: null,
+            userName: null,
+            firstName: null,
+            surName: null,
+            contactNum: null,
+            houseNum: null,
+            addressL1: null,
+            addressL2: null,
+            postcode: null,
+            isHome: null,
+            isDelivery: null,
+            Staff: false,
             isLoggedIn: false,
-            Staff: true, //TODO Need to change this. For dev only need to come from database
             logInError: false,
         };
 
@@ -28,14 +34,6 @@ class AdminUserStore extends EventEmitter{
 
     //Queries the database and sets the datafields with the users information.
     loginUser(name, password){
-        //TODO Ajax call to the data base to log in user
-        if(name === "carl" && password==="123456"){
-            this.user.isLoggedIn = true;
-            this.emit("change");
-        }else{
-            this.user.logInError = true;
-            this.emit("change");
-        }
 
         fetch(serverScripts+"admin/UserStoreController.php", {
             method: 'POST',
@@ -47,7 +45,25 @@ class AdminUserStore extends EventEmitter{
             }),
             mode: 'cors'
         }).then((response)=>response.json()).then((data)=>{
-                console.log(data);
+
+            this.user.id = data['id'];
+            this.user.userName = data['loginId'];
+            this.user.firstName = data['forName'];
+            this.user.surName = data['surName'];
+            this.user.contactNum = data['contactNum'];
+            this.user.houseNum = data['houseNum'];
+            this.user.addressL1 = data['adFirstLine'];
+            this.user.addressL2 = data['adSecondLine'];
+            this.user.postcode = data['postcode'];
+            this.user.isHome = data['homeAddress'];
+            this.user.isDelivery = data['deliveryAddress'];
+            this.user.Staff = data['isStaff'];
+            this.user.isLoggedIn = true;
+            this.user.logInError = false;
+
+            console.log(this.user);
+            this.emit("change");
+
         }).catch((err)=>{
             console.error(err);
         });
@@ -56,11 +72,25 @@ class AdminUserStore extends EventEmitter{
 
     }//End of login user
 
-    //TODO Nulls all the fields in the dataStore
+
     logoutUser(){
         if(this.user.isLoggedIn){
-            //TODO log out user
-            this.user.isLoggedIn = false;
+            this.user = {
+                id: null,
+                userName: null,
+                firstName: null,
+                surName: null,
+                contactNum: null,
+                houseNum: null,
+                addressL1: null,
+                addressL2: null,
+                postcode: null,
+                isHome: null,
+                isDelivery: null,
+                Staff: false,
+                isLoggedIn: false,
+                logInError: false,
+            };
 
             this.emit("change");
         }

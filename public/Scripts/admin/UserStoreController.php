@@ -6,7 +6,7 @@ $_postData = json_decode(file_get_contents("php://input"), true);
  //echo password_hash('Pa$$w0rd', PASSWORD_DEFAULT)."\n";
 
 
-include 'loginControl.php';
+include '../Shared/loginControl.php';
 
 
 
@@ -42,6 +42,6 @@ if($_postData['action']  == 'LOGOUT'){
     $_SESSION['isStaff'] == false;
 
     session_destroy();
-    echo json_encode($fail);
+    echo json_encode(['Logout' => 'User is logged out', 'success' => true]);
 
 }
