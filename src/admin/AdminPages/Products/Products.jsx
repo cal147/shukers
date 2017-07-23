@@ -4,7 +4,7 @@
  */
 
 import React, {Component} from 'react';
-import {Tab, Grid, Button} from'semantic-ui-react'
+import {Tab} from'semantic-ui-react'
 import AddPane from './Add';
 import '../../AdminMaster.css';
 

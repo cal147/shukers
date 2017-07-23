@@ -26,6 +26,7 @@ export default class AddPane extends Component{
             case "prod":
                 this.setState({activeComp :<Prod/>});
                 break;
+            default: this.setState({activeComp :null});
         }
     }
 
