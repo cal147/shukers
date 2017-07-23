@@ -65,7 +65,7 @@ class Cat extends Component{
                 </Grid.Column>
 
                 <Grid.Column>
-                    <h1>Col 2 cat</h1>
+                    <h1>Col 2 category</h1>
                 </Grid.Column>
             </Grid.Row>
         );
