@@ -60,11 +60,11 @@ class Cat extends Component{
     render(){
         return(
             <Grid.Row columns={'16'}>
-                <Grid.Column width={'8'}>
+                <Grid.Column width={'5'}>
                     <h1>Col 1 cat</h1>
                 </Grid.Column>
 
-                <Grid.Column width={'8'}>
+                <Grid.Column>
                     <h1>Col 2 cat</h1>
                 </Grid.Column>
             </Grid.Row>
