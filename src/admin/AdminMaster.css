@@ -7,4 +7,10 @@
 .pagePosition{
     padding-top: 80px;
     margin-left: 250px;
+    margin-right: 50px;
+}
+
+.menu-spacing{
+    margin: 30px 0px;
+
 }

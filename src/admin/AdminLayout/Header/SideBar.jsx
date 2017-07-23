@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
-import { Menu} from 'semantic-ui-react';
-
+import { Menu, Icon,} from 'semantic-ui-react';
+import {Link} from 'react-router-dom';
 
 export default class SideBar extends Component{
 
@@ -8,34 +8,33 @@ export default class SideBar extends Component{
     constructor(){
         super();
         this.state = {
-            activeItem: "",
-        }
+            activeItem: "dashboard",
+        };
 
+        this.handleItemClick = this.handleItemClick.bind(this)
 
     }
 
-    handleItemClick(name){
+    handleItemClick(e, { name }){
         this.setState({ activeItem: name });
     }
 
 
     render(){
-        const { activeItem } = this.state || {};
+        const { activeItem } = this.state;
 
+        // inverted color={"red"} vertical style={{position:"fixed", top:"62px"}} className="left fixed menu"
         return(
-            <Menu inverted color={"red"} vertical style={{position:"fixed", top:"62px"}} className="left fixed menu">
-                <Menu.Item>
-                    <div style={{marginBottom:'40px'}}></div>
-                    <Menu.Header>Products</Menu.Header>
+            <Menu pointing vertical style={{position:"fixed", top:"60px"}} inverted color={"red"} className="left fixed menu">
 
-                    <Menu.Menu>
-                        <Menu.Item name='enterprise' ref="Ent" active={activeItem === 'enterprise'} onClick={this.handleItemClick.bind(this)} />
-                        <Menu.Item name='consumer' active={activeItem === 'consumer'} onClick={this.handleItemClick.bind(this)} />
-                    </Menu.Menu>
+                <Menu.Item as={Link} to="/" name='dashboard' icon="dashboard" active={activeItem === 'dashboard'} onClick={this.handleItemClick}  className="menu-spacing"/>
+                <Menu.Item as={Link} to="/orders" name='orders'  active={activeItem === 'orders'} onClick={this.handleItemClick} className="menu-spacing">
+                    Orders <Icon name="info circle" />
                 </Menu.Item>
-
-
-
+                <Menu.Item as={Link} to="/products" name='products' icon="product hunt" active={activeItem === 'products'} onClick={this.handleItemClick} className="menu-spacing"/>
+                <Menu.Item as={Link} to="/customers" name='customers' icon="users" active={activeItem === 'customers'} onClick={this.handleItemClick} className="menu-spacing"/>
+                <Menu.Item as={Link} to="/orderhistory" name='order history' icon="archive" active={activeItem === 'order history'} onClick={this.handleItemClick} className="menu-spacing"/>
+                <Menu.Item as={Link} to="/offers" name='offers' icon="wizard" active={activeItem === 'offers'} onClick={this.handleItemClick} className="menu-spacing"/>
             </Menu>
         );
     }

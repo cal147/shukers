@@ -35,7 +35,7 @@ export default class App extends Component {
 
     constructor(){
         super();
-        if(document.location.hash.includes('/admin')){
+        if(document.location.hash.indexOf('/admin') !== -1){ //Had to change to indexOf instead of include as IE doesnt support include.
             this.state = {siteToShow: <MainPage/>}; //The MainPage is the admin application.
         }else{
             this.state = {siteToShow: <Site/>}

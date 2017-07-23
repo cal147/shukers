@@ -11,7 +11,12 @@ import {HashRouter, Route, Switch} from "react-router-dom";
 import adminUserStore from './AdminStores/AdminUserStore';
 import AdminLogin from './AdminPages/AdminLogin';
 import AdminLayout from './AdminLayout/AdminLayout';
-import AdminHome from './AdminPages/AdminHome';
+import Dashboard from './AdminPages/Dashboard';
+import Offers from './AdminPages/Offers';
+import OrderHistory from './AdminPages/OrderHistory';
+import Products from './AdminPages/Products/Products';
+import Customers from './AdminPages/Customers';
+import Orders from './AdminPages/Orders';
 
 
 //This will be the component that will be displayed when the user is loggged in.
@@ -20,12 +25,15 @@ const Routes = ()=>{
     this.state = adminUserStore.getUser();
 
     return(
-        <HashRouter>
+        <HashRouter basename="/admin">
             <AdminLayout>
                 <Switch>
-                    <Route exact path="/admin" component={AdminHome}/>
-
-
+                    <Route exact path="/" component={Dashboard}/>
+                    <Route exact path="/orders" component={Orders}/>
+                    <Route exact path="/products" component={Products}/>
+                    <Route exact path="/customers" component={Customers}/>
+                    <Route exact path="/orderhistory" component={OrderHistory}/>
+                    <Route exact path="/offers" component={Offers}/>
                 </Switch>
             </AdminLayout>
         </HashRouter>
