@@ -3,15 +3,16 @@
 
  class Database{
 
-    private $server = 'localhost';
-    private $userName = 'admin';
-    private $password = '123456';
-    private $dataBase = 'shukers';
+    const SERVER = 'localhost';
+    const USERNAME = 'admin';
+    const PASSWORD = '123456';
+    const DATABASE = 'shukers';
     private $conn = null;
 
 
     public function __construct() {
-       $this->conn = new mysqli($this->server, $this->userName, $this->password, $this->dataBase);
+       $this->conn = new mysqli(Database::SERVER, Database::USERNAME, Database::PASSWORD, Database::DATABASE);
+
 
 
     }//End of constructor
