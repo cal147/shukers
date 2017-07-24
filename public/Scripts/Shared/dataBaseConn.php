@@ -2,11 +2,12 @@
 
 
  class Database{
-
+     //Constant mysql details ensures they cant be changed later in the program.
     const SERVER = 'localhost';
     const USERNAME = 'admin';
     const PASSWORD = '123456';
     const DATABASE = 'shukers';
+
     private $conn = null;
 
 

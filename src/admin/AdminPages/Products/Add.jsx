@@ -1,6 +1,8 @@
 import React, {Component} from 'react';
-import {Tab, Grid, Button} from 'semantic-ui-react';
+import {Tab, Grid, Button, Divider, Dimmer, Loader} from 'semantic-ui-react';
 
+import adminUserStore from '../../AdminStores/AdminUserStore';
+import {serverScripts} from '../../../shared/urls';
 
 /**
  *   Sets up the grid system for positioning components.
@@ -12,6 +14,7 @@ export default class AddPane extends Component{
         super();
         this.state = {
             activeComp:null,
+            user: adminUserStore.getUser()
         };
     }
 
@@ -21,10 +24,10 @@ export default class AddPane extends Component{
 
         switch(name){
             case "cat":
-                this.setState({activeComp :<Cat/>});
+                this.setState({activeComp :<Cat session={this.state.user.serverSession}/>});
                 break;
             case "prod":
-                this.setState({activeComp :<Prod/>});
+                this.setState({activeComp :<Prod session={this.state.user.serverSession}/>});
                 break;
             default: this.setState({activeComp :null});
         }
@@ -57,17 +60,61 @@ export default class AddPane extends Component{
  */
 class Cat extends Component{
 
+    constructor(props){
+        super();
+        this.state = {
+            loading: true,
+        };
+    }
+
+    componentWillMount(){
+        fetch(serverScripts+"admin/Controllers/productsController.php", {
+            method: 'POST',
+            headers:{"Content-type": "application/x-www-form-urlencoded; charset=UTF-8"},
+            body: JSON.stringify({
+                action: "GET_CATEGORIES",
+                sessionId :this.props.session
+            }),
+            mode: 'cors'
+        }).then((response)=>response.json()).then((data)=> {
+            //TODO Map an unordered list into here.
+            console.log(data);
+            this.setState({loading:false});
+        }).catch((err)=>{
+            console.error(err);
+        });
+    }
+
+    componentDidMount(){
+
+
+    }
+
+
+
     render(){
         return(
-            <Grid.Row columns={'16'}>
-                <Grid.Column width={'5'}>
-                    <h1>Col 1 cat</h1>
-                </Grid.Column>
+            <div>
+            <Grid.Row columns={'16'} >
+                <Grid>
+                    <div className="add_items_positioning">
+                        <Grid.Row columns={'16'}>
+                            <Divider/>
+                            <Divider horizontal>Current Categories in the store</Divider>
+                            <Divider/>
+                        </Grid.Row>
+                        <Grid.Row >
 
-                <Grid.Column>
-                    <h1>Col 2 category</h1>
-                </Grid.Column>
+                            <Divider/>
+                        </Grid.Row>
+                    </div>
+                </Grid>
             </Grid.Row>
+                <Dimmer active={this.state.loading} inverted>
+                    <Loader>Loading</Loader>
+                </Dimmer>
+
+            </div>
         );
     }
 }
@@ -77,6 +124,15 @@ class Cat extends Component{
  * Component must be registered in the handleClick in add pane.
  */
 class Prod extends Component{
+
+    constructor(){
+        super();
+        this.state = {
+            loading: true,
+        };
+    }
+
+
 
     render(){
         return(
