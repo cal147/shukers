@@ -9,11 +9,13 @@ session_start();
 
 
 include '../../Shared/dataBaseConn.php';
+$db = new Database();
+$conn = $db->getConn();
+
 
 if($_postData['action'] == 'GET_CATEGORIES'){
 
-    $db = new Database();
-    $conn = $db->getConn();
+
     $catArray = [];
     try {
         $stmt = $conn->prepare("SELECT id, cat FROM category");
@@ -34,5 +36,60 @@ if($_postData['action'] == 'GET_CATEGORIES'){
         return false;
     }
 
+
+}
+
+if($_postData['action'] == 'ADD_CATEGORY'){
+
+    $dirtyCat = $_postData['newCategory'];
+
+    if(preg_match('/^[A-Za-z0-9]{2,15}$/', stripcslashes(trim($dirtyCat)))) {
+
+        $cCat = $conn->real_escape_string(trim($dirtyCat));
+        $cleanCategory = strip_tags($cCat);
+
+        try {
+            $stmt = $conn->prepare("INSERT INTO category(cat) VALUES(?)");
+            $stmt->bind_param("s", $cleanCategory);
+            if($stmt->execute()){
+                echo json_encode(['Message' => 'Category Added', 'success' => true]);
+            }else{
+                echo json_encode(['Message' => 'Could not add this category', 'success' => false]);
+            }
+
+        } catch (Exception $e) {
+            echo json_encode(['Message' => 'Could not add this category', 'success' => false]);
+        }
+
+
+    }
+
+}
+
+
+if($_postData['action'] == 'DELETE_CATEGORY'){
+
+    $dirtyId = $_postData['categoryId'];
+
+    if(preg_match('/^[0-9]{1,3}$/', stripcslashes(trim($dirtyId)))) {
+
+        $cId = $conn->real_escape_string(trim($dirtyId));
+        $cleanId = strip_tags($cId);
+
+        try {
+            $stmt = $conn->prepare("DELETE FROM category WHERE id=?");
+            $stmt->bind_param("i", $cleanId);
+            if($stmt->execute()){
+                echo json_encode(['Message' => 'Category Deleted', 'success' => true]);
+            }else{
+                echo json_encode(['Message' => 'Could not Delete this category', 'success' => false]);
+            }
+
+        } catch (Exception $e) {
+            echo json_encode(['Message' => 'Could not Delete this category', 'success' => false]);
+        }
+
+
+    }
 
 }

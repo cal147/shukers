@@ -70,10 +70,16 @@ class Cat extends Component{
             loading: true,
             currentCats: null,
             categoryInput: '',
+            insertMessage: null,
         };
     }
 
     componentWillMount(){
+        this.getCategories();
+    }
+
+    getCategories(){
+        this.setState({loading:true});
         fetch(serverScripts+"admin/Controllers/productsController.php", {
             method: 'POST',
             headers:{"Content-type": "application/x-www-form-urlencoded; charset=UTF-8"},
@@ -84,7 +90,6 @@ class Cat extends Component{
             mode: 'cors'
         }).then((response)=>response.json()).then((data)=> {
             this.setState({currentCats: data});
-
             this.setState({loading:false});
         }).catch((err)=>{
             console.error(err);
@@ -96,8 +101,34 @@ class Cat extends Component{
     }
 
     removeCat(id){
-        console.log(id);
-        //TODO remove the item.
+        this.setState({loading:true});
+        fetch(serverScripts+"admin/Controllers/productsController.php", {
+            method: 'POST',
+            headers:{"Content-type": "application/x-www-form-urlencoded; charset=UTF-8"},
+            body: JSON.stringify({
+                action: "DELETE_CATEGORY",
+                categoryId: id,
+                sessionId :this.props.session
+            }),
+            mode: 'cors'
+        }).then((response)=>response.json()).then((data)=> {
+            this.setState({insertMessage: data});
+            if(data.success){
+                let tmpArr  = this.state.currentCats;
+                for(let i=0;i<tmpArr.length;i++){
+                    if(tmpArr[i].id==id){
+                        tmpArr.splice(i,1);
+                        this.setState({currentCats: tmpArr});
+                        break;
+                    }
+                }
+
+            }
+            this.setState({loading:false});
+        }).catch((err)=>{
+            console.error(err);
+            this.setState({loading:false});
+        });
     }
 
     handleCatInput(e) {
@@ -106,7 +137,27 @@ class Cat extends Component{
 
     handleSubmit(e){
         e.preventDefault();
-       //TODO Send category to the database
+        this.setState({loading:true});
+        fetch(serverScripts+"admin/Controllers/productsController.php", {
+            method: 'POST',
+            headers:{"Content-type": "application/x-www-form-urlencoded; charset=UTF-8"},
+            body: JSON.stringify({
+                action: "ADD_CATEGORY",
+                newCategory: this.state.categoryInput,
+                sessionId :this.props.session
+            }),
+            mode: 'cors'
+        }).then((response)=>response.json()).then((data)=> {
+            this.setState({insertMessage: data});
+            if(data.success){
+                this.getCategories();
+                this.setState({categoryInput: ''});
+            }
+            this.setState({loading:false});
+        }).catch((err)=>{
+            console.error(err);
+            this.setState({loading:false});
+        });
 
     }
 
@@ -133,8 +184,9 @@ class Cat extends Component{
                         <Grid.Row>
                             <form onSubmit={this.handleSubmit.bind(this)}>
                                 <label className="font_size_label">Category Name: </label>
-                                <div className="ui input menu-spacing "> <input type="text" placeholder="Name" onChange={this.handleCatInput.bind(this)}/></div>
+                                <div className="ui input menu-spacing "> <input type="text" placeholder="Name" value={this.state.categoryInput} onChange={this.handleCatInput.bind(this)}/></div>
                                 <button type='submit' className="ui button">Add</button>
+                                {this.state.insertMessage == null?<span></span>:<span>{this.state.insertMessage.Message}</span>}
                             </form>
                             <br />
                         </Grid.Row>
