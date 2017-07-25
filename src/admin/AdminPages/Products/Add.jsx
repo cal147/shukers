@@ -1,5 +1,9 @@
+/**
+ * This class controls the add section the products section.
+ */
+
 import React, {Component} from 'react';
-import {Tab, Grid, Button, Divider, Dimmer, Loader} from 'semantic-ui-react';
+import {Tab, Grid, Button, Divider, Dimmer, Loader, Label,Icon} from 'semantic-ui-react';
 
 import adminUserStore from '../../AdminStores/AdminUserStore';
 import {serverScripts} from '../../../shared/urls';
@@ -19,7 +23,7 @@ export default class AddPane extends Component{
     }
 
 
-    //Handles the button clicks. sets the active component based on the users click
+    //Handles the button clicks for add category or add product. sets the active component based on the users click
     handleClick(e,{name}){
 
         switch(name){
@@ -60,10 +64,12 @@ export default class AddPane extends Component{
  */
 class Cat extends Component{
 
-    constructor(props){
+    constructor(){
         super();
         this.state = {
             loading: true,
+            currentCats: null,
+            categoryInput: '',
         };
     }
 
@@ -77,8 +83,8 @@ class Cat extends Component{
             }),
             mode: 'cors'
         }).then((response)=>response.json()).then((data)=> {
-            //TODO Map an unordered list into here.
-            console.log(data);
+            this.setState({currentCats: data});
+
             this.setState({loading:false});
         }).catch((err)=>{
             console.error(err);
@@ -87,6 +93,20 @@ class Cat extends Component{
 
     componentDidMount(){
 
+    }
+
+    removeCat(id){
+        console.log(id);
+        //TODO remove the item.
+    }
+
+    handleCatInput(e) {
+        this.setState({categoryInput: e.target.value});
+    }
+
+    handleSubmit(e){
+        e.preventDefault();
+       //TODO Send category to the database
 
     }
 
@@ -103,9 +123,20 @@ class Cat extends Component{
                             <Divider horizontal>Current Categories in the store</Divider>
                             <Divider/>
                         </Grid.Row>
-                        <Grid.Row >
 
+                        <Grid.Row >
+                            {this.state.currentCats !=null?this.state.currentCats.map((item,i)=> <Label key={item.id}>{item.cat} <Icon name='delete' onClick={this.removeCat.bind(this, item.id)}/></Label> ): null}
+                            <br />
                             <Divider/>
+                        </Grid.Row>
+                        <br /><br />
+                        <Grid.Row>
+                            <form onSubmit={this.handleSubmit.bind(this)}>
+                                <label className="font_size_label">Category Name: </label>
+                                <div className="ui input menu-spacing "> <input type="text" placeholder="Name" onChange={this.handleCatInput.bind(this)}/></div>
+                                <button type='submit' className="ui button">Add</button>
+                            </form>
+                            <br />
                         </Grid.Row>
                     </div>
                 </Grid>
