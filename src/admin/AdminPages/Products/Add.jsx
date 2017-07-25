@@ -13,7 +13,7 @@ import {serverScripts} from '../../../shared/urls';
  *   This class allows the user to select their task and then a form is generated.
  */
 export default class AddPane extends Component{
-
+//
     constructor() {
         super();
         this.state = {
