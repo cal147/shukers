@@ -180,7 +180,7 @@ class Cat extends Component{
                             <br />
                             <Divider/>
                         </Grid.Row>
-                        <br /><br />
+                        <br />
                         <Grid.Row>
                             <form onSubmit={this.handleSubmit.bind(this)}>
                                 <label className="font_size_label">Category Name: </label>
