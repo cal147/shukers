@@ -116,7 +116,7 @@ class Cat extends Component{
             if(data.success){
                 let tmpArr  = this.state.currentCats;
                 for(let i=0;i<tmpArr.length;i++){
-                    if(tmpArr[i].id==id){
+                    if(tmpArr[i].id===id){
                         tmpArr.splice(i,1);
                         this.setState({currentCats: tmpArr});
                         break;
@@ -165,7 +165,6 @@ class Cat extends Component{
 
     render(){
         return(
-            <div>
             <Grid.Row columns={'16'} >
                 <Grid>
                     <div className="add_items_positioning">
@@ -192,12 +191,10 @@ class Cat extends Component{
                         </Grid.Row>
                     </div>
                 </Grid>
-            </Grid.Row>
                 <Dimmer active={this.state.loading} inverted>
                     <Loader>Loading</Loader>
                 </Dimmer>
-
-            </div>
+            </Grid.Row>
         );
     }
 }
@@ -227,6 +224,9 @@ class Prod extends Component{
                 <Grid.Column width={'8'}>
                     <h1>Col 2 prod</h1>
                 </Grid.Column>
+                <Dimmer active={this.state.loading} inverted>
+                    <Loader>Loading</Loader>
+                </Dimmer>
             </Grid.Row>
         );
     }
