@@ -12,23 +12,45 @@ class AdminUserStore extends EventEmitter{
 
     constructor() {
         super();
-        this.user = {
-            id: null,
-            userName: null,
-            firstName: null,
-            surName: null,
-            contactNum: null,
-            houseNum: null,
-            addressL1: null,
-            addressL2: null,
-            postcode: null,
-            isHome: null,
-            isDelivery: null,
-            Staff: false,
-            isLoggedIn: false,
-            logInError: false,
-        };
+       if(localStorage.getItem('userData') === null) {
+           this.user = {
+               id: null,
+               userName: null,
+               firstName: null,
+               surName: null,
+               contactNum: null,
+               houseNum: null,
+               addressL1: null,
+               addressL2: null,
+               postcode: null,
+               isHome: null,
+               isDelivery: null,
+               Staff: false,
+               isLoggedIn: false,
+               logInError: false,
+               serverSession: null
+           };
+       }else{
+           let data = JSON.parse(localStorage.getItem('userData'));
+           this.user = {
+               id : data['id'],
+               userName : data['loginId'],
+               firstName : data['forName'],
+               surName : data['surName'],
+               contactNum : data['contactNum'],
+               houseNum : data['houseNum'],
+               addressL1 : data['adFirstLine'],
+               addressL2 : data['adSecondLine'],
+               postcode : data['postcode'],
+               isHome : data['homeAddress'],
+               isDelivery : data['deliveryAddress'],
+               Staff : data['isStaff'],
+               isLoggedIn : true,
+               logInError : false,
+               serverSession : data['sessionId']
+       };
 
+       }    //TODO must clear the localstorage on page exit.
 
     }//End of constructor
 
@@ -60,7 +82,10 @@ class AdminUserStore extends EventEmitter{
             this.user.Staff = data['isStaff'];
             this.user.isLoggedIn = true;
             this.user.logInError = false;
+            this.user.serverSession = data['sessionId'];
 
+            localStorage.setItem("userData", JSON.stringify(data));
+            console.log("in login local data is " + localStorage.getItem('userData'));
             this.emit("change");
 
         }).catch((err)=>{
@@ -74,26 +99,45 @@ class AdminUserStore extends EventEmitter{
 
     logoutUser(){
 
-        //TODO ajax call to the user store controller action LOGOUT.
         if(this.user.isLoggedIn){
-            this.user = {
-                id: null,
-                userName: null,
-                firstName: null,
-                surName: null,
-                contactNum: null,
-                houseNum: null,
-                addressL1: null,
-                addressL2: null,
-                postcode: null,
-                isHome: null,
-                isDelivery: null,
-                Staff: false,
-                isLoggedIn: false,
-                logInError: false,
-            };
 
-            this.emit("change");
+            let serverCallComplete;
+
+            fetch(serverScripts+"admin/UserStoreController.php", {
+                method: 'POST',
+                headers:{"Content-type": "application/x-www-form-urlencoded; charset=UTF-8"},
+                body: JSON.stringify({
+                    action: "LOGOUT",
+                    sessionId : this.user.serverSession
+                }),
+                mode: 'cors'
+            }).then((response)=>response.json()).then((data)=>{
+                    serverCallComplete = data.success;
+
+                    if(serverCallComplete) {
+                        this.user.id = null;
+                        this.user.userName = null;
+                        this.user.firstName = null;
+                        this.user.surName = null;
+                        this.user.contactNum = null;
+                        this.user.houseNum = null;
+                        this.user.addressL1 = null;
+                        this.user.addressL2 = null;
+                        this.user.postcode = null;
+                        this.user.isHome = null;
+                        this.user.isDelivery = null;
+                        this.user.Staff = false;
+                        this.user.isLoggedIn = false;
+                        this.user.logInError = false;
+
+                        localStorage.clear();
+                        this.emit("change");
+                    }
+
+            }).catch((err)=>{
+                console.error(err);
+            });
+
         }
     }
 
