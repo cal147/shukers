@@ -116,7 +116,7 @@ class Cat extends Component{
             if(data.success){
                 let tmpArr  = this.state.currentCats;
                 for(let i=0;i<tmpArr.length;i++){
-                    if(tmpArr[i].id==id){
+                    if(tmpArr[i].id===id){
                         tmpArr.splice(i,1);
                         this.setState({currentCats: tmpArr});
                         break;

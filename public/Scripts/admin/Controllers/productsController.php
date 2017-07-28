@@ -93,3 +93,34 @@ if($_postData['action'] == 'DELETE_CATEGORY'){
     }
 
 }
+
+if($_postData['action'] == 'GET_PRODUCTS'){
+
+
+    $prodArray = [];
+    try {
+        $stmt = $conn->prepare("SELECT * FROM products");
+        $stmt->execute();
+
+        if ($result = $stmt->get_result()) {
+            while ($row = $result->fetch_assoc()) {
+                array_push($prodArray,[
+                    'id' => $row['id'],
+                    'catID' => $row['catId'],
+                    'name' => $row['name'],
+                    'desc' => $row['description'],
+                    'price' => $row['price'],
+                    'onOffer' => $row['onOffer'],
+                    'imgPath' => $row['imgPath']
+                ]);
+            }
+            echo json_encode($prodArray);
+        }
+
+
+    } catch (Exception $e) {
+        return false;
+    }
+
+
+}
