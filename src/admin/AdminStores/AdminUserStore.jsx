@@ -12,7 +12,7 @@ class AdminUserStore extends EventEmitter{
 
     constructor() {
         super();
-       if(localStorage.getItem('userData') === null) {
+       if(sessionStorage.getItem('userData') === null) {
            this.user = {
                id: null,
                userName: null,
@@ -31,7 +31,7 @@ class AdminUserStore extends EventEmitter{
                serverSession: null
            };
        }else{
-           let data = JSON.parse(localStorage.getItem('userData'));
+           let data = JSON.parse(sessionStorage.getItem('userData'));
            this.user = {
                id : data['id'],
                userName : data['loginId'],
@@ -50,14 +50,14 @@ class AdminUserStore extends EventEmitter{
                serverSession : data['sessionId']
        };
 
-       }    //TODO must clear the localstorage on page exit.
+       }
 
     }//End of constructor
 
     //Queries the database and sets the datafields with the users information.
     loginUser(name, password){
 
-        fetch(serverScripts+"admin/UserStoreController.php", {
+        fetch(serverScripts+"admin/Controllers/UserStoreController.php", {
             method: 'POST',
             headers:{"Content-type": "application/x-www-form-urlencoded; charset=UTF-8"},
             body: JSON.stringify({
@@ -80,14 +80,12 @@ class AdminUserStore extends EventEmitter{
             this.user.isHome = data['homeAddress'];
             this.user.isDelivery = data['deliveryAddress'];
             this.user.Staff = data['isStaff'];
-            this.user.isLoggedIn = true;
-            this.user.logInError = false;
+            if(data['loginId'] != null)this.user.isLoggedIn = true;
+            this.user.logInError = !data['success'];
             this.user.serverSession = data['sessionId'];
 
-            localStorage.setItem("userData", JSON.stringify(data));
-            console.log("in login local data is " + localStorage.getItem('userData'));
+            if(data['loginId'] != null)sessionStorage.setItem("userData", JSON.stringify(data));
             this.emit("change");
-
         }).catch((err)=>{
             console.error(err);
         });
@@ -103,7 +101,7 @@ class AdminUserStore extends EventEmitter{
 
             let serverCallComplete;
 
-            fetch(serverScripts+"admin/UserStoreController.php", {
+            fetch(serverScripts+"admin/Controllers/UserStoreController.php", {
                 method: 'POST',
                 headers:{"Content-type": "application/x-www-form-urlencoded; charset=UTF-8"},
                 body: JSON.stringify({
@@ -130,7 +128,8 @@ class AdminUserStore extends EventEmitter{
                         this.user.isLoggedIn = false;
                         this.user.logInError = false;
 
-                        localStorage.clear();
+                        sessionStorage.clear();
+
                         this.emit("change");
                     }
 
@@ -165,4 +164,7 @@ class AdminUserStore extends EventEmitter{
 
 const adminUserStore = new AdminUserStore();
 Dispatcher.register(adminUserStore.handleActions.bind(adminUserStore));
+
+window.adminUserStore = adminUserStore; //Temp can access the user store from the console.
+
 export default adminUserStore;

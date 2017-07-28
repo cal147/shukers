@@ -9,7 +9,7 @@ session_start();
  //echo password_hash('Pa$$w0rd', PASSWORD_DEFAULT)."\n";
 
 
-include '../Shared/loginControl.php';
+include '../../Shared/loginControl.php';
 
 
 
