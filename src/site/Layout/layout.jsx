@@ -75,6 +75,9 @@ export default class SiteLayout extends Component {
                             </Dropdown.Menu>
                         </Dropdown>
                         <Menu.Menu position='right'>
+                            <Menu.Item name='basket' active={activeItem === 'basket'} onClick={this.handleItemClick}
+                                       as={Link}
+                                       to='/basket'/>
                             <Menu.Item>
                                 <Search placeholder='Search...'/>
                             </Menu.Item>
@@ -122,8 +125,6 @@ export default class SiteLayout extends Component {
                             {this.props.children}
                         </Sidebar.Pusher>
                     </Sidebar.Pushable>
-
-
                     <Footer/>
 
                 </div>

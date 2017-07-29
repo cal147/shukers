@@ -99,19 +99,19 @@ if($_postData['action'] == 'GET_PRODUCTS'){
 
     $prodArray = [];
     try {
-        $stmt = $conn->prepare("SELECT * FROM products");
+        $stmt = $conn->prepare("SELECT * FROM products order by rand() LIMIT 3");
         $stmt->execute();
 
         if ($result = $stmt->get_result()) {
             while ($row = $result->fetch_assoc()) {
                 array_push($prodArray,[
-                    'id' => $row['id'],
-                    'catID' => $row['catId'],
-                    'name' => $row['name'],
-                    'desc' => $row['description'],
-                    'price' => $row['price'],
-                    'onOffer' => $row['onOffer'],
-                    'imgPath' => $row['imgPath']
+                    'id'        => $row['id'],
+                    'name'      => $row['name'],
+                    'desc'      => $row['description'],
+                    'price'     => $row['price'],
+                    'onOffer'   => $row['onOffer'],
+                    'imgPath'   => $row['imgPath'],
+                    'catId'     => $row['catId']
                 ]);
             }
             echo json_encode($prodArray);

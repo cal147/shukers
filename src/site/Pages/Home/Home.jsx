@@ -1,7 +1,7 @@
 import React, {Component} from "react";
-import {imgResource, serverScripts, prodImgResource} from '../../../shared/urls'
+import {imgResource, prodImgResource, serverScripts} from '../../../shared/urls'
 import Slider from 'react-slick'
-import {Grid, Divider} from 'semantic-ui-react'
+import {Divider, Grid} from 'semantic-ui-react'
 import './publicHomePage.css'
 
 
@@ -27,7 +27,7 @@ export default class home extends Component {
                 action: "GET_PRODUCTS"
             }),
             mode: 'cors'
-        }).then((response) => response.json()).then((data) => {
+        }).then(response => response.json()).then(data => {
             this.setState({Productsdata: data});
         }).catch((err) => {
             console.error(err);
@@ -69,21 +69,35 @@ export default class home extends Component {
                 <div>
                     <Grid>
                         <div>
-                            <Grid.Row columns={'16'}>
+                            <Grid.Row>
                                 <Divider/>
                                 <Divider horizontal>Current Categories in the store</Divider>
                                 <Divider/>
                             </Grid.Row>
                         </div>
-                        <Grid.Row columns={2} textAlign="center">
-                            {this.state.Productsdata.map((product) => <Grid.Column className="homeImg">{product.name}<br/><img className="homeImg"
-                                src={prodImgResource + product.imgPath} alt={product.name}/><br/>Price: {product.price}</Grid.Column>)}
+                        <Grid.Row columns={3} textAlign="center" >
+                            {this.state.Productsdata.map((product, i) =>
+                                <Grid.Column key={i} className="homeImg"><h3>{product.name}</h3>
+                                    <br/>
+                                    <img className="homeImg" src={prodImgResource + product.imgPath}
+                                         alt={product.name}/>
+                                    <br/>
+                                    <h4>Price: {product.price}</h4>
+                                    <br/>
+                                </Grid.Column>)}
                         </Grid.Row>
                         <br/>
 
                     </Grid>
                 </div>
 
+                <br/>
+                <br/>
+                <br/>
+                <br/>
+                <br/>
+                <br/>
+                <br/>
 
             </div>
         )
