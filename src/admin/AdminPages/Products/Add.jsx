@@ -183,7 +183,7 @@ class Cat extends Component{
                         <Grid.Row>
                             <form onSubmit={this.handleSubmit.bind(this)}>
                                 <label className="font_size_label">Category Name: </label>
-                                <div className="ui input menu-spacing "> <input type="text" placeholder="Name" value={this.state.categoryInput} onChange={this.handleCatInput.bind(this)}/></div>
+                                <div className="ui input add_items_positioning "> <input type="text" placeholder="Name" value={this.state.categoryInput} onChange={this.handleCatInput.bind(this)}/></div>
                                 <button type='submit' className="ui button">Add</button>
                                 {this.state.insertMessage == null?<span></span>:<span>{this.state.insertMessage.Message}</span>}
                             </form>
