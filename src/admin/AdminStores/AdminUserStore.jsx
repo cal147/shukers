@@ -50,7 +50,7 @@ class AdminUserStore extends EventEmitter{
                serverSession : data['sessionId']
        };
 
-       }    //TODO must clear the localstorage on page exit.
+       }
 
     }//End of constructor
 

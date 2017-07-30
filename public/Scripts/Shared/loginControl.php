@@ -18,26 +18,33 @@ class loginControl{
     //Queries the database for the user that has requested login and validates their password.
     public function validateUser($name, $pass){
 
-        $cleanName = $this->conn->real_escape_string($name);
-        $cleanPass = $this->conn->real_escape_string($pass);
+        if(preg_match('/^[A-Za-z0-9\-_]{5,10}$/', stripcslashes(trim($name))) && preg_match('/^[A-Za-z0-9\-!"£$%\^&*()]{5,10}$/', stripcslashes(trim($pass))) ) {
 
-        try{
-            $stmt = $this->conn->prepare("SELECT password, loginId FROM users WHERE loginId = ?");
-            $stmt->bind_param("s", $cleanName);
-            $stmt->execute();
-            $res = $stmt->get_result();
-            $row = $res->fetch_assoc();
-            $hashPass = $row['password'];
-            if(password_verify ( $cleanPass , $hashPass ) == 1){
+            $cName = $this->conn->real_escape_string(trim($name));
+            $cleanName = strip_tags($cName);
+            $cPass = $this->conn->real_escape_string(trim($pass));
+            $cleanPass = strip_tags($cPass);
+
+            try {
+                $stmt = $this->conn->prepare("SELECT password, loginId FROM users WHERE loginId = ?");
+                $stmt->bind_param("s", $cleanName);
+                $stmt->execute();
+                $res = $stmt->get_result();
+                $row = $res->fetch_assoc();
+                $hashPass = $row['password'];
+                if (password_verify($cleanPass, $hashPass) == 1) {
                     $this->loginId = $cleanName;
                     return true;
                 }
 
-        }catch (Exception $e){
+            } catch (Exception $e) {
+                return false;
+            }
+
+            return false;
+        }else{
             return false;
         }
-
-       return false;
     }//EOF
 
     //Queries the data base for the details of the user requesting login. The validate user must be called first so that a valid
