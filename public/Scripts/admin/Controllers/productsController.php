@@ -54,7 +54,7 @@ if(session_status() === PHP_SESSION_ACTIVE) {
 
             $dirtyCat = $_postData['newCategory'];
 
-            if (preg_match('/^[A-Za-z0-9]{2,15}$/', stripcslashes(trim($dirtyCat)))) {
+            if (preg_match('/^[A-Za-z0-9\s]{2,15}$/', stripcslashes(trim($dirtyCat)))) {
 
                 $cCat = $conn->real_escape_string(trim($dirtyCat));
                 $cleanCategory = strip_tags($cCat);
