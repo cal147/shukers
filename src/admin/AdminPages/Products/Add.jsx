@@ -3,10 +3,11 @@
  */
 
 import React, {Component} from 'react';
-import {Tab, Grid, Button, Divider, Dimmer, Loader, Label,Icon, Confirm, TextArea} from 'semantic-ui-react';
+import {Tab, Grid, Button, Divider, Dimmer, Loader, Label,Icon, Confirm, TextArea,Checkbox, Input} from 'semantic-ui-react';
+import Dropzone from 'react-dropzone';
 
 import adminUserStore from '../../AdminStores/AdminUserStore';
-import {serverScripts} from '../../../shared/urls';
+import {serverScripts, imgResource} from '../../../shared/urls';
 
 /**
  *   Sets up the grid system for positioning components.
@@ -169,7 +170,6 @@ class Cat extends Component{
 
     handleConfirm = () => {
         this.setState({openConfirm: false});
-        console.log(this.state.idToDelete);
         this.removeCat(this.state.idToDelete);
     };
 
@@ -178,7 +178,7 @@ class Cat extends Component{
     };
 
     confirmRemoveCat(id){
-        this.setState({openConfirm:true, insertMessage:"Are you suer you want to delete this category", showCancelButton:"No", idToDelete:id});
+        this.setState({openConfirm:true, insertMessage:"Are you suer you want to delete this category", showCancelButton:"Cancel", idToDelete:id});
     }
 
 
@@ -283,13 +283,36 @@ class Prod extends Component{
     }
 
     descInput(e, data){
-        console.log(data.value);
+        console.log(data);
         this.setState({prodDesc:data.value});
     }
 
+    onOffer(e,data){
+        this.setState({onOffer: data.checked});
+    }
 
+    price(e,data) {
+        this.setState({price: e.target.value});
+    }
+
+    onImageDrop(image) {
+        // this.setState({
+        //     uploadedFile: files[0]
+        // });
+        let addImage = this.state.images;
+        addImage.unshift(image[0]);
+        this.setState({images:addImage});
+    }
 
     render(){
+
+        const imgStyle = {
+            width:"50%",
+            marginLeft:"20%",
+            marginTop:"10%",
+            textAlign:"center"
+        };
+
         return(
 
             <Grid.Row>
@@ -317,8 +340,48 @@ class Prod extends Component{
                             <Grid.Column><TextArea placeholder='Enter description' style={{width:"660px"}} onChange={this.descInput.bind(this)}/></Grid.Column>
                         </Grid.Row>
 
-                        <Grid.Row></Grid.Row>
-                        <Grid.Row></Grid.Row>
+                        <Grid.Row>
+                            <Grid.Column><Checkbox toggle label={<label>On Offer</label>} onChange={this.onOffer.bind(this)}/></Grid.Column>
+                            <Grid.Column>
+                                <Label size={"large"} pointing="right" basic>Price</Label>
+                                <Input labelPosition='right' type='text' onChange={this.price.bind(this)}>
+                                    <Label basic>£</Label>
+                                    <input size={6} pattern="[0-9.]{2,6}" name="pounds"/>
+                                </Input>
+                            </Grid.Column>
+                        </Grid.Row>
+                        <Grid.Row>
+                            <Grid.Column>
+                                <Label size={"large"} pointing="below" basic>Add Images</Label>
+                            </Grid.Column>
+                        </Grid.Row>
+                    <Grid.Row columns={10}>
+                        <Grid.Column width={2}>
+                                <Dropzone
+                                    multiple={true}
+                                    accept="image/*"
+                                    onDrop={this.onImageDrop.bind(this)}
+                                >
+                                    <div style={imgStyle}>
+                                        <img src={imgResource+"photo-128.png"} alt="Add"/><br/>
+                                        <span>Drag or click to add image</span>
+                                    </div>
+
+                                </Dropzone>
+                        </Grid.Column>
+                        <Grid.Column width={8}>
+
+                            <div>
+                                {this.state.images.map((f,i)=>
+                                        <img key={i} src={f.preview} alt={f.name} style={{border:"2px dashed gray", margin:"10px", width:"120px",padding:"5px" }}/>
+                                )}
+                            </div>
+                        </Grid.Column>
+                    </Grid.Row>
+
+                    <Grid.Row>
+                        {/* TODO The submit button */}
+                    </Grid.Row>
 
 
                 </Grid>
