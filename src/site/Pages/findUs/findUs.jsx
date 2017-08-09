@@ -1,11 +1,11 @@
 import React, {Component} from "react";
 
-export default class about extends Component {
+export default class findUs extends Component {
 
     render() {
         return (
             <div>
-                <h2>About Page</h2>
+                <h2>Find Us</h2>
             </div>
         )
     }

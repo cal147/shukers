@@ -3,6 +3,7 @@ import {Link} from 'react-router-dom';
 import {Button, Dropdown, Menu, Search, Sidebar} from "semantic-ui-react";
 import Header from "./Header/Header"
 import Footer from "./Footer/Footer"
+import {serverScripts} from '../../shared/urls'
 
 
 export default class SiteLayout extends Component {
@@ -16,8 +17,29 @@ export default class SiteLayout extends Component {
     constructor() {
         super();
         this.state = {
-            width: 800
+            Productsdata: [],
+            width: 800,
+            reload: false
         }
+    }
+
+    componentWillMount() {
+        this.getMenuCategory();
+    }
+
+    getMenuCategory() {
+        fetch(serverScripts + "admin/Controllers/productsController.php", {
+            method: 'POST',
+            headers: {"Content-type": "application/x-www-form-urlencoded; charset=UTF-8"},
+            body: JSON.stringify({
+                action: "GET_MENUCATEGORY"
+            }),
+            mode: 'cors'
+        }).then(response => response.json()).then(data => {
+            this.setState({Productsdata: data});
+        }).catch((err) => {
+            console.error(err);
+        });
     }
 
     /**
@@ -62,30 +84,36 @@ export default class SiteLayout extends Component {
                     <Header/>
 
 
-                    <Menu inverted color={'red'} stackable>
+                    <Menu className="publicNavBar" inverted color={'red'} stackable>
                         <Menu.Item name='home' active={activeItem === 'home'} onClick={this.handleItemClick} as={Link}
                                    to='/'/>
-                        <Menu.Item name='about' active={activeItem === 'about'} onClick={this.handleItemClick} as={Link}
-                                   to='/about'/>
+                        <Menu.Item name='findUs' active={activeItem === 'findUs'} onClick={this.handleItemClick}
+                                   as={Link} to='/findUs'/>
                         <Dropdown item text={'Products'}>
                             <Dropdown.Menu>
-                                <Dropdown.Item>Pork</Dropdown.Item>
-                                <Dropdown.Item>Beef</Dropdown.Item>
-                                <Dropdown.Item>Game</Dropdown.Item>
+                                {this.state.Productsdata.map((product, i) => <Dropdown.Item
+                                    key={product.cat} name={product.cat} active={activeItem === product.cat}
+
+                                    as={Link} to={"/products/" + product.cat}>{product.cat}</Dropdown.Item>)}
                             </Dropdown.Menu>
                         </Dropdown>
                         <Menu.Menu position='right'>
                             <Menu.Item name='basket' active={activeItem === 'basket'} onClick={this.handleItemClick}
-                                       as={Link}
-                                       to='/basket'/>
+                                       as={Link} to='/basket'/>
                             <Menu.Item>
                                 <Search placeholder='Search...'/>
                             </Menu.Item>
                         </Menu.Menu>
                     </Menu>
-
-                    {this.props.children}
-
+                    <div>{this.props.children}</div>
+                    {/*TODO footer currently on top of grid - Price*/}
+                    <br/>
+                    <br/>
+                    <br/>
+                    <br/>
+                    <br/>
+                    <br/>
+                    <br/>
                     <Footer/>
 
 
@@ -103,18 +131,17 @@ export default class SiteLayout extends Component {
                     <Button onClick={this.toggleVisibility} icon="content" content="Menu" labelPosition="left"/>
                     <Sidebar.Pushable>
                         <Sidebar as={Menu} animation='scale down' width='wide' visible={visible} icon='labeled'
-                                 stackable>
+                                 stackable inverted color={"red"}>
                             <Menu.Item name='home' active={activeItem === 'home'} onClick={this.handleItemClick}
                                        as={Link}
                                        to='/'/>
-                            <Menu.Item name='about' active={activeItem === 'about'} onClick={this.handleItemClick}
+                            <Menu.Item name='findUs' active={activeItem === 'findUs'} onClick={this.handleItemClick}
                                        as={Link}
-                                       to='/about'/>
-                            <Dropdown item text={'Products'}>
+                                       to='/findUs'/>
+                            <Dropdown item text={'Products'} openOnFocus>
                                 <Dropdown.Menu>
-                                    <Dropdown.Item>Pork</Dropdown.Item>
-                                    <Dropdown.Item>Beef</Dropdown.Item>
-                                    <Dropdown.Item>Game</Dropdown.Item>
+                                    {this.state.Productsdata.map((product, i) => <Dropdown.Item
+                                        key={i} className="mobileDropdown">{product.cat}</Dropdown.Item>)}
                                 </Dropdown.Menu>
                             </Dropdown>
                             <Menu.Item>
@@ -125,7 +152,7 @@ export default class SiteLayout extends Component {
                             {this.props.children}
                         </Sidebar.Pusher>
                     </Sidebar.Pushable>
-                    <Footer/>
+                    <Footer className="siteFooter"/>
 
                 </div>
             );

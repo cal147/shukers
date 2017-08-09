@@ -1,13 +1,18 @@
 .publicPageLayout {
     width: 90%;
-    margin-left: 5%;
-    margin-top: 0.5%;
-    margin-bottom: 0.5%;
+    margin: 0.5% 5%;
 }
 
 .siteHeader {
-    height: 180px;
+    height: 170px;
     width: auto;
+}
+
+.publicNavBar {
+    top: 0.5%;
+    clear: both;
+    position: sticky;
+    z-index: 1;
 }
 
 .siteHeader-Logo {
@@ -37,6 +42,29 @@
     .publicPageLayout {
         margin-top: 10%;
     }
+
+    .siteSlider {
+        margin-top: 10px;
+        width: 600px;
+        height: 250px;
+        margin-right: auto;
+        margin-left: auto;
+    }
+
+    .sliderImg {
+        width: 600px;
+        margin-right: auto;
+        margin-left: auto;
+    }
+
+    .mobileSiteSlider {
+        width: 90vw;
+        height: 250px;
+    }
+
+    .mobileSliderImg {
+        height: 210px;
+    }
 }
 
 @media (max-width: 350px) {
@@ -51,12 +79,29 @@
 }
 
 .siteFooter {
-    clear: both;
-    position: fixed;
+    position: sticky;
+    bottom: 0.5%;
+    /*margin-right: 5%;*/
 }
 
-.siteSlider {
-    margin: 10px auto;
-    padding: 40px;
-    width: 60%;
+.sliderImg {
+    height: 210px;
+}
+
+.mobileDropdown {
+    text-align: center;
+}
+
+.openingTime_Closed {
+    color: red;
+}
+
+.openingTime {
+    text-decoration: underline;
+
+}
+
+.homeAbout {
+    padding:10% 20%;
+    text-align: center;
 }
