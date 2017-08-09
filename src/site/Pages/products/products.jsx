@@ -7,17 +7,11 @@ export default class product extends Component {
         super();
         this.state = {
             Productsdata: [],
-            str: window.location.hash
+            hash: window.location.hash
         }
     }
 
     componentWillMount() {
-        let str = window.location.hash;
-
-        if(window.location.hash === str){
-            const category = str.substring(11);
-            this.getSpecificProducts(category);
-        }
 
 
     }
@@ -53,31 +47,34 @@ export default class product extends Component {
         });
     }
 
-    urlchange(category){
+    urlchange(){
+        let str = window.location.hash;
+        const category = str.substring(11);
+
         this.getSpecificProducts(category);
+    }
+
+    componentDidUpdate(){
+
     }
 
 
     render() {
+        let str = null;
 
-        let str = this.state.str;
-        // this.setState({str: window.location.hash});
+        if(  window.location.hash === str){
 
-        if(str !== window.location.hash ){
-            console.log(str);
-            const category = str.substring(11);
-            this.urlchange(category);
         }else {
-            console.error(str);
-
-
+                this.urlchange()
         }
 
 
         return (
             <div>
                 <h2>Products Page</h2>
-                {this.state.Productsdata.map((item,i) => <ui>{item.name}</ui>)}
+                {/*TODO Set all products up if no category is selected*/}
+                {/*TODO set display up to show three products in a row, with 12 products on the page. MAYBE GRID to help with mobile display*/}
+                {this.state.Productsdata.map((item,i) => <ui key={i}>{item.name}</ui>)}
             </div>
         )
     }

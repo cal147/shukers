@@ -19,7 +19,7 @@ export default class SiteLayout extends Component {
         this.state = {
             Productsdata: [],
             width: 800,
-            reload: false
+            // reload: false
         }
     }
 
@@ -106,7 +106,7 @@ export default class SiteLayout extends Component {
                         </Menu.Menu>
                     </Menu>
                     <div>{this.props.children}</div>
-                    {/*TODO footer currently on top of grid - Price*/}
+                    {/*TODO - WORKING TO DEGREE - footer currently on top of grid - Price*/}
                     <br/>
                     <br/>
                     <br/>
@@ -141,7 +141,8 @@ export default class SiteLayout extends Component {
                             <Dropdown item text={'Products'} openOnFocus>
                                 <Dropdown.Menu>
                                     {this.state.Productsdata.map((product, i) => <Dropdown.Item
-                                        key={i} className="mobileDropdown">{product.cat}</Dropdown.Item>)}
+                                        key={product.cat} name={product.cat} active={activeItem === product.cat}
+                                        as={Link} to={"/products/" + product.cat}>{product.cat}</Dropdown.Item>)}
                                 </Dropdown.Menu>
                             </Dropdown>
                             <Menu.Item>
