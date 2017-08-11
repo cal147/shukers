@@ -58,12 +58,8 @@
     }
 
     .mobileSiteSlider {
-        width: 90vw;
-        height: 250px;
-    }
-
-    .mobileSliderImg {
-        height: 210px;
+        width: 25rem;
+        height: 10rem;
     }
 }
 
@@ -75,6 +71,11 @@
         padding-top: 2ch;
         color: red;
         text-shadow: 0.1vw 0.1vw black;
+    }
+
+    .homeImg {
+        width: 25rem;
+        height: 25rem;
     }
 }
 
@@ -102,6 +103,26 @@
 }
 
 .homeAbout {
-    padding:10% 20%;
+    padding: 10% 20%;
     text-align: center;
+}
+
+.prodDiv {
+    margin-top: 0.14rem;
+    text-align: center;
+}
+
+.prodImg {
+    width: 20rem;
+    height: 20rem;
+}
+
+.ui.grid {
+    margin-top: 0.14rem !important;
+    margin-bottom: 1rem !important;
+}
+
+.homeImg {
+    width: 25rem;
+    height: 25rem;
 }

@@ -92,9 +92,8 @@ export default class SiteLayout extends Component {
                         <Dropdown item text={'Products'}>
                             <Dropdown.Menu>
                                 {this.state.Productsdata.map((product, i) => <Dropdown.Item
-                                    key={product.cat} name={product.cat} active={activeItem === product.cat}
-
-                                    as={Link} to={"/products/" + product.cat}>{product.cat}</Dropdown.Item>)}
+                                    key={product.cat} name='products' as={Link} to={"/products/" + product.cat}>
+                                    {product.cat}</Dropdown.Item>)}
                             </Dropdown.Menu>
                         </Dropdown>
                         <Menu.Menu position='right'>
@@ -107,13 +106,6 @@ export default class SiteLayout extends Component {
                     </Menu>
                     <div>{this.props.children}</div>
                     {/*TODO - WORKING TO DEGREE - footer currently on top of grid - Price*/}
-                    <br/>
-                    <br/>
-                    <br/>
-                    <br/>
-                    <br/>
-                    <br/>
-                    <br/>
                     <Footer/>
 
 

@@ -76,7 +76,7 @@ export default class home extends Component {
                         </div>
                         <Grid.Row columns={3} textAlign="center">
                             {this.state.Productsdata !=null?this.state.Productsdata.map((product, i) =>
-                                <Grid.Column key={i} className="homeImg"><h3>{product.name}</h3>
+                                <Grid.Column key={i}><h3>{product.name}</h3>
                                     <br/>
                                     <img className="homeImg" src={prodImgResource + product.imgPath}
                                          alt={product.name}/>
@@ -89,6 +89,10 @@ export default class home extends Component {
 
                     </Grid>
                 </div>
+                <br/>
+                <br/>
+                <br/>
+                <br/>
 
             </div>
         )
