@@ -37,20 +37,22 @@ export default class product extends Component {
         });
     }
 
-    getProducts() {
-        fetch(serverScripts + "admin/Controllers/productsController.php", {
-            method: 'POST',
-            headers: {"Content-type": "application/x-www-form-urlencoded; charset=UTF-8"},
-            body: JSON.stringify({
-                action: "GET_PRODUCTS"
-            }),
-            mode: 'cors'
-        }).then(response => response.json()).then(data => {
-            this.setState({Productsdata: data});
-        }).catch((err) => {
-            console.error(err);
-        });
-    }
+    /*
+
+        getProducts() {
+            fetch(serverScripts + "admin/Controllers/productsController.php", {
+                method: 'POST',
+                headers: {"Content-type": "application/x-www-form-urlencoded; charset=UTF-8"},
+                body: JSON.stringify({
+                    action: "GET_PRODUCTS"
+                }),
+                mode: 'cors'
+            }).then(response => response.json()).then(data => {
+                this.setState({Productsdata: data});
+            }).catch((err) => {
+                console.error(err);
+            });
+        }*/
 
     urlchange() {
         let str = window.location.hash;
@@ -84,13 +86,16 @@ export default class product extends Component {
                                 {/*TODO work out how to remove button background*/}
                                 <Modal
                                     dimmer='blurring'
-                                    trigger={<Button><img className="prodImg" src={prodImgResource + product.imgPath}
-                                                          alt={product.name}/></Button>}>
+                                    trigger={
+                                        <Button><img className="prodImg" src={prodImgResource + product.imgPath}
+                                                     alt={product.name}/></Button>}>
                                     <Header content={product.name}/>
-                                    <Modal.Content image>
+                                    <Modal.Content image scrolling>
                                         <Image wrapped size="medium" src={prodImgResource + product.imgPath}
                                                alt={product.name}/>
-                                        <p>{product.desc}</p>
+                                        <Modal.Description>
+                                            <h5 className="modal_description">{product.desc}</h5>
+                                        </Modal.Description>
                                     </Modal.Content>
                                     <Modal.Actions>
                                         <Button>
@@ -99,6 +104,7 @@ export default class product extends Component {
                                         </Button>
                                     </Modal.Actions>
                                 </Modal>
+
                                 <br/><h4>Price: £{product.price}</h4><br/></div>
                         </Grid>) : null}
                 </Grid>
