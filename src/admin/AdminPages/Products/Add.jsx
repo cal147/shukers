@@ -269,8 +269,9 @@ class Prod extends Component {
             prodDesc: "",
             price: 0,
             onOffer: false,
-            imagesFileName: [],
             images: [],
+            errorMessage:"",
+            errorState:true,
         };
     }
 
@@ -309,7 +310,6 @@ class Prod extends Component {
     }
 
     descInput(e, data) {
-        console.log(data);
         this.setState({prodDesc: data.value});
     }
 
@@ -328,6 +328,18 @@ class Prod extends Component {
         let addImage = this.state.images;
         addImage.unshift(image[0]);
         this.setState({images: addImage});
+    }
+
+    validateandSubmit(){
+
+        this.state.selectedCat === "" ? this.setState({errorMessage:"Select a Category", errorState:true}): this.setState({errorState:false});
+        this.state.nameInput === "" ? this.setState({errorMessage:"Enter a name", errorState:true}): this.setState({errorState:false});
+        this.state.prodDesc === "" ? this.setState({errorMessage:"Enter description", errorState:true}): this.setState({errorState:false});
+        this.state.price === 0 ? this.setState({errorMessage:"Enter a price", errorState:true}): this.setState({errorState:false});
+        this.state.images.length === 0 ? this.setState({errorMessage:"You haven't added an image", errorState:true}): this.setState({errorState:false});
+        if(!this.state.errorState){
+            console.log("No errors " + this.state.errorState);
+        }
     }
 
     render() {
@@ -417,6 +429,13 @@ class Prod extends Component {
 
                     <Grid.Row>
                         {/* TODO The submit button */}
+                        <Grid.Column width={5}>
+                            <div  style={{color:"red", fontSize:"30px"}}>{this.state.errorMessage}</div>
+                        </Grid.Column>
+                        <Grid.Column width={2}>
+                            <Button color='red' onClick={this.validateandSubmit.bind(this)}>Add Product</Button>
+                        </Grid.Column>
+
                     </Grid.Row>
 
 
