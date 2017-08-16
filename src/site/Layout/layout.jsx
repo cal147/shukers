@@ -99,6 +99,10 @@ export default class SiteLayout extends Component {
                         <Menu.Menu position='right'>
                             <Menu.Item name='basket' active={activeItem === 'basket'} onClick={this.handleItemClick}
                                        as={Link} to='/basket'/>
+                            <Menu.Item name='Login' active={activeItem === 'login'} onClick={this.handleItemClick}
+                                       as={Link} to='/login'/>
+                            <Menu.Item name='Sign Up' active={activeItem === 'signUp'} onClick={this.handleItemClick}
+                                       as={Link} to='/signUp'/>
                             <Menu.Item>
                                 <Search placeholder='Search...'/>
                             </Menu.Item>
@@ -130,11 +134,11 @@ export default class SiteLayout extends Component {
                             <Menu.Item name='findUs' active={activeItem === 'findUs'} onClick={this.handleItemClick}
                                        as={Link}
                                        to='/findUs'/>
-                            <Dropdown item text={'Products'} openOnFocus>
+                            <Dropdown item text={'Products'}>
                                 <Dropdown.Menu>
                                     {this.state.Productsdata.map((product, i) => <Dropdown.Item
-                                        key={product.cat} name={product.cat} active={activeItem === product.cat}
-                                        as={Link} to={"/products/" + product.cat}>{product.cat}</Dropdown.Item>)}
+                                        key={product.cat} name='products' as={Link} to={"/products/" + product.cat}>
+                                        {product.cat}</Dropdown.Item>)}
                                 </Dropdown.Menu>
                             </Dropdown>
                             <Menu.Item>

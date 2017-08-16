@@ -1,10 +1,11 @@
 import React, {Component} from "react";
 import "./App.css";
 import {HashRouter, Route, Switch} from "react-router-dom";
-
 import home from "./site/Pages/Home/Home";
 import findUs from "./site/Pages/findUs/findUs";
 import basket from "./site/Pages/basket/basket";
+import login from "./site/Pages/Login/login";
+import signUp from "./site/Pages/Login/SignUp";
 import product from "./site/Pages/products/products";
 import SiteLayout from './site/Layout/layout'
 import MainPage from './admin/index';
@@ -26,6 +27,8 @@ const Site = () => {
                         <Route path="/findUs" component={findUs}/>
                         <Route path="/basket" component={basket}/>
                         <Route path="/products" component={product}/>
+                        <Route path="/login" component={login}/>
+                        <Route path="/signUp" component={signUp}/>
                     </Switch>
                 </SiteLayout>
             </div>
