@@ -4,9 +4,11 @@ import {Button, Form, Segment} from 'semantic-ui-react';
 export default class SignUp extends Component {
 
     state = {firstName: '', lastName: '', userName: '', password: '', confirmPassword: '', contactNumber: ''};
+
     formSubmitUser = e => {
 
-        if (this.state.password.length >= 6 && this.state.password === this.state.confirmPassword  /* TODO look at this - && this.state.password.match(/^[A-Za-z0-9\-!"£$%^&*()]{6,20}$/)  */) {
+        if (this.state.password.length >= 6 && this.state.password === this.state.confirmPassword
+        /* TODO look at this - && this.state.password.match(/^[A-Za-z0-9\-!"£$%^&*()]{6,20}$/)  */) {
             console.log('valid')
         } else if (this.state.password.length < 6) {
             console.log('Not Valid - Not enough characters')
@@ -24,6 +26,8 @@ export default class SignUp extends Component {
         console.log(this.state.confirmPassword);
         console.log(this.state.contactNumber);
     };
+
+    // handel changes to input fields
 
     handelChangeFName(e) {
         this.setState({firstName: e.target.value})
@@ -54,7 +58,7 @@ export default class SignUp extends Component {
             <div>
                 <h2>SignUp Page</h2>
                 <Segment inverted color="red">
-                    <Form onSubmit={this.formSubmitUser} error>
+                    <Form onSubmit={this.formSubmitUser}>
                         <Form.Group>
                             <Form.Input label='First Name' placeholder='First Name' value={this.state.firstName}
                                         width={4} required onChange={this.handelChangeFName.bind(this)}/>

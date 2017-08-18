@@ -3,8 +3,9 @@ import {Link} from 'react-router-dom';
 import {Button, Dropdown, Menu, Search, Sidebar} from "semantic-ui-react";
 import Header from "./Header/Header"
 import Footer from "./Footer/Footer"
-import {serverScripts} from '../../shared/urls'
+import {serverScriptsPublic} from '../../shared/urls'
 
+import publicUserStore from '../../site/Pages/UserStore/PublicUserStore'
 
 export default class SiteLayout extends Component {
     state = {activeItem: 'home', visible: false};
@@ -19,7 +20,7 @@ export default class SiteLayout extends Component {
         this.state = {
             Productsdata: [],
             width: 800,
-            // reload: false
+            user: publicUserStore.getUser()
         }
     }
 
@@ -28,7 +29,7 @@ export default class SiteLayout extends Component {
     }
 
     getMenuCategory() {
-        fetch(serverScripts + "admin/Controllers/productsController.php", {
+        fetch(serverScriptsPublic + "Controllers/productsController.php", {
             method: 'POST',
             headers: {"Content-type": "application/x-www-form-urlencoded; charset=UTF-8"},
             body: JSON.stringify({
@@ -71,6 +72,8 @@ export default class SiteLayout extends Component {
 
 
     render() {
+
+        if(this.state.user.isLoggedIn === true){console.log('logged in')}
 
         let winWidth = window.innerWidth;
         if (winWidth > 800) {

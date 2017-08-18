@@ -1,5 +1,6 @@
 import React, {Component} from "react";
-import {prodImgResource, serverScripts} from '../../../shared/urls'
+import {Link} from 'react-router-dom';
+import {prodImgResourcePublic, serverScriptsPublic} from '../../../shared/urls'
 import {Button, Grid, Header, Icon, Image, Menu, Modal} from 'semantic-ui-react'
 
 export default class product extends Component {
@@ -12,17 +13,34 @@ export default class product extends Component {
         super();
         this.state = {
             Productsdata: [],
-            hash: window.location.hash
+            hash: window.location.hash,
+            counter: 0,
+            isLoggedInlocal: false
         }
     }
 
     componentWillMount() {
-
-
+        if (this.state.counter === 0) {
+            this.urlchange();
+            this.setState({counter: 1})
+        }
     }
 
+    componentDidMount() {
+        if (this.state.counter === 1) {
+            this.setState({counter: 0})
+        }
+    }
+
+    componentDidUpdate() {
+        if (this.state.hash !== window.location.hash) {
+            window.location.reload()
+        }
+    }
+
+
     getSpecificProducts(cat) {
-        fetch(serverScripts + "admin/Controllers/productsController.php", {
+        fetch(serverScriptsPublic + "Controllers/productsController.php", {
             method: 'POST',
             headers: {"Content-type": "application/x-www-form-urlencoded; charset=UTF-8"},
             body: JSON.stringify({
@@ -37,22 +55,23 @@ export default class product extends Component {
         });
     }
 
-    /*
-
-        getProducts() {
-            fetch(serverScripts + "admin/Controllers/productsController.php", {
-                method: 'POST',
-                headers: {"Content-type": "application/x-www-form-urlencoded; charset=UTF-8"},
-                body: JSON.stringify({
-                    action: "GET_PRODUCTS"
-                }),
-                mode: 'cors'
-            }).then(response => response.json()).then(data => {
-                this.setState({Productsdata: data});
-            }).catch((err) => {
-                console.error(err);
-            });
-        }*/
+    addProductToBasket(productId) {
+        fetch(serverScriptsPublic + "Controllers/productsController.php", {
+            method: 'POST',
+            headers: {"Content-type": "application/x-www-form-urlencoded; charset=UTF-8"},
+            body: JSON.stringify({
+                action: "ADD_PRODUCTTOBASKET",
+                Product: productId/*,
+                User: productId,
+                Qty: productId*/
+            }),
+            mode: 'cors'
+        }).then(response => response.json()).then(data => {
+            this.setState({Productsdata: data});
+        }).catch((err) => {
+            console.error(err);
+        });
+    }
 
     urlchange() {
         let str = window.location.hash;
@@ -63,45 +82,42 @@ export default class product extends Component {
 
 
     render() {
-        let str = null;
-        const {activeItem} = this.state;
-        if (window.location.hash === str) {
-        } else {
-            this.urlchange()
+
+        let modalButton = null;
+        // TODO need to look at add to basket button to add product to basket
+        if(this.state.isLoggedInlocal){
+            modalButton = <Button as={Button} onClick={() => this.addProductToBasket(product.id)}><Icon name='shop'/> Add to Basket</Button>
+        }else{
+            modalButton = <Button as={Link} to='/login'>Please Sign in</Button>
         }
 
+        const {activeItem} = this.state;
 
         return (
             <div>
-                <h2>Products Page</h2>
-                {/*TODO Set all products up if no category is selected*/}
                 {/*TODO set display up to show three/four products in a row, with 12 products on the page. MAYBE GRID to help with mobile display*/}
                 <Grid columns={3} textAlign="center" className="prodOverGrid">
                     {this.state.Productsdata != null ? this.state.Productsdata.map((product, i) =>
-                        <Grid key={i} className="prodGrid">
-                            <div className="prodDiv"><h3>{product.name}<br/>{product.id}</h3>
+                        <Grid key={i} className="prodGrid" divided>
+                            <div className="prodDiv"><Grid.Row stretched as="h3">{product.name}</Grid.Row>
                                 <br/>
 
                                 {/*Modal shows the product page as pop up*/}
-                                {/*TODO work out how to remove button background*/}
                                 <Modal
                                     dimmer='blurring'
                                     trigger={
-                                        <Button><img className="prodImg" src={prodImgResource + product.imgPath}
+                                        <Button><img className="prodImg" src={prodImgResourcePublic + product.imgPath}
                                                      alt={product.name}/></Button>}>
                                     <Header content={product.name}/>
                                     <Modal.Content image scrolling>
-                                        <Image wrapped size="medium" src={prodImgResource + product.imgPath}
+                                        <Image wrapped size="medium" src={prodImgResourcePublic + product.imgPath}
                                                alt={product.name}/>
                                         <Modal.Description>
-                                            <h5 className="modal_description">{product.desc}</h5>
+                                            <h4 className="modal_description">{product.desc}</h4>
                                         </Modal.Description>
                                     </Modal.Content>
                                     <Modal.Actions>
-                                        <Button>
-                                            {/*TODO need to look at add to basket button to add product to basket*/}
-                                            <Icon name='shop'/> Add to Basket
-                                        </Button>
+                                        {modalButton}
                                     </Modal.Actions>
                                 </Modal>
 

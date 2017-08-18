@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import {prodImgResource, serverScripts} from '../../../shared/urls'
+import {prodImgResourcePublic, serverScriptsPublic} from '../../../shared/urls'
 import {Divider, Grid} from 'semantic-ui-react'
 import './publicHomePage.css'
 import Slider from './slider'
@@ -20,7 +20,7 @@ export default class home extends Component {
 
     getProducts() {
         this.setState({loading: true});
-        fetch(serverScripts + "admin/Controllers/productsController.php", {
+        fetch(serverScriptsPublic + "Controllers/productsController.php", {
             method: 'POST',
             headers: {"Content-type": "application/x-www-form-urlencoded; charset=UTF-8"},
             body: JSON.stringify({
@@ -78,7 +78,7 @@ export default class home extends Component {
                             {this.state.Productsdata !=null?this.state.Productsdata.map((product, i) =>
                                 <Grid.Column key={i}><h3>{product.name}</h3>
                                     <br/>
-                                    <img className="homeImg" src={prodImgResource + product.imgPath}
+                                    <img className="homeImg" src={prodImgResourcePublic + product.imgPath}
                                          alt={product.name}/>
                                     <br/>
                                     <h4>Price: £{product.price}</h4>
