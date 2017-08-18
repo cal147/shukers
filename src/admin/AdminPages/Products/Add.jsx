@@ -338,7 +338,27 @@ class Prod extends Component {
         this.state.price === 0 ? this.setState({errorMessage:"Enter a price", errorState:true}): this.setState({errorState:false});
         this.state.images.length === 0 ? this.setState({errorMessage:"You haven't added an image", errorState:true}): this.setState({errorState:false});
         if(!this.state.errorState){
-            console.log("No errors " + this.state.errorState);
+            //upload the file.
+            this.setState({loading: true});
+            fetch(serverScripts + "admin/Controllers/productsController.php", {
+                method: 'POST',
+                headers: {"Content-type": "application/x-www-form-urlencoded; charset=UTF-8"},
+                body:
+                    JSON.stringify({
+                    action: "ADD_PRODUCT",
+                    sessionId: this.props.session
+                }),
+                    images:this.state.images
+                ,
+                mode: 'cors'
+            }).then((response) => response.json()).then((data) => {
+                //TODO Handle server resopnse
+            }).catch((err) => {
+                console.error(err);
+            });
+            console.log(this.state.images);
+
+
         }
     }
 
