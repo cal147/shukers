@@ -15,7 +15,7 @@ import Dashboard from './AdminPages/Dashboard';
 import Offers from './AdminPages/Offers';
 import OrderHistory from './AdminPages/OrderHistory';
 import Products from './AdminPages/Products/Products';
-import Customers from './AdminPages/Customers';
+import Customers from './AdminPages/Customers/Customers';
 import Orders from './AdminPages/Orders';
 
 
