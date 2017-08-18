@@ -5,7 +5,6 @@
  */
 
 $_postData = json_decode(file_get_contents("php://input"), true);
-$_imgData = file_get_contents("php://input");
 
 if(isset($_postData['sessionId'])) session_id($_postData['sessionId']);
 session_start();

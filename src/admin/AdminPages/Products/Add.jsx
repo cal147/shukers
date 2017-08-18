@@ -332,35 +332,21 @@ class Prod extends Component {
 
     validateandSubmit(){
 
-        this.state.selectedCat === "" ? this.setState({errorMessage:"Select a Category", errorState:true}): this.setState({errorState:false});
-        this.state.nameInput === "" ? this.setState({errorMessage:"Enter a name", errorState:true}): this.setState({errorState:false});
-        this.state.prodDesc === "" ? this.setState({errorMessage:"Enter description", errorState:true}): this.setState({errorState:false});
-        this.state.price === 0 ? this.setState({errorMessage:"Enter a price", errorState:true}): this.setState({errorState:false});
-        this.state.images.length === 0 ? this.setState({errorMessage:"You haven't added an image", errorState:true}): this.setState({errorState:false});
-        if(!this.state.errorState){
-            //upload the file.
-            this.setState({loading: true});
-            fetch(serverScripts + "admin/Controllers/productsController.php", {
-                method: 'POST',
-                headers: {"Content-type": "application/x-www-form-urlencoded; charset=UTF-8"},
-                body:
-                    JSON.stringify({
-                    action: "ADD_PRODUCT",
-                    sessionId: this.props.session
-                }),
-                    images:this.state.images
-                ,
-                mode: 'cors'
-            }).then((response) => response.json()).then((data) => {
-                //TODO Handle server resopnse
-            }).catch((err) => {
-                console.error(err);
-            });
-            console.log(this.state.images);
+        // this.state.selectedCat === "" ? this.setState({errorMessage:"Select a Category", errorState:true}): this.setState({errorState:false});
+        // this.state.nameInput === "" ? this.setState({errorMessage:"Enter a name", errorState:true}): this.setState({errorState:false});
+        // this.state.prodDesc === "" ? this.setState({errorMessage:"Enter description", errorState:true}): this.setState({errorState:false});
+        // this.state.price === 0 ? this.setState({errorMessage:"Enter a price", errorState:true}): this.setState({errorState:false});
+        // this.state.images.length === 0 ? this.setState({errorMessage:"You haven't added an image", errorState:true}): this.setState({errorState:false});
+        // if(!this.state.errorState){
+        //     //upload the file.
+        //     this.setState({loading: true});
+        //
+        // }
 
 
-        }
     }
+
+
 
     render() {
 
@@ -439,7 +425,7 @@ class Prod extends Component {
                                     <img key={i} src={f.preview} alt={f.name} style={{
                                         border: "2px dashed gray",
                                         margin: "10px",
-                                        width: "120px",
+                                        width: "200px",
                                         padding: "5px"
                                     }}/>
                                 )}
