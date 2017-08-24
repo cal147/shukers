@@ -7,50 +7,50 @@ import {EventEmitter} from 'events';
 import Dispatcher from '../../../dispatcher';
 import {serverScriptsPublic} from '../../../shared/urls';
 
-class PublicUserStore extends EventEmitter{
+class PublicUserStore extends EventEmitter {
 
 
     constructor() {
         super();
-       if(sessionStorage.getItem('userData') === null) {
-           this.user = {
-               id: null,
-               userName: null,
-               firstName: null,
-               surName: null,
-               contactNum: null,
-               houseNum: null,
-               addressL1: null,
-               addressL2: null,
-               postcode: null,
-               isHome: null,
-               isDelivery: null,
-               Staff: false,
-               isLoggedIn: false,
-               logInError: false,
-               serverSession: null
-           };
-       }else{
-           let data = JSON.parse(sessionStorage.getItem('userData'));
-           this.user = {
-               id : data['id'],
-               userName : data['loginId'],
-               firstName : data['forName'],
-               surName : data['surName'],
-               contactNum : data['contactNum'],
-               houseNum : data['houseNum'],
-               addressL1 : data['adFirstLine'],
-               addressL2 : data['adSecondLine'],
-               postcode : data['postcode'],
-               isHome : data['homeAddress'],
-               isDelivery : data['deliveryAddress'],
-               Staff : data['isStaff'],
-               isLoggedIn : true,
-               logInError : false,
-               serverSession : data['sessionId']
-       };
+        if (sessionStorage.getItem('userData') === null) {
+            this.user = {
+                id: null,
+                userName: null,
+                firstName: null,
+                surName: null,
+                contactNum: null,
+                houseNum: null,
+                addressL1: null,
+                addressL2: null,
+                postcode: null,
+                isHome: null,
+                isDelivery: null,
+                Staff: false,
+                isLoggedIn: false,
+                logInError: false,
+                serverSession: null
+            };
+        } else {
+            let data = JSON.parse(sessionStorage.getItem('userData'));
+            this.user = {
+                id: data['id'],
+                userName: data['loginId'],
+                firstName: data['forName'],
+                surName: data['surName'],
+                contactNum: data['contactNum'],
+                houseNum: data['houseNum'],
+                addressL1: data['adFirstLine'],
+                addressL2: data['adSecondLine'],
+                postcode: data['postcode'],
+                isHome: data['homeAddress'],
+                isDelivery: data['deliveryAddress'],
+                Staff: data['isStaff'],
+                isLoggedIn: true,
+                logInError: false,
+                serverSession: data['sessionId']
+            };
 
-       }
+        }
 
     }//End of constructor
 
@@ -59,14 +59,14 @@ class PublicUserStore extends EventEmitter{
 
         fetch(serverScriptsPublic + "Controllers/PublicUserStoreController.php", {
             method: 'POST',
-            headers:{"Content-type": "application/x-www-form-urlencoded; charset=UTF-8"},
+            headers: {"Content-type": "application/x-www-form-urlencoded; charset=UTF-8"},
             body: JSON.stringify({
                 action: "LOGIN_USER_PUBLIC",
                 name: name,
                 password: password
             }),
             mode: 'cors'
-        }).then((response)=>response.json()).then((data)=>{
+        }).then((response) => response.json()).then((data) => {
 
             this.user.id = data['id'];
             this.user.userName = data['loginId'];
@@ -79,16 +79,15 @@ class PublicUserStore extends EventEmitter{
             this.user.postcode = data['postcode'];
             this.user.isHome = data['homeAddress'];
             this.user.isDelivery = data['deliveryAddress'];
-            if(data['loginId'] != null)this.user.isLoggedIn = true;
+            if (data['loginId'] != null) this.user.isLoggedIn = true;
             this.user.logInError = !data['success'];
             this.user.serverSession = data['sessionId'];
 
-            if(data['loginId'] != null)sessionStorage.setItem("userData", JSON.stringify(data));
+            if (data['loginId'] != null) sessionStorage.setItem("userData", JSON.stringify(data));
             this.emit("change");
-        }).catch((err)=>{
+        }).catch((err) => {
             console.error(err);
         });
-
 
 
     }//End of login user
@@ -96,42 +95,42 @@ class PublicUserStore extends EventEmitter{
 
     logoutUserPublic() {
 
-        if(this.user.isLoggedIn){
+        if (this.user.isLoggedIn) {
 
             let serverCallComplete;
 
             fetch(serverScriptsPublic + "Controllers/PublicUserStoreController.php", {
                 method: 'POST',
-                headers:{"Content-type": "application/x-www-form-urlencoded; charset=UTF-8"},
+                headers: {"Content-type": "application/x-www-form-urlencoded; charset=UTF-8"},
                 body: JSON.stringify({
                     action: "LOGOUT_PUBLIC",
-                    sessionId : this.user.serverSession
+                    sessionId: this.user.serverSession
                 }),
                 mode: 'cors'
-            }).then((response)=>response.json()).then((data)=>{
-                    serverCallComplete = data.success;
+            }).then((response) => response.json()).then((data) => {
+                serverCallComplete = data.success;
 
-                    if(serverCallComplete) {
-                        this.user.id = null;
-                        this.user.userName = null;
-                        this.user.firstName = null;
-                        this.user.surName = null;
-                        this.user.contactNum = null;
-                        this.user.houseNum = null;
-                        this.user.addressL1 = null;
-                        this.user.addressL2 = null;
-                        this.user.postcode = null;
-                        this.user.isHome = null;
-                        this.user.isDelivery = null;
-                        this.user.isLoggedIn = false;
-                        this.user.logInError = false;
+                if (serverCallComplete) {
+                    this.user.id = null;
+                    this.user.userName = null;
+                    this.user.firstName = null;
+                    this.user.surName = null;
+                    this.user.contactNum = null;
+                    this.user.houseNum = null;
+                    this.user.addressL1 = null;
+                    this.user.addressL2 = null;
+                    this.user.postcode = null;
+                    this.user.isHome = null;
+                    this.user.isDelivery = null;
+                    this.user.isLoggedIn = false;
+                    this.user.logInError = false;
 
-                        sessionStorage.clear();
+                    sessionStorage.clear();
 
-                        this.emit("change");
-                    }
+                    this.emit("change");
+                }
 
-            }).catch((err)=>{
+            }).catch((err) => {
                 console.error(err);
             });
 
@@ -139,14 +138,18 @@ class PublicUserStore extends EventEmitter{
     }
 
     //Returns the data currently held for a user
-    getUser(){
+    getUser() {
         return this.user;
     }//End of get user
 
-    //Listens for dispatched. when a dispatch comes in the relevant method is called.
-    handleActions(action){
+    getLoggedInStatus() {
+        return this.user.isLoggedIn;
+    }
 
-        switch(action.type){
+    //Listens for dispatched. when a dispatch comes in the relevant method is called.
+    handleActions(action) {
+
+        switch (action.type) {
             case "LOGIN_USER_PUBLIC":
                 this.loginUserPublic(action.name, action.password);
                 break;
@@ -154,7 +157,8 @@ class PublicUserStore extends EventEmitter{
                 this.logoutUserPublic();
                 break;
 
-            default: break;
+            default:
+                break;
         }
     }//End of handle actions
 
