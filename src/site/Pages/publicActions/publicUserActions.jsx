@@ -4,16 +4,16 @@
 import Dispatcher from '../../../dispatcher';
 
 
-export function userLogin(name, password){
+export function userLoginPublic(name, password) {
     Dispatcher.dispatch({
-        type: "USER_LOGIN",
+        type: "LOGIN_USER_PUBLIC",
         name,
         password
     });
 }
 
-export function logoutUser(){
+export function logoutUserPublic() {
     Dispatcher.dispatch({
-        type: "USER_LOGOUT"
+        type: "LOGOUT_PUBLIC"
     });
 }

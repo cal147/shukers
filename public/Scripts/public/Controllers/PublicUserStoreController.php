@@ -14,7 +14,7 @@ include '../../Shared/loginControl.php';
 
 
 //Checks that the user has entered correct user name and password
-if($_postData['action'] == 'LOGIN_USER'){
+if ($_postData['action'] == 'LOGIN_USER_PUBLIC') {
 
     $name = $_postData['name'];
     $pass = $_postData['password'];
@@ -27,7 +27,6 @@ if($_postData['action'] == 'LOGIN_USER'){
 
         if($userInformation != null) {
             $_SESSION['loggedIn'] = true;
-            if($userInformation['isStaff'])$_SESSION['isStaff'] = true;
 
             echo json_encode($userInformation);
 
@@ -40,10 +39,7 @@ if($_postData['action'] == 'LOGIN_USER'){
 }//END of login user
 
 //logs the user out of the session.
-if($_postData['action']  == 'LOGOUT'){
-
-    $_SESSION['loggedIn'] == false;
-    $_SESSION['isStaff'] == false;
+if ($_postData['action'] == 'LOGOUT_PUBLIC') {
 
     session_destroy();
     echo json_encode(['Logout' => 'User is logged out', 'success' => true]);

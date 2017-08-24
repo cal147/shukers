@@ -156,20 +156,20 @@ if ($_postData['action'] == 'GET_PRODUCTS') {
 if ($_postData['action'] == 'ADD_PRODUCTTOBASKET') {
 
     $dirtyprodID = $_postData['Product'];
-//    $dirtyuserID = $_postData['User'];
-//    $dirtyQty = $_postData['Qty'];
+    $dirtyuserID = $_postData['User'];
+    $dirtyQty = $_postData['Qty'];
 
-    if (preg_match('/^[0-9]{1,3}$/', stripcslashes(trim($dirtyprodID)))/* &&
+    if (preg_match('/^[0-9]{1,3}$/', stripcslashes(trim($dirtyprodID))) &&
         preg_match('/^[0-9]{1,3}$/', stripcslashes(trim($dirtyuserID))) &&
-        preg_match('/^[0-9]{1,2}$/', stripcslashes(trim($dirtyQty)))*/) {
+        preg_match('/^[0-9]{1,2}$/', stripcslashes(trim($dirtyQty)))) {
 
         $cProdID = $conn->real_escape_string(trim($dirtyprodID));
-//        $cUserID = $conn->real_escape_string(trim($dirtyuserID));
-//        $cQty = $conn->real_escape_string(trim($dirtyQty));
+        $cUserID = $conn->real_escape_string(trim($dirtyuserID));
+        $cQty = $conn->real_escape_string(trim($dirtyQty));
 
         $cleanProductID = strip_tags($cProdID);
-//        $cleanUserID = strip_tags($cUserID);
-//        $cleanQty = strip_tags($cQty);
+        $cleanUserID = strip_tags($cUserID);
+        $cleanQty = strip_tags($cQty);
 
         try {
             $stmt = $conn->prepare("SET @prodID = ?;
@@ -177,8 +177,8 @@ if ($_postData['action'] == 'ADD_PRODUCTTOBASKET') {
             INSERT INTO `shukers`.`salesdetails`(`salesId`,`productId`,productPrice,`qty`)
             VALUES(LAST_INSERT_ID(),@pridID,(select price from products where id=@pridID),@qty);");
             $stmt->bind_param("i", $cleanProductID);
-//            $stmt->bind_param("i", $cleanUserID);
-//            $stmt->bind_param("i", $cleanQty);
+            $stmt->bind_param("i", $cleanUserID);
+            $stmt->bind_param("i", $cleanQty);
 
             if ($stmt->execute()) {
                 echo json_encode(['Message' => 'Product Added to Basket', 'success' => true]);

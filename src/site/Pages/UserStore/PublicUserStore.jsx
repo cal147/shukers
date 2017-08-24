@@ -3,9 +3,9 @@
     to update its data upon request.
  */
 
-import { EventEmitter } from 'events';
+import {EventEmitter} from 'events';
 import Dispatcher from '../../../dispatcher';
-import {serverScripts} from '../../../shared/urls';
+import {serverScriptsPublic} from '../../../shared/urls';
 
 class PublicUserStore extends EventEmitter{
 
@@ -55,13 +55,13 @@ class PublicUserStore extends EventEmitter{
     }//End of constructor
 
     //Queries the database and sets the datafields with the users information.
-    loginUser(name, password){
+    loginUserPublic(name, password) {
 
-        fetch(serverScripts+"admin/Controllers/UserStoreController.php", {
+        fetch(serverScriptsPublic + "Controllers/PublicUserStoreController.php", {
             method: 'POST',
             headers:{"Content-type": "application/x-www-form-urlencoded; charset=UTF-8"},
             body: JSON.stringify({
-                action: "LOGIN_USER",
+                action: "LOGIN_USER_PUBLIC",
                 name: name,
                 password: password
             }),
@@ -79,7 +79,6 @@ class PublicUserStore extends EventEmitter{
             this.user.postcode = data['postcode'];
             this.user.isHome = data['homeAddress'];
             this.user.isDelivery = data['deliveryAddress'];
-            this.user.Staff = data['isStaff'];
             if(data['loginId'] != null)this.user.isLoggedIn = true;
             this.user.logInError = !data['success'];
             this.user.serverSession = data['sessionId'];
@@ -95,17 +94,17 @@ class PublicUserStore extends EventEmitter{
     }//End of login user
 
 
-    logoutUser(){
+    logoutUserPublic() {
 
         if(this.user.isLoggedIn){
 
             let serverCallComplete;
 
-            fetch(serverScripts+"admin/Controllers/UserStoreController.php", {
+            fetch(serverScriptsPublic + "Controllers/PublicUserStoreController.php", {
                 method: 'POST',
                 headers:{"Content-type": "application/x-www-form-urlencoded; charset=UTF-8"},
                 body: JSON.stringify({
-                    action: "LOGOUT",
+                    action: "LOGOUT_PUBLIC",
                     sessionId : this.user.serverSession
                 }),
                 mode: 'cors'
@@ -124,7 +123,6 @@ class PublicUserStore extends EventEmitter{
                         this.user.postcode = null;
                         this.user.isHome = null;
                         this.user.isDelivery = null;
-                        this.user.Staff = false;
                         this.user.isLoggedIn = false;
                         this.user.logInError = false;
 
@@ -149,11 +147,11 @@ class PublicUserStore extends EventEmitter{
     handleActions(action){
 
         switch(action.type){
-            case "USER_LOGIN":
-                this.loginUser(action.name, action.password);
+            case "LOGIN_USER":
+                this.loginUserPublic(action.name, action.password);
                 break;
-            case "USER_LOGOUT":
-                this.logoutUser();
+            case "LOGOUT_PUBLIC":
+                this.logoutUserPublic();
                 break;
 
             default: break;

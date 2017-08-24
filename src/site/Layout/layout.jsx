@@ -4,6 +4,7 @@ import {Button, Dropdown, Menu, Search, Sidebar} from "semantic-ui-react";
 import Header from "./Header/Header"
 import Footer from "./Footer/Footer"
 import {serverScriptsPublic} from '../../shared/urls'
+import * as PublicUserAction from '../Pages/publicActions/publicUserActions';
 
 import publicUserStore from '../../site/Pages/UserStore/PublicUserStore'
 
@@ -13,7 +14,11 @@ export default class SiteLayout extends Component {
     toggleVisibility = () => this.setState({visible: !this.state.visible});
 
 
-    handleItemClick = (e, {name}) => this.setState({activeItem: name});
+    handleItemClick = (e, {name}) => this.setState({activeItem: name, visible: !this.state.visible});
+
+    handleLogOutClick = () => {
+        PublicUserAction.logoutUserPublic()
+    };
 
     constructor() {
         super();
@@ -73,13 +78,27 @@ export default class SiteLayout extends Component {
 
     render() {
 
-        if(this.state.user.isLoggedIn === true){console.log('logged in')}
+        const {activeItem} = this.state;
+        let userloggedin = null;
+        if (this.state.user.isLoggedIn === true) {
+
+            userloggedin = <Menu.Menu position='right'>
+                <Menu.Item name='Log Out' active={activeItem === 'LogOut'} onClick={this.handleLogOutClick}
+                           as={Link} to='/'/>
+            </Menu.Menu>
+        } else {
+            userloggedin = <Menu.Menu position='right'>
+                <Menu.Item name='basket' active={activeItem === 'basket'} onClick={this.handleItemClick}
+                           as={Link} to='/basket'/>
+                <Menu.Item name='Login' active={activeItem === 'login'} onClick={this.handleItemClick}
+                           as={Link} to='/login'/>
+                <Menu.Item name='Sign Up' active={activeItem === 'signUp'} onClick={this.handleItemClick}
+                           as={Link} to='/signUp'/>
+            </Menu.Menu>
+        }
 
         let winWidth = window.innerWidth;
         if (winWidth > 800) {
-
-            const {activeItem} = this.state;
-
             return (
                 <div>
 
@@ -95,17 +114,12 @@ export default class SiteLayout extends Component {
                         <Dropdown item text={'Products'}>
                             <Dropdown.Menu>
                                 {this.state.Productsdata.map((product, i) => <Dropdown.Item
-                                    key={product.cat} name='products' as={Link} to={"/products/" + product.cat}>
-                                    {product.cat}</Dropdown.Item>)}
+                                    key={product.cat} name='products' as={Link} to={"/products/" + product.cat}
+                                    onClick={this.toggleVisibility}>{product.cat}</Dropdown.Item>)}
                             </Dropdown.Menu>
                         </Dropdown>
-                        <Menu.Menu position='right'>
-                            <Menu.Item name='basket' active={activeItem === 'basket'} onClick={this.handleItemClick}
-                                       as={Link} to='/basket'/>
-                            <Menu.Item name='Login' active={activeItem === 'login'} onClick={this.handleItemClick}
-                                       as={Link} to='/login'/>
-                            <Menu.Item name='Sign Up' active={activeItem === 'signUp'} onClick={this.handleItemClick}
-                                       as={Link} to='/signUp'/>
+                        {userloggedin}
+                        <Menu.Menu>
                             <Menu.Item>
                                 <Search placeholder='Search...'/>
                             </Menu.Item>
@@ -123,12 +137,12 @@ export default class SiteLayout extends Component {
             const {activeItem} = this.state;
             return (
                 <div>
+                    <Button onClick={this.toggleVisibility} icon="content" content="Menu" labelPosition="left"/>
 
                     <Header/>
-
-
-                    <Button onClick={this.toggleVisibility} icon="content" content="Menu" labelPosition="left"/>
                     <Sidebar.Pushable>
+
+
                         <Sidebar as={Menu} animation='scale down' width='wide' visible={visible} icon='labeled'
                                  stackable inverted color={"red"}>
                             <Menu.Item name='home' active={activeItem === 'home'} onClick={this.handleItemClick}
@@ -144,16 +158,13 @@ export default class SiteLayout extends Component {
                                         {product.cat}</Dropdown.Item>)}
                                 </Dropdown.Menu>
                             </Dropdown>
-                            <Menu.Item>
-                                <Search placeholder="Search..."/>
-                            </Menu.Item>
                         </Sidebar>
                         <Sidebar.Pusher>
                             {this.props.children}
                         </Sidebar.Pusher>
-                    </Sidebar.Pushable>
-                    <Footer className="siteFooter"/>
 
+                        <Footer className="siteFooter"/>
+                    </Sidebar.Pushable>
                 </div>
             );
         }
