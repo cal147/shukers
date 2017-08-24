@@ -13,6 +13,9 @@ export default class AddCustomers extends Component{
         this.state = {
             activeComp: null,
             user: adminUserStore.getUser(),
+            deliveryNum:"",
+            deliveryStreet:"",
+            deliveryPostcode:"",
             postcode: "",
             street: "",
             houseNumber: "",
@@ -23,13 +26,14 @@ export default class AddCustomers extends Component{
             password:"",
             errorState: false,
             passwordMatch: "",
+            deliveryAddress: null,
+            homeAddress: null,
+            staffMember: null,
+            showDelivery:false,
         };
     }
 
 
-    handleChange(event) {
-        this.setState({value: event.target.value});
-    }
 
     handleSubmit(event) {
         event.preventDefault();
@@ -37,7 +41,7 @@ export default class AddCustomers extends Component{
         //Code for client validation
 
         if(!this.state.errorState){
-            //Code for the subnit in here
+            //Code for the submit in here
         }
 
     }
@@ -56,6 +60,11 @@ export default class AddCustomers extends Component{
 
 
     }
+
+    takeCheckBox(e, data){
+        this.setState({[data.id]:data.checked});
+    }
+
 
     render() {
         return (
@@ -104,7 +113,7 @@ export default class AddCustomers extends Component{
                                 <Label basic pointing='right'>Staff Member</Label>
                             </Grid.Column>
                             <Grid.Column width={8}>
-                                <Checkbox  />
+                                <Checkbox  id="staffMember" onChange={this.takeCheckBox.bind(this)}/>
                             </Grid.Column>
                         </Grid.Row>
 
@@ -141,7 +150,7 @@ export default class AddCustomers extends Component{
                                 <Label basic pointing='right'>Home Address</Label>
                             </Grid.Column>
                             <Grid.Column width={8}>
-                                <Checkbox />
+                                <Checkbox id="homeAddress" onChange={this.takeCheckBox.bind(this)}/>
                             </Grid.Column>
                         </Grid.Row>
 
@@ -150,12 +159,31 @@ export default class AddCustomers extends Component{
                                 <Label basic pointing='right'>Delivery Address</Label>
                             </Grid.Column>
                             <Grid.Column >
-                                <Checkbox />
+                                <Checkbox  id="deliveryAddress" onChange={this.takeCheckBox.bind(this)}/>
                             </Grid.Column>
                             <Grid.Column width={3}>
-                                <Button color={'red'} name="deliveryAddress">Delivery Address</Button>{/*TODO Add fields to enter a delivery address*/}
+                                <Button color={'red'} name="deliveryAddress" onClick={()=>{this.setState({showDelivery:!this.state.showDelivery})}}>Add Delivery Address</Button>{/*TODO Add fields to enter a delivery address*/}
                             </Grid.Column>
                         </Grid.Row>
+                        {this.state.showDelivery?
+                            <Grid >
+                                <Grid.Row columns={16}>
+                                    <Grid.Column width={5}></Grid.Column>
+                                    <Grid.Column width={2} ><Label basic pointing='right'>House Number </Label></Grid.Column>
+                                    <Grid.Column width={8}><Input fluid id="deliveryNum" onChange={this.takeInput.bind(this)}/></Grid.Column>
+                                </Grid.Row>
+                                <Grid.Row columns={16}>
+                                    <Grid.Column width={5}></Grid.Column>
+                                    <Grid.Column width={2} ><Label basic pointing='right'>Street</Label></Grid.Column>
+                                    <Grid.Column width={8}><Input fluid id="deliveryStreet" onChange={this.takeInput.bind(this)}/></Grid.Column>
+                                </Grid.Row>
+                                <Grid.Row columns={16}>
+                                    <Grid.Column width={5}></Grid.Column>
+                                    <Grid.Column width={2} ><Label basic pointing='right'>Postcode </Label></Grid.Column>
+                                    <Grid.Column width={8}><Input fluid id="deliveryPostcode" onChange={this.takeInput.bind(this)}/></Grid.Column>
+                                </Grid.Row>
+                            </Grid>
+                        :null}
 
                         <Grid.Row columns={10} >
                             <Grid.Column width={2} >
