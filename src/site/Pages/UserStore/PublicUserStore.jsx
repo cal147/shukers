@@ -147,7 +147,7 @@ class PublicUserStore extends EventEmitter{
     handleActions(action){
 
         switch(action.type){
-            case "LOGIN_USER":
+            case "LOGIN_USER_PUBLIC":
                 this.loginUserPublic(action.name, action.password);
                 break;
             case "LOGOUT_PUBLIC":

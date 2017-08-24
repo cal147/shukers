@@ -6,13 +6,15 @@ import publicUserStore from '../UserStore/PublicUserStore'
 
 export default class login extends Component {
 
-    state = {userName: '', password: '', login: false};
+    state = {userName: null, password: null, login: false};
 
     constructor() {
         super();
         this.state = {
             user: publicUserStore.getUser(),
-            loggedin: false
+            loggedin: false,
+            FormMessage: null,
+            FormMessageCheck: false
         }
     }
 
@@ -21,13 +23,34 @@ export default class login extends Component {
         PublicUserAction.userLoginPublic(this.state.userName, this.state.password);
         console.log(this.state.userName);
         console.log(this.state.password);
-        this.setState({user: publicUserStore.getUser(), loggedin: true})
+        this.setState({user: publicUserStore.getUser()});
 
+
+        this.setState({FormMessageCheck: true});
+        setTimeout(() => this.test(), 0)
     };
 
-    componentDidUpdate() {
-        if (this.state.loggedin === true) {
-            setTimeout(window.location.reload(), 1000)
+    test() {
+        if (this.state.FormMessageCheck === true) {
+            console.log("message check");
+            console.log(this.state.user.isLoggedIn);
+            if (this.state.user.isLoggedIn === true) {
+                this.setState({
+                    FormMessage: <Message success header="Login Successful"
+                                          content="If nothing happens in 5 seconds please refresh the page."/>
+                });
+                // window.location.reload();
+                console.log("LOGGED IN");
+            } else if (this.state.user.isLoggedIn === false) {
+                this.setState({
+                    FormMessage: <Message error header="Login falied" content="Please check login details"/>
+                    , FormMessageCheck: false
+                });
+                console.log("FALSE LOGIN");
+            }
+        }
+        if (this.state.user.isLoggedIn === true) {
+
         }
     }
 
@@ -41,19 +64,6 @@ export default class login extends Component {
 
     render() {
 
-        let loginSuccess = null;
-        if (this.state.loggedin === false) {
-            loginSuccess = null;
-        } else if (this.state.user.isLoggedIn === true) {
-            loginSuccess = <Form success>
-                <Message success header="Login Successful"
-                         content="If nothing happens in 5 seconds please refresh the page. "/>
-            </Form>
-        } else if (this.state.user.isLoggedIn === false) {
-            loginSuccess = <Form error>
-                <Message error header="Login falied" content="Please check login details"/>
-            </Form>
-        }
 
         return (
             <div>
@@ -68,11 +78,9 @@ export default class login extends Component {
                                         value={this.state.password} width={4} required
                                         onChange={this.handelChangePWord.bind(this)}/>
                         </Form.Group>
-                        <Form.Group>
-                            {loginSuccess}
-                        </Form.Group>
                         <Button type='submit'>Login</Button>
                     </Form>
+                    {this.state.FormMessage}
                 </Segment>
                 <Button as={Link} to="/signUp" negative>To create an account click here</Button>
             </div>

@@ -17,8 +17,14 @@ export default class SiteLayout extends Component {
     handleItemClick = (e, {name}) => this.setState({activeItem: name, visible: !this.state.visible});
 
     handleLogOutClick = () => {
-        PublicUserAction.logoutUserPublic()
+        PublicUserAction.logoutUserPublic();
+        this.setState({loggedin: false});
+        window.location.reload()
     };
+
+    componentDidUpdate() {
+
+    }
 
     constructor() {
         super();
