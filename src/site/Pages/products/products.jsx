@@ -177,8 +177,6 @@ export default class product extends Component {
 
         return (
             <div>
-                {/*TODO set display up to show three/four products in a row, with 12 products on the page. MAYBE GRID to help with mobile display*/}
-
                 {loggedIn}
 
                 {/*TODO work out a way to populate page count from product count*/}

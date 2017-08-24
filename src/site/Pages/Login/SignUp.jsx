@@ -57,7 +57,7 @@ export default class SignUp extends Component {
     render() {
         return (
             <div>
-                <h2>SignUp Page</h2>
+                <h2>Please enter all the information required</h2>
                 <Segment inverted color="red">
                     <Form onSubmit={this.formSubmitUser}>
                         <Form.Group>

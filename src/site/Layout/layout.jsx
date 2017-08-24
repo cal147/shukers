@@ -132,7 +132,6 @@ export default class SiteLayout extends Component {
                         </Menu.Menu>
                     </Menu>
                     <div>{this.props.children}</div>
-                    {/*TODO - WORKING TO DEGREE - footer currently on top of grid - Price*/}
                     <Footer/>
 
 
