@@ -1,5 +1,6 @@
 import React, {Component} from "react";
 import {Button, Form, Segment} from 'semantic-ui-react';
+import {Link} from "react-router-dom";
 
 export default class SignUp extends Component {
 
@@ -85,6 +86,7 @@ export default class SignUp extends Component {
                         <Button type='submit' color="black">Sign Up</Button>
                     </Form>
                 </Segment>
+                <Button as={Link} to="/login" negative>Already have an account login here</Button>
             </div>
         )
     }

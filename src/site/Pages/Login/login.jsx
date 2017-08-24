@@ -79,7 +79,7 @@ export default class login extends Component {
                                         value={this.state.password} width={4} required
                                         onChange={this.handelChangePWord.bind(this)}/>
                         </Form.Group>
-                        <Button type='submit'>Login</Button>
+                        <Button type='submit' color="black">Login</Button>
                     </Form>
                     {this.state.FormMessage}
                     {mess}
