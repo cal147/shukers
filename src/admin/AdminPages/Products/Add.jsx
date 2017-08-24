@@ -322,12 +322,12 @@ class Prod extends Component {
     }
 
     onImageDrop(image) {
-        // this.setState({
-        //     uploadedFile: files[0]
-        // });
         let addImage = this.state.images;
         addImage.unshift(image[0]);
+        console.log(image[0]);
         this.setState({images: addImage});
+        console.log(this.state.images[0].name);
+        console.log(this.state.images[0].preview);
     }
 
     validateandSubmit(){
@@ -344,8 +344,23 @@ class Prod extends Component {
         // }
 
 
-    }
+        fetch(serverScripts + "admin/Controllers/imageController.php", {
+            method: 'POST',
+            headers: {"Content-type": "application/x-www-form-urlencoded; charset=UTF-8"},
+            body: JSON.stringify({
+                action: "ADD_IMAGE",
+                name: this.state.images[0].name,
+                blob: this.state.images[0].preview
+            }),
+            mode: 'cors'
+        }).then((response) => response.json()).then((data) => {
+            console.log(data);
+        }).catch((err) => {
+            console.error(err);
+        });
 
+
+    }
 
 
     render() {
@@ -439,7 +454,7 @@ class Prod extends Component {
                             <div  style={{color:"red", fontSize:"30px"}}>{this.state.errorMessage}</div>
                         </Grid.Column>
                         <Grid.Column width={2}>
-                            <Button color='red' onClick={this.validateandSubmit.bind(this)}>Add Product</Button>
+                            <Button color='red' onChange={this.validateandSubmit.bind(this)}>Add Product</Button>
                         </Grid.Column>
 
                     </Grid.Row>
