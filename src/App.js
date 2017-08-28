@@ -6,7 +6,9 @@ import findUs from "./site/Pages/findUs/findUs";
 import basket from "./site/Pages/basket/basket";
 import login from "./site/Pages/Login/login";
 import signUp from "./site/Pages/Login/SignUp";
+import ForgottenPassword from "./site/Pages/Login/ForgottenPassword";
 import product from "./site/Pages/products/products";
+import myAccount from "./site/Pages/account/account";
 import SiteLayout from './site/Layout/layout'
 import MainPage from './admin/index';
 import "./site/Layout/Layout.css"
@@ -29,6 +31,8 @@ const Site = () => {
                         <Route path="/products" component={product}/>
                         <Route path="/login" component={login}/>
                         <Route path="/signUp" component={signUp}/>
+                        <Route path="/ForgottenPassword" component={ForgottenPassword}/>
+                        <Route path="/myAccount" component={myAccount}/>
                     </Switch>
                 </SiteLayout>
             </div>

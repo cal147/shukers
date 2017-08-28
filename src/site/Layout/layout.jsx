@@ -22,10 +22,6 @@ export default class SiteLayout extends Component {
         window.location.reload()
     };
 
-    componentDidUpdate() {
-
-    }
-
     constructor() {
         super();
         this.state = {
@@ -33,6 +29,10 @@ export default class SiteLayout extends Component {
             width: 800,
             user: publicUserStore.getUser()
         }
+    }
+
+    componentDidUpdate() {
+
     }
 
     componentWillMount() {
@@ -84,11 +84,15 @@ export default class SiteLayout extends Component {
 
     render() {
 
+        // TODO - my account - current orders and recent purchases change password
+
         const {activeItem} = this.state;
         let userloggedin = null;
         if (this.state.user.isLoggedIn === true) {
 
             userloggedin = <Menu.Menu position='right'>
+                <Menu.Item className="myAccHeader" onClick={this.handleItemClick} as={Link} to='/myAccount'>My
+                    Account<br/>Welcome {this.state.user.firstName}</Menu.Item>
                 <Menu.Item name='Log Out' active={activeItem === 'LogOut'} onClick={this.handleLogOutClick}
                            as={Link} to='/'/>
             </Menu.Menu>

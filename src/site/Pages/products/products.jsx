@@ -19,16 +19,7 @@ export default class product extends Component {
             counter: 0,
             isLoggedInlocal: false,
             user: PublicUserStore.getUser(),
-            Qty: 1,
-            qtyOptions:
-                [
-                    {key: 1, text: '1', value: 1},
-                    {key: 2, text: '2', value: 2},
-                    {key: 3, text: '3', value: 3},
-                    {key: 4, text: '4', value: 4},
-                    {key: 5, text: '5', value: 5},
-                    {key: 6, text: 'For more than 5 please call us', value: 6}
-                ]
+            Qty: 1
         }
     }
 
@@ -68,12 +59,13 @@ export default class product extends Component {
         });
     }
 
+    // TODO - Add to basket
     addProductToBasket(productId, qty) {
         fetch(serverScriptsPublic + "Controllers/productsController.php", {
             method: 'POST',
             headers: {"Content-type": "application/x-www-form-urlencoded; charset=UTF-8"},
             body: JSON.stringify({
-                action: "ADD_PRODUCTTOBASKET1",
+                action: "ADD_PRODUCTTOBASKET",
                 Product: productId,
                 User: this.state.user.id,
                 Qty: qty

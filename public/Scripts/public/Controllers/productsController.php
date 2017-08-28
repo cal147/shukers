@@ -152,6 +152,64 @@ if ($_postData['action'] == 'GET_PRODUCTS') {
     }
 }
 
+if ($_postData['action'] == 'GET_USERORDERHISTORY') {
+    $orderArray = [];
+    $dirtyuserID = $_postData['User'];
+
+    if (preg_match('/^[0-9]{1,3}$/', stripcslashes(trim($dirtyuserID)))) {
+
+        $cUserID = $conn->real_escape_string(trim($dirtyuserID));
+
+        $cleanUserID = strip_tags($cUserID);
+
+        try {
+            $stmt = $conn->prepare("SELECT p.name, sd.qty, sd.productPrice FROM sales as s JOIN salesdetails AS sd ON s.id = sd.salesId JOIN products AS p ON sd.productId = p.id WHERE s.userId = ? AND s.paid = 1;");
+            $stmt->bind_param("i", $cleanUserID);
+            $stmt->execute();
+            if ($result = $stmt->get_result()) {
+                while ($row = $result->fetch_assoc()) {
+                    array_push($orderArray, [
+                        'name' => $row['name'],
+                        'qty' => $row['qty'],
+                        'price' => $row['productPrice']
+                    ]);
+                }
+                echo json_encode($orderArray);
+            }
+        } catch (Exception $e) {
+            return false;
+        }
+    }
+}
+
+if ($_postData['action'] == 'GET_USERPURCHASEHISTORY') {
+    $purchaseArray = [];
+    $dirtyuserID = $_postData['User'];
+
+    if (preg_match('/^[0-9]{1,3}$/', stripcslashes(trim($dirtyuserID)))) {
+
+        $cUserID = $conn->real_escape_string(trim($dirtyuserID));
+
+        $cleanUserID = strip_tags($cUserID);
+
+        try {
+            $stmt = $conn->prepare("SELECT DISTINCT p.name FROM shukers.salesdetails as sd JOIN products as p ON p.id = sd.productId JOIN sales as s ON sd.salesId = s.id WHERE s.userId = ?");
+            $stmt->bind_param("i", $cleanUserID);
+            $stmt->execute();
+            if ($result = $stmt->get_result()) {
+                while ($row = $result->fetch_assoc()) {
+                    array_push($purchaseArray, [
+                        'name' => $row['name']
+                    ]);
+                }
+                echo json_encode($purchaseArray);
+            }
+        } catch (Exception $e) {
+            return false;
+        }
+    }
+}
+
 
 if ($_postData['action'] == 'ADD_PRODUCTTOBASKET') {
 

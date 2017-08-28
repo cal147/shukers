@@ -85,8 +85,7 @@ export default class login extends Component {
                     {mess}
                 </Segment>
                 <Button as={Link} to="/signUp" negative>To create an account click here</Button>
-                {/*TODO work out how to UPDATE password*/}
-                <Button as={Link} to="#" negative>Forgotten your password click here</Button>
+                <Button as={Link} to="/ForgottenPassword" negative>Forgotten your password click here</Button>
             </div>
         )
     }
