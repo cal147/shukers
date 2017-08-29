@@ -25,11 +25,11 @@ export default class AddCustomers extends Component{
             firstName:"",
             loginName:"",
             password:"",
-            errorState: false,
-            passwordMatch: "",
+            errorState: true,
+            errorMessage: "",
             deliveryAddress: null,
             homeAddress: null,
-            staffMember: null,
+            staffMember: false,
             showDelivery:false,
             contactNumber:"",
         };
@@ -38,9 +38,22 @@ export default class AddCustomers extends Component{
 
 
     handleSubmit(event) {
-        event.preventDefault();
+       event.preventDefault();
 
-        //Code for client validation
+       this.state.showDelivery && this.state.deliveryNum === ""?this.setState({errorState: true, errorMessage:"Check all field are Correct"}):this.setState({errorState: false, errorMessage:""});
+       this.state.showDelivery && this.state.deliveryStreet === ""?this.setState({errorState: true, errorMessage:"Check all field are Correct"}):this.setState({errorState: false, errorMessage:""});
+       this.state.showDelivery && this.state.deliveryPostcode === ""?this.setState({errorState: true, errorMessage:"Check all field are Correct"}):this.setState({errorState: false, errorMessage:""});
+       this.state.postcode==""?this.setState({errorState: true, errorMessage:"Check all field are Correct"}):this.setState({errorState: false, errorMessage:""});
+       this.state.street==""?this.setState({errorState: true, errorMessage:"Check all field are Correct"}):this.setState({errorState: false, errorMessage:""});
+       this.state.houseNumber==""?this.setState({errorState: true, errorMessage:"Check all field are Correct"}):this.setState({errorState: false, errorMessage:""});
+       this.state.email==""?this.setState({errorState: true, errorMessage:"Check all field are Correct"}):this.setState({errorState: false, errorMessage:""});
+       this.state.surname==""?this.setState({errorState: true, errorMessage:"Check all field are Correct"}):this.setState({errorState: false, errorMessage:""});
+       this.state.firstName==""?this.setState({errorState: true, errorMessage:"Check all field are Correct"}):this.setState({errorState: false, errorMessage:""});
+       this.state.loginName==""?this.setState({errorState: true, errorMessage:"Check all field are Correct"}):this.setState({errorState: false, errorMessage:""});
+       this.state.password==""?this.setState({errorState: true, errorMessage:"Check all field are Correct"}):this.setState({errorState: false, errorMessage:""});
+       this.state.contactNumber==""?this.setState({errorState: true, errorMessage:"Check all field are Correct"}):this.setState({errorState: false, errorMessage:""});
+
+
 
         if(!this.state.errorState){
             //Code for the submit in here
@@ -117,9 +130,9 @@ export default class AddCustomers extends Component{
         }else{
             let pass2 = e.target.value;
             if (this.state.password === pass2){
-                this.setState({passwordMatch: "Passwords Match \u2714", errorState: false});
+                this.setState({errorMessage: "Passwords Match \u2714", errorState: false});
             }else{
-                this.setState({passwordMatch: "Passwords dont Match \u2716", errorState: true});
+                this.setState({errorMessage: "Passwords dont Match \u2716", errorState: true});
             }
         }
 
@@ -274,7 +287,7 @@ export default class AddCustomers extends Component{
                             </Grid.Column>
                             <Grid.Column width={8}>
                                 <Input fluid type="password" id={null} onChange={this.takeInput.bind(this)}/>
-                                <span><h1 style={{color:"red"}}> {this.state.passwordMatch} </h1></span>
+                                <span><h1 style={{color:"red"}}> {this.state.errorMessage} </h1></span>
                             </Grid.Column>
                         </Grid.Row>
 
