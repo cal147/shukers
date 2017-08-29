@@ -4,6 +4,7 @@ import '../../AdminMaster.css';
 import {Tab, Grid, Button, Label, Checkbox, Input} from 'semantic-ui-react';
 
 import adminUserStore from '../../AdminStores/AdminUserStore';
+import {serverScripts} from '../../../shared/urls';
 
 export default class AddCustomers extends Component{
 
@@ -30,6 +31,7 @@ export default class AddCustomers extends Component{
             homeAddress: null,
             staffMember: null,
             showDelivery:false,
+            contactNumber:"",
         };
     }
 
@@ -42,6 +44,69 @@ export default class AddCustomers extends Component{
 
         if(!this.state.errorState){
             //Code for the submit in here
+
+            if(this.state.showDelivery){
+                fetch(serverScripts + "admin/Controllers/customersController.php", {
+                    method: 'POST',
+                    headers: {"Content-type": "application/x-www-form-urlencoded; charset=UTF-8"},
+                    body: JSON.stringify({
+                        action: "ADD_CUSTOMER_WITHDELIVERY",
+                        deliveryNum: this.state.deliveryNum,
+                        deliveryStreet: this.state.deliveryStreet,
+                        deliveryPostcode: this.state.deliveryPostcode,
+                        postcode: this.state.postcode,
+                        street: this.state.street,
+                        houseNumber: this.state.houseNumber,
+                        email: this.state.email,
+                        surname: this.state.surname,
+                        firstName: this.state.firstName,
+                        loginName: this.state.loginName,
+                        password: this.state.password,
+                        deliveryAddress: this.state.deliveryAddress,
+                        homeAddress: this.state.homeAddress,
+                        staffMember: this.state.staffMember,
+                        contactNumber: this.state.contactNumber,
+                        sessionId: this.state.user.serverSession,
+                    }),
+                    mode: 'cors'
+                }).then((response) => response.json()).then((data) => {
+                    console.log(data);
+                    //TODO display customer added message && refresh the page
+
+                }).catch((err) => {
+                    console.error(err);
+                });
+            }else{
+                fetch(serverScripts + "admin/Controllers/customersController.php", {
+                    method: 'POST',
+                    headers: {"Content-type": "application/x-www-form-urlencoded; charset=UTF-8"},
+                    body: JSON.stringify({
+                        action: "ADD_CUSTOMER",
+                        postcode: this.state.postcode,
+                        street: this.state.street,
+                        houseNumber: this.state.houseNumber,
+                        email: this.state.email,
+                        surname: this.state.surname,
+                        firstName: this.state.firstName,
+                        loginName: this.state.loginName,
+                        password: this.state.password,
+                        deliveryAddress: this.state.deliveryAddress,
+                        homeAddress: this.state.homeAddress,
+                        staffMember: this.state.staffMember,
+                        contactNumber: this.state.contactNumber,
+                        sessionId: this.state.user.serverSession,
+                    }),
+                    mode: 'cors'
+                }).then((response) => response.json()).then((data) => {
+                    console.log(data);
+
+                    //TODO display customer added message && refresh the page
+
+                }).catch((err) => {
+                    console.error(err);
+                });
+            }
+
         }
 
     }
@@ -144,6 +209,15 @@ export default class AddCustomers extends Component{
                             </Grid.Column>
                         </Grid.Row>
 
+                        <Grid.Row columns={10} >
+                            <Grid.Column width={2} >
+                                <Label basic pointing='right'>Contact Number</Label>
+                            </Grid.Column>
+                            <Grid.Column width={8}>
+                                <Input fluid id="contactNumber" onChange={this.takeInput.bind(this)}/>
+                            </Grid.Column>
+                        </Grid.Row>
+
 
                         <Grid.Row columns={10} >
                             <Grid.Column width={2} >
@@ -200,7 +274,7 @@ export default class AddCustomers extends Component{
                             </Grid.Column>
                             <Grid.Column width={8}>
                                 <Input fluid type="password" id={null} onChange={this.takeInput.bind(this)}/>
-                                <span> {this.state.passwordMatch} </span>
+                                <span><h1 style={{color:"red"}}> {this.state.passwordMatch} </h1></span>
                             </Grid.Column>
                         </Grid.Row>
 

@@ -8,7 +8,7 @@ export default class SideBar extends Component{
     constructor(){
         super();
         this.state = {
-            activeItem: "dashboard",
+            activeItem: "orders",
         };
 
         this.handleItemClick = this.handleItemClick.bind(this)
@@ -27,8 +27,7 @@ export default class SideBar extends Component{
         return(
             <Menu pointing vertical style={{position:"fixed", top:"60px"}} inverted color={"red"} className="left fixed menu">
 
-                <Menu.Item as={Link} to="/" name='dashboard' icon="dashboard" active={activeItem === 'dashboard'} onClick={this.handleItemClick}  className="menu-spacing"/>
-                <Menu.Item as={Link} to="/orders" name='orders'  active={activeItem === 'orders'} onClick={this.handleItemClick} className="menu-spacing">
+                <Menu.Item as={Link} to="/" name='orders'  active={activeItem === 'orders'} onClick={this.handleItemClick} className="menu-spacing">
                     Orders <Icon name="info circle" />
                 </Menu.Item>
                 <Menu.Item as={Link} to="/products" name='products' icon="product hunt" active={activeItem === 'products'} onClick={this.handleItemClick} className="menu-spacing"/>
