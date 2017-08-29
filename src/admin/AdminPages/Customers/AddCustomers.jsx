@@ -236,7 +236,7 @@ export default class AddCustomers extends Component{
                                 <Checkbox  id="deliveryAddress" onChange={this.takeCheckBox.bind(this)}/>
                             </Grid.Column>
                             <Grid.Column width={3}>
-                                <Button color={'red'} name="deliveryAddress" onClick={()=>{this.setState({showDelivery:!this.state.showDelivery})}}>Add Delivery Address</Button>{/*TODO Add fields to enter a delivery address*/}
+                                <Button color={'red'} name="deliveryAddress" onClick={()=>{this.setState({showDelivery:!this.state.showDelivery})}}>Add Delivery Address</Button>
                             </Grid.Column>
                         </Grid.Row>
                         {this.state.showDelivery?
