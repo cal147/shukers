@@ -182,8 +182,8 @@ if ($_postData['action'] == 'GET_USERORDERHISTORY') {
     }
 }
 
-if ($_postData['action'] == 'GET_USERPURCHASEHISTORY') {
-    $purchaseArray = [];
+if ($_postData['action'] == 'GET_USERSALESHISTORY') {
+    $purchaseSalesArray = [];
     $dirtyuserID = $_postData['User'];
 
     if (preg_match('/^[0-9]{1,3}$/', stripcslashes(trim($dirtyuserID)))) {
@@ -193,16 +193,18 @@ if ($_postData['action'] == 'GET_USERPURCHASEHISTORY') {
         $cleanUserID = strip_tags($cUserID);
 
         try {
-            $stmt = $conn->prepare("SELECT DISTINCT p.name FROM shukers.salesdetails as sd JOIN products as p ON p.id = sd.productId JOIN sales as s ON sd.salesId = s.id WHERE s.userId = ?");
+            $stmt = $conn->prepare("SELECT id, DATE_FORMAT(saleDate, \"%W %d %M %Y\") as saleDate, (SELECT SUM(totalPrice) FROM salesdetails GROUP BY salesId) as totalPrice FROM shukers.sales WHERE userId = ? ORDER BY saleDate ASC;");
             $stmt->bind_param("i", $cleanUserID);
             $stmt->execute();
             if ($result = $stmt->get_result()) {
                 while ($row = $result->fetch_assoc()) {
-                    array_push($purchaseArray, [
-                        'name' => $row['name']
+                    array_push($purchaseSalesArray, [
+                        'id' => $row['id'],
+                        'saleDate' => $row['saleDate'],
+                        'totalPrice' => $row['totalPrice']
                     ]);
                 }
-                echo json_encode($purchaseArray);
+                echo json_encode($purchaseSalesArray);
             }
         } catch (Exception $e) {
             return false;
@@ -230,12 +232,13 @@ if ($_postData['action'] == 'ADD_PRODUCTTOBASKET') {
         $cleanQty = strip_tags($cQty);
 
         try {
-            $stmt = $conn->prepare("SET @prodID = ?;
-            INSERT INTO `shukers`.`sales`(`userId`,`saleDate`,`paid`)VALUES(@userID,CURDATE(),0);
-            INSERT INTO `shukers`.`salesdetails`(`salesId`,`productId`,productPrice,`qty`)
-            VALUES(LAST_INSERT_ID(),@pridID,(select price from products where id=@pridID),@qty);");
-            $stmt->bind_param("i", $cleanProductID);
+            $stmt = $conn->prepare("
+INSERT INTO sales(userId,saleDate,paid) VALUES(?,CURDATE(),0);
+INSERT INTO salesdetails(salesId,productId,productPrice,qty) 
+VALUES(LAST_INSERT_ID(),?,(select price from products where id=?),?);");
             $stmt->bind_param("i", $cleanUserID);
+            $stmt->bind_param("i", $cleanProductID);
+            $stmt->bind_param("i", $cleanProductID);
             $stmt->bind_param("i", $cleanQty);
 
             if ($stmt->execute()) {

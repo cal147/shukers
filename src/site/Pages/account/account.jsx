@@ -9,7 +9,7 @@ export default class myAccount extends Component {
     state = {
         fName: '', lName: '', uName: '', contactNumber: '',
         currentPassword: '', newPassword: '', confPassword: '',
-        OrderHistory: [], PurchaseHistory: []
+        OrderHistory: [], PurchaseHistory: [], PurchaseSalesHistory: []
     };
 
     formUserDetails = e => {
@@ -29,6 +29,10 @@ export default class myAccount extends Component {
 
     };
 
+    formChangePassword = e => {
+
+    };
+
     // handel changes to input fields
 
     constructor() {
@@ -37,39 +41,45 @@ export default class myAccount extends Component {
             user: publicUserStore.getUser()
         };
         this.panes = [
-            // TODO - put finishing touches on eg. colour AND sort orders into individual sales
-            {
+
+            {// TODO - check other orders work well  //// TODO - maybe use segment instead of GRID
+
                 menuItem: 'Order History', render: () =>
                 <Tab.Pane>
-                    <Grid celled verticalAlign='middle'>
-                        <Grid.Row>
-                            <Grid.Column width={6}>
-                                Name
-                            </Grid.Column>
-                            <Grid.Column floated="right" textAlign="center">
-                                Quantity
-                            </Grid.Column>
-                            <Grid.Column textAlign="center">
-                                Price
-                            </Grid.Column>
-                        </Grid.Row>
-                        {this.state.OrderHistory != null ? this.state.OrderHistory.map((product, i) =>
-                                <Grid.Row key={i}>
+                    {this.state.PurchaseSalesHistory != null ? this.state.PurchaseSalesHistory.map((Sales, i) =>
+                        <Segment.Group key={i}>
+                            <Segment.Group horizontal>
+                                <Segment textAlign="center"><strong>Sales ID - {Sales.id}</strong></Segment>
+                                <Segment textAlign="center"><strong>Purchase Date - {Sales.saleDate}</strong></Segment>
+                                <Segment textAlign="center"><strong>Total Price - £{Sales.totalPrice}</strong></Segment>
+                            </Segment.Group>
+                            <Grid celled verticalAlign='middle'>
+                                <Grid.Row>
                                     <Grid.Column width={6}>
-                                        {product.name}
+                                        Name
                                     </Grid.Column>
                                     <Grid.Column floated="right" textAlign="center">
-                                        {product.qty}
+                                        Quantity
                                     </Grid.Column>
                                     <Grid.Column textAlign="center">
-                                        £{product.price}
+                                        Price
                                     </Grid.Column>
                                 </Grid.Row>
-                            ) :
-                            <Grid.Column width={6} as='h3' textAlign="center">
-                                You do not have any recent orders.
-                            </Grid.Column>}
-                    </Grid>
+                                {this.state.OrderHistory != null ? this.state.OrderHistory.map((product, i) =>
+                                    <Grid.Row key={i}>
+                                        <Grid.Column width={6}>
+                                            {product.name}
+                                        </Grid.Column>
+                                        <Grid.Column floated="right" textAlign="center">
+                                            {product.qty}
+                                        </Grid.Column>
+                                        <Grid.Column textAlign="center">
+                                            £{product.price}
+                                        </Grid.Column>
+                                    </Grid.Row>
+                                ) : null}
+                            </Grid>
+                        </Segment.Group>) : <h3>You do not have any recent orders.</h3>}
                 </Tab.Pane>
             },
             {
@@ -109,7 +119,7 @@ export default class myAccount extends Component {
                     <div>
                         <h2>Please enter all the information required</h2>
                         <Segment inverted color="red">
-                            <Form onSubmit={this.formUserDetails}>
+                            <Form onSubmit={this.formChangePassword}>
                                 <Form.Input label='Current Password*' placeholder='Current Password'
                                             value={this.state.currentPassword} width={8} type="password"
                                             required onChange={this.handelChangeCPass.bind(this)}/>
@@ -125,7 +135,7 @@ export default class myAccount extends Component {
                     </div>
                 </Tab.Pane>
             },
-            {
+            /*{
                 menuItem: 'Previous Purchases', render: () =>
                 <Tab.Pane>
                     <Grid celled verticalAlign='middle'>
@@ -146,7 +156,7 @@ export default class myAccount extends Component {
                             </Grid.Column>}
                     </Grid>
                 </Tab.Pane>
-            },
+            },*/
             // this will be to show the customer what products they have bought in the past
         ]
     }
@@ -195,17 +205,17 @@ export default class myAccount extends Component {
         });
     }
 
-    purchaseHistory() {
+    purchaseSalesHistory() {
         fetch(serverScriptsPublic + "Controllers/productsController.php", {
             method: 'POST',
             headers: {"Content-type": "application/x-www-form-urlencoded; charset=UTF-8"},
             body: JSON.stringify({
-                action: "GET_USERPURCHASEHISTORY",
+                action: "GET_USERSALESHISTORY",
                 User: this.state.user.id,
             }),
             mode: 'cors'
         }).then(response => response.json()).then(data => {
-            this.setState({PurchaseHistory: data});
+            this.setState({PurchaseSalesHistory: data});
         }).catch((err) => {
             console.error(err);
         });
@@ -213,7 +223,7 @@ export default class myAccount extends Component {
 
     componentWillMount() {
         this.orderHistory();
-        this.purchaseHistory()
+        this.purchaseSalesHistory();
     }
 
     render() {
