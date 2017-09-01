@@ -30,14 +30,14 @@ export default class login extends Component {
 
         this.setState({Loader: <Dimmer active><Loader>Checking Login Details</Loader></Dimmer>});
 
-        setTimeout(() => this.loadingState(), 5000, setTimeout(() => this.test(), 4500));
+        setTimeout(() => this.loadingState(), 5000, setTimeout(() => this.loggedInTrueFalse(), 4500));
     };
 
     loadingState() {
         this.setState({Loader: null})
     }
 
-    test() {
+    loggedInTrueFalse() {
         if (this.state.user.isLoggedIn === true) {
             window.location.reload();
         } else if (this.state.user.isLoggedIn === false) {

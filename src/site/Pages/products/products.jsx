@@ -15,6 +15,7 @@ export default class product extends Component {
         super();
         this.state = {
             Productsdata: [],
+            salesID: null,
             hash: window.location.hash,
             counter: 0,
             isLoggedInlocal: false,
@@ -28,6 +29,19 @@ export default class product extends Component {
             this.urlchange();
             this.setState({counter: 1})
         }
+        fetch(serverScriptsPublic + "Controllers/productsController.php", {
+            method: 'POST',
+            headers: {"Content-type": "application/x-www-form-urlencoded; charset=UTF-8"},
+            body: JSON.stringify({
+                action: "GET_SALEID",
+                User: this.state.user.id
+            }),
+            mode: 'cors'
+        }).then(response => response.json()).then(data => {
+            this.setState({salesID: data});
+        }).catch((err) => {
+            console.error(err);
+        });
     }
 
     componentDidMount() {
@@ -59,16 +73,19 @@ export default class product extends Component {
         });
     }
 
-    // TODO - Add to basket
+    // TODO - Add to basket -- FUCK ME!!
     addProductToBasket(productId, qty) {
+
+        console.log(this.state.salesID);
         fetch(serverScriptsPublic + "Controllers/productsController.php", {
             method: 'POST',
             headers: {"Content-type": "application/x-www-form-urlencoded; charset=UTF-8"},
             body: JSON.stringify({
                 action: "ADD_PRODUCTTOBASKET",
                 Product: productId,
+                Qty: qty,
                 User: this.state.user.id,
-                Qty: qty
+                saleID: this.state.salesID
             }),
             mode: 'cors'
         }).then(response => response.json()).then(data => {

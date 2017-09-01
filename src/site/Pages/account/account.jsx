@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import {Button, Form, Grid, Segment, Tab} from "semantic-ui-react";
+import {Button, Form, Segment, Tab, Table} from "semantic-ui-react";
 
 import publicUserStore from '../UserStore/PublicUserStore'
 import {serverScriptsPublic} from "../../../shared/urls";
@@ -47,39 +47,44 @@ export default class myAccount extends Component {
                 menuItem: 'Order History', render: () =>
                 <Tab.Pane>
                     {this.state.PurchaseSalesHistory != null ? this.state.PurchaseSalesHistory.map((Sales, i) =>
-                        <Segment.Group key={i}>
-                            <Segment.Group horizontal>
-                                <Segment textAlign="center"><strong>Sales ID - {Sales.id}</strong></Segment>
-                                <Segment textAlign="center"><strong>Purchase Date - {Sales.saleDate}</strong></Segment>
-                                <Segment textAlign="center"><strong>Total Price - £{Sales.totalPrice}</strong></Segment>
-                            </Segment.Group>
-                            <Grid celled verticalAlign='middle'>
-                                <Grid.Row>
-                                    <Grid.Column width={6}>
-                                        Name
-                                    </Grid.Column>
-                                    <Grid.Column floated="right" textAlign="center">
-                                        Quantity
-                                    </Grid.Column>
-                                    <Grid.Column textAlign="center">
-                                        Price
-                                    </Grid.Column>
-                                </Grid.Row>
-                                {this.state.OrderHistory != null ? this.state.OrderHistory.map((product, i) =>
-                                    <Grid.Row key={i}>
-                                        <Grid.Column width={6}>
-                                            {product.name}
-                                        </Grid.Column>
-                                        <Grid.Column floated="right" textAlign="center">
-                                            {product.qty}
-                                        </Grid.Column>
-                                        <Grid.Column textAlign="center">
-                                            £{product.price}
-                                        </Grid.Column>
-                                    </Grid.Row>
-                                ) : null}
-                            </Grid>
-                        </Segment.Group>) : <h3>You do not have any recent orders.</h3>}
+
+                        <div>
+                            <Table unstackable color='red'>
+                                <Table.Header key={i}>
+                                    <Table.HeaderCell textAlign="center" width='5'>Order Number
+                                        - {Sales.id}</Table.HeaderCell>
+                                    <Table.HeaderCell textAlign="center" width='5'>Order Date
+                                        - {Sales.saleDate}</Table.HeaderCell>
+                                    <Table.HeaderCell textAlign="center" width='5'>Total Price -
+                                        £{Sales.totalPrice}</Table.HeaderCell>
+                                </Table.Header>
+                            </Table>
+                            <Table unstackable celled striped color='orange' verticalAlign='middle'>
+                                <Table.Header>
+                                    <Table.HeaderCell width={13}>Name</Table.HeaderCell>
+                                    <Table.HeaderCell textAlign="center">Quantity</Table.HeaderCell>
+                                    <Table.HeaderCell textAlign="center">Price</Table.HeaderCell>
+                                    <Table.HeaderCell textAlign="center">Sub Total</Table.HeaderCell>
+                                </Table.Header>
+                                <Table.Body>
+
+                                    {/*TODO - SORT this out*/}
+
+                                    {this.state.OrderHistory != null ? this.state.OrderHistory.map((product, i) =>
+
+                                        <Table.Row key={i}>
+                                            <Table.Cell>{product.name}{product.id}{Sales.id}</Table.Cell>
+                                            <Table.Cell textAlign="center">{product.qty}</Table.Cell>
+                                            <Table.Cell textAlign="center">£{product.price}</Table.Cell>
+                                            <Table.Cell textAlign="center">£{product.subPrice}</Table.Cell>
+                                        </Table.Row>
+                                    ) : null}
+                                </Table.Body>
+
+                            </Table><br/>
+                        </div>
+                    ) : <h3>You do not have any recent orders.</h3>}
+
                 </Tab.Pane>
             },
             {
@@ -159,6 +164,10 @@ export default class myAccount extends Component {
             },*/
             // this will be to show the customer what products they have bought in the past
         ]
+    }
+
+    test() {
+        return this.state.OrderHistory.id === this.state.PurchaseSalesHistory.id
     }
 
     handelChangeFName(e) {

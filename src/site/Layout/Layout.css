@@ -138,3 +138,19 @@
 .myAccHeader {
     text-align: center;
 }
+
+.myaccountName {
+    background: rgba(255, 0, 0, 0.1);
+}
+
+.myaccountQTY {
+    background: rgba(255, 0, 0, 0.3);
+}
+
+.myaccountPrice {
+    background: rgba(255, 0, 0, 0.5);
+}
+
+.myaccountSubPrice {
+    background: rgba(255, 0, 0, 0.7);
+}
