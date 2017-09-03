@@ -216,6 +216,39 @@ if ($_postData['action'] == 'GET_USERSALESHISTORY') {
     }
 }
 
+if ($_postData['action'] == 'GET_USERBASKET') {
+    $orderArray = [];
+    $dirtyuserID = $_postData['User'];
+
+    if (preg_match('/^[0-9]{1,3}$/', stripcslashes(trim($dirtyuserID)))) {
+
+        $cUserID = $conn->real_escape_string(trim($dirtyuserID));
+
+        $cleanUserID = strip_tags($cUserID);
+
+        try {
+            $stmt = $conn->prepare("SELECT s.id, p.name, sd.qty, sd.productPrice, SUM(sd.qty * sd.productPrice) as subTotal FROM sales as s JOIN salesdetails AS sd ON s.id = sd.salesId JOIN products AS p ON sd.productId = p.id WHERE s.userId = ? AND s.paid = 0 GROUP BY p.id;");
+            $stmt->bind_param("i", $cleanUserID);
+            $stmt->execute();
+            if ($result = $stmt->get_result()) {
+                while ($row = $result->fetch_assoc()) {
+                    array_push($orderArray, [
+                        'id' => $row['id'],
+                        'name' => $row['name'],
+                        'qty' => $row['qty'],
+                        'price' => $row['productPrice'],
+                        'subPrice' => $row['subTotal']
+                    ]);
+                }
+                echo json_encode($orderArray);
+
+            }
+        } catch (Exception $e) {
+            return false;
+        }
+    }
+}
+
 if ($_postData['action'] == 'GET_SALEID') {
     $saleIDArray = null;
     $dirtyuserID = $_postData['User'];
