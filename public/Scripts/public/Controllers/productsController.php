@@ -78,7 +78,7 @@ if ($_postData['action'] == 'GET_Category') {
         $categoryArray = [];
         try {
             $stmt = $conn->prepare("SELECT cat FROM category WHERE cat = ?");
-            $stmt->bind_param('s', $Category);
+            $stmt->bind_param('s', $cleanCategory);
             $stmt->execute();
             if ($result = $stmt->get_result()) {
                 while ($row = $result->fetch_assoc()) {
@@ -152,6 +152,69 @@ if ($_postData['action'] == 'GET_PRODUCTS') {
     }
 }
 
+if ($_postData['action'] == 'SEARCH_PRODUCTS') {
+    $prodArray = [];
+    $dirtyProdName = $_postData['prodName'];
+
+    if (preg_match('/^[A-Za-z]{1,30}$/', stripcslashes(trim($dirtyProdName)))) {
+
+        $cProdName = $conn->real_escape_string(trim($dirtyProdName));
+        $cleanProdName = strip_tags($cProdName);
+        $ProdName = '%' . $cleanProdName . '%';
+
+        try {
+            $stmt = $conn->prepare("SELECT name, price, imgPath FROM products WHERE name LIKE ?");
+            $stmt->bind_param('s', $ProdName);
+            $stmt->execute();
+            if ($result = $stmt->get_result()) {
+                while ($row = $result->fetch_assoc()) {
+                    array_push($prodArray, [
+                        'title' => $row['name'],
+//                        'description' => $row['description'],
+                        'price' => $row['price'],
+                        'image' => 'http://localhost/shukers/public/Images/Products/' . $row['imgPath'],
+                    ]);
+                }
+                echo json_encode($prodArray);
+            }
+        } catch (Exception $e) {
+            return false;
+        }
+    }
+}
+
+if ($_postData['action'] == 'GET_PRODUCTMODALDETAILS') {
+    $prodArray = [];
+    $dirtyProdName = $_postData['prodName'];
+
+
+    $cProdName = $conn->real_escape_string(trim($dirtyProdName));
+    $cleanProdName = strip_tags($cProdName);
+    $ProdName = '"' . $cleanProdName . '"';
+
+
+    try {
+        $stmt = $conn->prepare("SELECT id, name, description, price, imgPath FROM products WHERE name = ? LIMIT 1");
+        $stmt->bind_param('s', $cleanProdName);
+        $stmt->execute();
+        if ($result = $stmt->get_result()) {
+            while ($row = $result->fetch_assoc()) {
+                array_push($prodArray, [
+                    'id' => $row['id'],
+                    'title' => $row['name'],
+                    'description' => $row['description'],
+                    'price' => $row['price'],
+                    'image' => $row['imgPath'],
+                ]);
+            }
+            echo json_encode($prodArray);
+        }
+    } catch (Exception $e) {
+        return false;
+    }
+
+}
+
 if ($_postData['action'] == 'GET_USERORDERHISTORY') {
     $orderArray = [];
     $dirtyuserID = $_postData['User'];
@@ -195,6 +258,8 @@ if ($_postData['action'] == 'GET_USERSALESHISTORY') {
         $cUserID = $conn->real_escape_string(trim($dirtyuserID));
 
         $cleanUserID = strip_tags($cUserID);
+
+        //TODO - Look at this to have several orders on without joining - currently shows individual orders but all order details
 
         try {
             $stmt = $conn->prepare("SELECT id, DATE_FORMAT(saleDate, \"%W %d %M %Y\") as saleDate, totalPrice FROM shukers.sales WHERE userId = ? AND paid = 1 ORDER BY saleDate ASC;");
@@ -249,6 +314,32 @@ if ($_postData['action'] == 'GET_USERBASKET') {
     }
 }
 
+if ($_postData['action'] == 'GET_USERBASKETTOTALPRICE') {
+    $dirtyuserID = $_postData['User'];
+
+    if (preg_match('/^[0-9]{1,3}$/', stripcslashes(trim($dirtyuserID)))) {
+
+        $cUserID = $conn->real_escape_string(trim($dirtyuserID));
+
+        $cleanUserID = strip_tags($cUserID);
+
+        try {
+            $stmt = $conn->prepare("SELECT totalPrice FROM shukers.sales where userId = ? AND paid = 0;");
+            $stmt->bind_param("i", $cleanUserID);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $row = $result->fetch_assoc();
+            $BasketTotalPrice = (double)$row['totalPrice'];
+
+            echo $BasketTotalPrice;
+
+
+        } catch (Exception $e) {
+            return false;
+        }
+    }
+}
+
 if ($_postData['action'] == 'GET_SALEID') {
     $saleIDArray = null;
     $dirtyuserID = $_postData['User'];
@@ -275,7 +366,6 @@ if ($_postData['action'] == 'GET_SALEID') {
     }
 }
 
-
 if ($_postData['action'] == 'ADD_PRODUCTTOBASKET') {
 
     $dirtyprodID = $_postData['Product'];
@@ -283,7 +373,7 @@ if ($_postData['action'] == 'ADD_PRODUCTTOBASKET') {
     $SalesID = $_postData['saleID'];
     $dirtyuserID = $_postData['User'];
 
-    if ($SalesID == 0) {
+    if ($SalesID == null) {
         $SalesID = null;
     }
 

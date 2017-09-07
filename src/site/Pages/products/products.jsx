@@ -1,7 +1,7 @@
 import React, {Component} from "react";
 import {Link} from 'react-dom'
 import {prodImgResourcePublic, serverScriptsPublic} from '../../../shared/urls'
-import {Button, Grid, Header, Icon, Image, Label, Menu, Modal} from 'semantic-ui-react'
+import {Button, Grid, Header, Icon, Image, Label, Modal} from 'semantic-ui-react'
 
 import PublicUserStore from '../UserStore/PublicUserStore'
 
@@ -29,19 +29,21 @@ export default class product extends Component {
             this.urlchange();
             this.setState({counter: 1})
         }
-        fetch(serverScriptsPublic + "Controllers/productsController.php", {
-            method: 'POST',
-            headers: {"Content-type": "application/x-www-form-urlencoded; charset=UTF-8"},
-            body: JSON.stringify({
-                action: "GET_SALEID",
-                User: this.state.user.id
-            }),
-            mode: 'cors'
-        }).then(response => response.json()).then(data => {
-            this.setState({salesID: data});
-        }).catch((err) => {
-            console.error(err);
-        });
+        if (this.state.user.loggedin === false) {
+            fetch(serverScriptsPublic + "Controllers/productsController.php", {
+                method: 'POST',
+                headers: {"Content-type": "application/x-www-form-urlencoded; charset=UTF-8"},
+                body: JSON.stringify({
+                    action: "GET_SALEID",
+                    User: this.state.user.id
+                }),
+                mode: 'cors'
+            }).then(response => response.json()).then(data => {
+                this.setState({salesID: data});
+            }).catch((err) => {
+                console.error(err);
+            });
+        }
     }
 
     componentDidMount() {
@@ -89,7 +91,7 @@ export default class product extends Component {
             }),
             mode: 'cors'
         }).then(response => response.json()).then(data => {
-            this.setState({Productsdata: data});
+            this.setState({Productsdata1: data});
         }).catch((err) => {
             console.error(err);
         });
@@ -124,7 +126,7 @@ export default class product extends Component {
                                 trigger={
                                     <Button><img className="prodImg" src={prodImgResourcePublic + product.imgPath}
                                                  alt={product.name}/></Button>}>
-                                <Header content={product.name}/>
+                                <Header content={product.name + ' - £' + product.price}/>
                                 <Modal.Content image scrolling>
                                     <Image wrapped size="medium" src={prodImgResourcePublic + product.imgPath}
                                            alt={product.name}/>
@@ -164,7 +166,7 @@ export default class product extends Component {
                                 trigger={
                                     <Button><img className="prodImg" src={prodImgResourcePublic + product.imgPath}
                                                  alt={product.name}/></Button>}>
-                                <Header content={product.name}/>
+                                <Header content={product.name + ' - £' + product.price}/>
                                 <Modal.Content image scrolling>
                                     <Image wrapped size="medium" src={prodImgResourcePublic + product.imgPath}
                                            alt={product.name}/>
@@ -182,19 +184,9 @@ export default class product extends Component {
             </Grid>
         }
 
-        const {activeItem} = this.state;
-
         return (
             <div>
                 {loggedIn}
-
-                {/*TODO work out a way to populate page count from product count*/}
-                <Menu pagination>
-                    <Menu.Item name='1' active={activeItem === '1'} onClick={this.handleItemClick}/>
-                    <Menu.Item name='2' active={activeItem === '2'} onClick={this.handleItemClick}/>
-                    <Menu.Item name='3' active={activeItem === '3'} onClick={this.handleItemClick}/>
-                    <Menu.Item name='4' active={activeItem === '4'} onClick={this.handleItemClick}/>
-                </Menu>
             </div>
         )
     }

@@ -1,18 +1,44 @@
 import React, {Component} from 'react';
 import {Link} from 'react-router-dom';
-import {Button, Dropdown, Menu, Search, Sidebar} from "semantic-ui-react";
+import {Button, Dropdown, Icon, Image, Label, Menu, Modal, Search, Sidebar} from "semantic-ui-react";
 import Header from "./Header/Header"
 import Footer from "./Footer/Footer"
-import {serverScriptsPublic} from '../../shared/urls'
+import {prodImgResourcePublic, serverScriptsPublic} from '../../shared/urls'
 import * as PublicUserAction from '../Pages/publicActions/publicUserActions';
 
 import publicUserStore from '../../site/Pages/UserStore/PublicUserStore'
 
 export default class SiteLayout extends Component {
-    state = {activeItem: 'home', visible: false};
+    state = {activeItem: 'home', visible: false, modelOpen: null, modalOpen: false};
 
     toggleVisibility = () => this.setState({visible: !this.state.visible});
 
+    resetComponent = () => this.setState({isLoading: false, results: [], value: ''});
+
+    handleOpen = () => this.setState({modalOpen: true});
+
+    handleClose = () => this.setState({modalOpen: false});
+
+    handleResultSelect = (e, {result}) => {
+
+        this.setState({value: result.title});
+
+        this.getProductModel(result.title);
+
+        this.handleOpen();
+    };
+
+    handleSearchChange = (e, {value}) => {
+        this.setState({isLoading: true, value});
+
+        this.searchProducts(e.target.value);
+
+        setTimeout(() => {
+            if (this.state.value.length < 1) return this.resetComponent();
+
+            this.setState({isLoading: false})
+        }, 500)
+    };
 
     handleItemClick = (e, {name}) => this.setState({activeItem: name, visible: !this.state.visible});
 
@@ -26,17 +52,16 @@ export default class SiteLayout extends Component {
         super();
         this.state = {
             Productsdata: [],
+            ProductSearch: [],
+            ProductModal: null,
             width: 800,
             user: publicUserStore.getUser()
         }
     }
 
-    componentDidUpdate() {
-
-    }
-
     componentWillMount() {
         this.getMenuCategory();
+        this.resetComponent();
     }
 
     getMenuCategory() {
@@ -49,6 +74,61 @@ export default class SiteLayout extends Component {
             mode: 'cors'
         }).then(response => response.json()).then(data => {
             this.setState({Productsdata: data});
+        }).catch((err) => {
+            console.error(err);
+        });
+    }
+
+    searchProducts(name) {
+        fetch(serverScriptsPublic + "Controllers/productsController.php", {
+            method: 'POST',
+            headers: {"Content-type": "application/x-www-form-urlencoded; charset=UTF-8"},
+            body: JSON.stringify({
+                action: "SEARCH_PRODUCTS",
+                prodName: name
+            }),
+            mode: 'cors'
+        }).then(response => response.json()).then(data => {
+            this.setState({ProductSearch: data});
+        }).catch((err) => {
+            console.error(err);
+        });
+    }
+
+    getProductModel(name) {
+        fetch(serverScriptsPublic + "Controllers/productsController.php", {
+            method: 'POST',
+            headers: {"Content-type": "application/x-www-form-urlencoded; charset=UTF-8"},
+            body: JSON.stringify({
+                action: "GET_PRODUCTMODALDETAILS",
+                prodName: name
+            }),
+            mode: 'cors'
+        }).then(response => response.json()).then(data => {
+            this.setState({productModal: data});
+
+        }).catch((err) => {
+            console.error(err);
+        });
+    }
+
+    // TODO - Add to basket -- FUCK ME!!
+    addProductToBasket(productId, qty) {
+
+        console.log(this.state.salesID);
+        fetch(serverScriptsPublic + "Controllers/productsController.php", {
+            method: 'POST',
+            headers: {"Content-type": "application/x-www-form-urlencoded; charset=UTF-8"},
+            body: JSON.stringify({
+                action: "ADD_PRODUCTTOBASKET",
+                Product: productId,
+                Qty: qty,
+                User: this.state.user.id,
+                saleID: this.state.salesID
+            }),
+            mode: 'cors'
+        }).then(response => response.json()).then(data => {
+            this.setState({Productsdata1: data});
         }).catch((err) => {
             console.error(err);
         });
@@ -81,25 +161,30 @@ export default class SiteLayout extends Component {
         window.removeEventListener("resize", this.updateDimensions.bind(this));
     }
 
+    handelQtyChange(e) {
+        this.setState({Qty: e.target.value});
+    }
+
 
     render() {
 
         // TODO - my account - current orders and recent purchases change password
 
-        const {activeItem} = this.state;
+
+        const {activeItem, isLoading, value} = this.state;
         let userloggedin = null;
         if (this.state.user.isLoggedIn === true) {
 
             userloggedin = <Menu.Menu position='right'>
                 <Menu.Item className="myAccHeader" onClick={this.handleItemClick} as={Link} to='/myAccount'>My
                     Account<br/>Welcome {this.state.user.firstName}</Menu.Item>
+                <Menu.Item name='basket' active={activeItem === 'basket'} onClick={this.handleItemClick}
+                           as={Link} to='/basket'/>
                 <Menu.Item name='Log Out' active={activeItem === 'LogOut'} onClick={this.handleLogOutClick}
                            as={Link} to='/'/>
             </Menu.Menu>
         } else {
             userloggedin = <Menu.Menu position='right'>
-                <Menu.Item name='basket' active={activeItem === 'basket'} onClick={this.handleItemClick}
-                           as={Link} to='/basket'/>
                 <Menu.Item name='Login' active={activeItem === 'login'} onClick={this.handleItemClick}
                            as={Link} to='/login'/>
                 <Menu.Item name='Sign Up' active={activeItem === 'signUp'} onClick={this.handleItemClick}
@@ -131,10 +216,45 @@ export default class SiteLayout extends Component {
                         {userloggedin}
                         <Menu.Menu>
                             <Menu.Item>
-                                <Search placeholder='Search...'/>
+                                <Search placeholder='Search for product...'
+                                        loading={isLoading}
+                                        onResultSelect={this.handleResultSelect}
+                                        onSearchChange={this.handleSearchChange}
+                                        results={this.state.ProductSearch}
+                                        value={value}
+                                />
                             </Menu.Item>
                         </Menu.Menu>
                     </Menu>
+                    {this.state.productModal != null ? this.state.productModal.map((product, i) =>
+                        <Modal
+                            dimmer='blurring'
+                            onClose={this.handleClose}
+                            open={this.state.modalOpen}
+                        >
+                            <Modal.Header content={product.title + ' - £' + product.price}/>
+                            <Modal.Content image scrolling>
+                                <Image wrapped size="medium" src={prodImgResourcePublic + product.image}
+                                       alt={product.name}/>
+                                <Modal.Description>
+                                    <h4 className="modal_description">{product.description}</h4>
+                                </Modal.Description>
+                            </Modal.Content>
+                            <Modal.Actions>
+                                <Label pointing="right">Please select quantity</Label>
+                                <select placeholder="QTY" onChange={this.handelQtyChange.bind(this)}>
+                                    <option value={1}>1</option>
+                                    <option value={2}>2</option>
+                                    <option value={3}>3</option>
+                                    <option value={4}>4</option>
+                                    <option value={5}>5</option>
+                                    <option value={null}>For more than 5 please call us</option>
+                                </select>
+                                <Button onClick={() => this.addProductToBasket(product.id, this.state.Qty)}>
+                                    <Icon name='shop'/> Add to Basket
+                                </Button>
+                            </Modal.Actions>
+                        </Modal>) : null}
                     <div>{this.props.children}</div>
                     <Footer/>
 
@@ -154,6 +274,10 @@ export default class SiteLayout extends Component {
 
                         <Sidebar as={Menu} animation='scale down' width='wide' visible={visible} icon='labeled'
                                  stackable inverted color={"red"}>
+                            <h3><Icon name='browser'/><br/>For a better experience please visit us on a computer</h3>
+                            <Menu.Item>
+                                <Search placeholder='Search...'/>
+                            </Menu.Item>
                             <Menu.Item name='home' active={activeItem === 'home'} onClick={this.handleItemClick}
                                        as={Link}
                                        to='/'/>
