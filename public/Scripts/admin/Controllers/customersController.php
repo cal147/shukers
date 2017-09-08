@@ -139,6 +139,44 @@ if(session_status() === PHP_SESSION_ACTIVE) {
             }
         }
 
+        if ($_postData['action'] == 'GET_CUSTOMER') {
+
+            $customers = [];
+            try {
+
+                $stmt = $conn->prepare("SELECT u.id, u.loginId, u.forname, u.surname, u.contactNumber, u.isStaff, u.email, a.id AS 'addressId', a.houseNum, a.firstLine, a.postcode, a.home, a.delivery FROM users as u INNER JOIN address AS a ON u.id = a.userId WHERE u.id = ?");
+                $stmt->bind_param("s", $_postData['id']);
+                $stmt->execute();
+
+                if ($result = $stmt->get_result()) {
+                    while ($row = $result->fetch_assoc()) {
+                        array_push($customers, [
+                            'id' => $row['id'],
+                            'loginId' => $row['loginId'],
+                            'forname' => $row['forname'],
+                            'surname' => $row['surname'],
+                            'contactNumber' => $row['contactNumber'],
+                            'isStaff' => boolval($row['isStaff']),
+                            'email' => $row['email'],
+                            'addressId' => $row['addressId'],
+                            'houseNum' => $row['houseNum'],
+                            'street' => $row['firstLine'],
+                            'postcode' => $row['postcode'],
+                            'home' => boolval($row['home']),
+                            'delivery' => boolval($row['delivery']),
+                        ]);
+                    }
+                    echo json_encode($customers);
+                }else{
+                    echo json_encode(['Message' => 'Something went wrong!', 'success' => false]);
+                }
+
+
+            } catch (Exception $e) {
+                return false;
+            }
+        }
+
 
         if($_postData['action'] == "CHECK_LOGIN_NAME"){
             $loginName = $_postData['name'];

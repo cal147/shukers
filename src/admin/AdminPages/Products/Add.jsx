@@ -249,6 +249,7 @@ class Cat extends Component {
                     onCancel={this.handleCancel}
                 />
             </Grid.Row>
+
         );
     }
 }
