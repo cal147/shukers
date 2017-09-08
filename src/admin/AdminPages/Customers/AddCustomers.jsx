@@ -43,24 +43,22 @@ export default class AddCustomers extends Component{
     handleSubmit(event) {
        event.preventDefault();
 
-       this.state.showDelivery && this.state.deliveryNum === ""?this.setState({errorState: true, errorMessage:"Check all field are Correct"}):this.setState({errorState: false, errorMessage:""});
-       this.state.showDelivery && this.state.deliveryStreet === ""?this.setState({errorState: true, errorMessage:"Check all field are Correct"}):this.setState({errorState: false, errorMessage:""});
-       this.state.showDelivery && this.state.deliveryPostcode === ""?this.setState({errorState: true, errorMessage:"Check all field are Correct"}):this.setState({errorState: false, errorMessage:""});
-       this.state.postcode===""?this.setState({errorState: true, errorMessage:"Check all field are Correct"}):this.setState({errorState: false, errorMessage:""});
-       this.state.street===""?this.setState({errorState: true, errorMessage:"Check all field are Correct"}):this.setState({errorState: false, errorMessage:""});
-       this.state.houseNumber===""?this.setState({errorState: true, errorMessage:"Check all field are Correct"}):this.setState({errorState: false, errorMessage:""});
-       this.state.email===""?this.setState({errorState: true, errorMessage:"Check all field are Correct"}):this.setState({errorState: false, errorMessage:""});
-       this.state.surname===""?this.setState({errorState: true, errorMessage:"Check all field are Correct"}):this.setState({errorState: false, errorMessage:""});
-       this.state.firstName===""?this.setState({errorState: true, errorMessage:"Check all field are Correct"}):this.setState({errorState: false, errorMessage:""});
-       this.state.loginName===""?this.setState({errorState: true, errorMessage:"Check all field are Correct"}):this.setState({errorState: false, errorMessage:""});
-       this.state.password===""?this.setState({errorState: true, errorMessage:"Check all field are Correct"}):this.setState({errorState: false, errorMessage:""});
-       this.state.contactNumber===""?this.setState({errorState: true, errorMessage:"Check all field are Correct"}):this.setState({errorState: false, errorMessage:""});
-       this.state.userTakenColour ==="red"?this.setState({errorState: true, errorMessage:"Check all field are Correct"}):this.setState({errorState: false, errorMessage:""});
-
-
+       this.state.showDelivery && this.state.deliveryNum == ""?this.setState({errorState: true, errorMessage:"Check all field are Correct"}):this.setState({errorState: false, errorMessage:""});
+       this.state.showDelivery && this.state.deliveryStreet == ""?this.setState({errorState: true, errorMessage:"Check all field are Correct"}):this.setState({errorState: false, errorMessage:""});
+       this.state.showDelivery && this.state.deliveryPostcode == ""?this.setState({errorState: true, errorMessage:"Check all field are Correct"}):this.setState({errorState: false, errorMessage:""});
+       this.state.postcode==""?this.setState({errorState: true, errorMessage:"Check all field are Correct"}):this.setState({errorState: false, errorMessage:""});
+       this.state.street==""?this.setState({errorState: true, errorMessage:"Check all field are Correct"}):this.setState({errorState: false, errorMessage:""});
+       this.state.houseNumber==""?this.setState({errorState: true, errorMessage:"Check all field are Correct"}):this.setState({errorState: false, errorMessage:""});
+       this.state.email==""?this.setState({errorState: true, errorMessage:"Check all field are Correct"}):this.setState({errorState: false, errorMessage:""});
+       this.state.surname==""?this.setState({errorState: true, errorMessage:"Check all field are Correct"}):this.setState({errorState: false, errorMessage:""});
+       this.state.firstName==""?this.setState({errorState: true, errorMessage:"Check all field are Correct"}):this.setState({errorState: false, errorMessage:""});
+       this.state.loginName==""?this.setState({errorState: true, errorMessage:"Check all field are Correct"}):this.setState({errorState: false, errorMessage:""});
+       this.state.password==""?this.setState({errorState: true, errorMessage:"Check all field are Correct"}):this.setState({errorState: false, errorMessage:""});
+       this.state.contactNumber==""?this.setState({errorState: true, errorMessage:"Check all field are Correct"}):this.setState({errorState: false, errorMessage:""});
+       this.state.userTakenColour != "green"?this.setState({errorState: true, errorMessage:"Check all field are Correct"}):this.setState({errorState: false, errorMessage:""});
 
         if(!this.state.errorState){
-
+            console.log(this.state);
             if(this.state.showDelivery){
                 fetch(serverScripts + "admin/Controllers/customersController.php", {
                     method: 'POST',
