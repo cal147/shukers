@@ -219,6 +219,7 @@ export default class AddCustomers extends Component{
 
     takeCheckBox(e, data){
         this.setState({[data.id]:data.checked});
+
     }
 
 
