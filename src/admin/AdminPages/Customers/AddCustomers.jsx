@@ -226,6 +226,7 @@ export default class AddCustomers extends Component{
     render() {
         return (
             <Tab.Pane>
+
                 <form onSubmit={this.handleSubmit.bind(this)}>
                     <Grid style={{marginTop:"20px", marginBottom:"20px"}}>
 
