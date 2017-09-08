@@ -92,10 +92,72 @@ if(session_status() === PHP_SESSION_ACTIVE) {
                 $stmt->execute();
 
                 $stmt->close();
+
+                echo json_encode(['Message' => 'Added', 'success' => true]);
+
             }catch (Exception $e){
-                echo $e;
+                echo json_encode(['Message' => 'Something went wrong!', 'success' => false]);
             }
 
+        }
+
+
+        if ($_postData['action'] == 'GET_CUSTOMERS') {
+
+            $customers = [];
+            try {
+
+                $stmt = $conn->prepare("SELECT u.id, u.loginId, u.forname, u.surname, u.contactNumber, u.isStaff, u.email, a.id AS 'addressId', a.houseNum, a.firstLine, a.postcode, a.home, a.delivery FROM users as u INNER JOIN address AS a ON u.id = a.userId");
+                $stmt->execute();
+
+                if ($result = $stmt->get_result()) {
+                    while ($row = $result->fetch_assoc()) {
+                        array_push($customers, [
+                            'id' => $row['id'],
+                            'loginId' => $row['loginId'],
+                            'forname' => $row['forname'],
+                            'surname' => $row['surname'],
+                            'contactNumber' => $row['contactNumber'],
+                            'isStaff' => boolval($row['isStaff']),
+                            'email' => $row['email'],
+                            'addressId' => $row['addressId'],
+                            'houseNum' => $row['houseNum'],
+                            'street' => $row['firstLine'],
+                            'postcode' => $row['postcode'],
+                            'home' => boolval($row['home']),
+                            'delivery' => boolval($row['delivery']),
+                        ]);
+                    }
+                    echo json_encode($customers);
+                }else{
+                    echo json_encode(['Message' => 'Something went wrong!', 'success' => false]);
+                }
+
+
+            } catch (Exception $e) {
+                return false;
+            }
+        }
+
+
+        if($_postData['action'] == "CHECK_LOGIN_NAME"){
+            $loginName = $_postData['name'];
+            try{
+                $stmt = $conn->prepare("SELECT loginId FROM users WHERE loginId=?");
+                $stmt->bind_param("s", $loginName);
+                $stmt->execute();
+
+                if ($result = $stmt->get_result()) {
+                    if($result->num_rows == 0){
+                        echo json_encode(['Message' => 'ok', 'success' => true]);
+                    }else{
+                        echo json_encode(['Message' => 'The user name is taken', 'success' => true]);
+                    }
+                }
+
+            }catch(Exception $e){
+                echo json_encode(['Message' => 'Something went wrong!', 'success' => false]);
+            }
         }
 
     }

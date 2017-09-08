@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import '../../AdminMaster.css';
 
-import {Tab, Grid, Button, Label, Checkbox, Input} from 'semantic-ui-react';
+import {Tab, Grid, Button, Label, Checkbox, Input, Message} from 'semantic-ui-react';
 
 import adminUserStore from '../../AdminStores/AdminUserStore';
 import {serverScripts} from '../../../shared/urls';
@@ -26,12 +26,15 @@ export default class AddCustomers extends Component{
             loginName:"",
             password:"",
             errorState: true,
+            userTaken:"",
+            userTakenColour:"",
             errorMessage: "",
             deliveryAddress: null,
             homeAddress: null,
             staffMember: false,
             showDelivery:false,
             contactNumber:"",
+            successMessage:false,
         };
     }
 
@@ -43,20 +46,20 @@ export default class AddCustomers extends Component{
        this.state.showDelivery && this.state.deliveryNum === ""?this.setState({errorState: true, errorMessage:"Check all field are Correct"}):this.setState({errorState: false, errorMessage:""});
        this.state.showDelivery && this.state.deliveryStreet === ""?this.setState({errorState: true, errorMessage:"Check all field are Correct"}):this.setState({errorState: false, errorMessage:""});
        this.state.showDelivery && this.state.deliveryPostcode === ""?this.setState({errorState: true, errorMessage:"Check all field are Correct"}):this.setState({errorState: false, errorMessage:""});
-       this.state.postcode==""?this.setState({errorState: true, errorMessage:"Check all field are Correct"}):this.setState({errorState: false, errorMessage:""});
-       this.state.street==""?this.setState({errorState: true, errorMessage:"Check all field are Correct"}):this.setState({errorState: false, errorMessage:""});
-       this.state.houseNumber==""?this.setState({errorState: true, errorMessage:"Check all field are Correct"}):this.setState({errorState: false, errorMessage:""});
-       this.state.email==""?this.setState({errorState: true, errorMessage:"Check all field are Correct"}):this.setState({errorState: false, errorMessage:""});
-       this.state.surname==""?this.setState({errorState: true, errorMessage:"Check all field are Correct"}):this.setState({errorState: false, errorMessage:""});
-       this.state.firstName==""?this.setState({errorState: true, errorMessage:"Check all field are Correct"}):this.setState({errorState: false, errorMessage:""});
-       this.state.loginName==""?this.setState({errorState: true, errorMessage:"Check all field are Correct"}):this.setState({errorState: false, errorMessage:""});
-       this.state.password==""?this.setState({errorState: true, errorMessage:"Check all field are Correct"}):this.setState({errorState: false, errorMessage:""});
-       this.state.contactNumber==""?this.setState({errorState: true, errorMessage:"Check all field are Correct"}):this.setState({errorState: false, errorMessage:""});
+       this.state.postcode===""?this.setState({errorState: true, errorMessage:"Check all field are Correct"}):this.setState({errorState: false, errorMessage:""});
+       this.state.street===""?this.setState({errorState: true, errorMessage:"Check all field are Correct"}):this.setState({errorState: false, errorMessage:""});
+       this.state.houseNumber===""?this.setState({errorState: true, errorMessage:"Check all field are Correct"}):this.setState({errorState: false, errorMessage:""});
+       this.state.email===""?this.setState({errorState: true, errorMessage:"Check all field are Correct"}):this.setState({errorState: false, errorMessage:""});
+       this.state.surname===""?this.setState({errorState: true, errorMessage:"Check all field are Correct"}):this.setState({errorState: false, errorMessage:""});
+       this.state.firstName===""?this.setState({errorState: true, errorMessage:"Check all field are Correct"}):this.setState({errorState: false, errorMessage:""});
+       this.state.loginName===""?this.setState({errorState: true, errorMessage:"Check all field are Correct"}):this.setState({errorState: false, errorMessage:""});
+       this.state.password===""?this.setState({errorState: true, errorMessage:"Check all field are Correct"}):this.setState({errorState: false, errorMessage:""});
+       this.state.contactNumber===""?this.setState({errorState: true, errorMessage:"Check all field are Correct"}):this.setState({errorState: false, errorMessage:""});
+       this.state.userTakenColour ==="red"?this.setState({errorState: true, errorMessage:"Check all field are Correct"}):this.setState({errorState: false, errorMessage:""});
 
 
 
         if(!this.state.errorState){
-            //Code for the submit in here
 
             if(this.state.showDelivery){
                 fetch(serverScripts + "admin/Controllers/customersController.php", {
@@ -83,8 +86,36 @@ export default class AddCustomers extends Component{
                     }),
                     mode: 'cors'
                 }).then((response) => response.json()).then((data) => {
-                    console.log(data);
-                    //TODO display customer added message && refresh the page
+
+                    if(data.success){
+                        alert(data.Message);
+                        this.setState({
+                            activeComp: null,
+                            user: adminUserStore.getUser(),
+                            deliveryNum:"",
+                            deliveryStreet:"",
+                            deliveryPostcode:"",
+                            postcode: "",
+                            street: "",
+                            houseNumber: "",
+                            email:"",
+                            surname:"",
+                            firstName:"",
+                            loginName:"",
+                            password:"",
+                            errorState: true,
+                            userTaken:"",
+                            userTakenColour:"",
+                            errorMessage: "",
+                            deliveryAddress: null,
+                            homeAddress: null,
+                            staffMember: false,
+                            showDelivery:false,
+                            contactNumber:""
+                        });
+                    }else{
+                        alert(data.Message);
+                    }
 
                 }).catch((err) => {
                     console.error(err);
@@ -111,9 +142,34 @@ export default class AddCustomers extends Component{
                     }),
                     mode: 'cors'
                 }).then((response) => response.json()).then((data) => {
-                    console.log(data);
+                    if(data.success){
+                        this.setState({
+                            deliveryNum:"",
+                            deliveryStreet:"",
+                            deliveryPostcode:"",
+                            postcode: "",
+                            street: "",
+                            houseNumber: "",
+                            email:"",
+                            surname:"",
+                            firstName:"",
+                            loginName:"",
+                            password:"",
+                            errorState: true,
+                            userTaken:"",
+                            userTakenColour:"",
+                            errorMessage: "",
+                            deliveryAddress: false,
+                            homeAddress: false,
+                            staffMember: false,
+                            showDelivery:false,
+                            contactNumber:"",
+                            successMessage:true
+                        });
+                    }else{
+                        alert(data.Message);
+                    }
 
-                    //TODO display customer added message && refresh the page
 
                 }).catch((err) => {
                     console.error(err);
@@ -125,8 +181,10 @@ export default class AddCustomers extends Component{
     }
 
     takeInput(e, {id}){
+        let tValue = e.target.value;
+
         if(id != null){
-            this.setState({[id]: e.target.value});
+            this.setState({[id]: tValue});
         }else{
             let pass2 = e.target.value;
             if (this.state.password === pass2){
@@ -134,6 +192,28 @@ export default class AddCustomers extends Component{
             }else{
                 this.setState({errorMessage: "Passwords dont Match \u2716", errorState: true});
             }
+        }
+
+        if(id === "loginName"){
+            console.log(tValue);
+            fetch(serverScripts + "admin/Controllers/customersController.php", {
+                method: 'POST',
+                headers: {"Content-type": "application/x-www-form-urlencoded; charset=UTF-8"},
+                body: JSON.stringify({
+                    action: "CHECK_LOGIN_NAME",
+                    name:tValue,
+                    sessionId: this.state.user.serverSession,
+                }),
+                mode: 'cors'
+            }).then((response) => response.json()).then((data) => {
+                if(data.Message === "ok"){
+                    this.setState({userTaken: "\u2714", userTakenColour:"green"});
+                }else{
+                    this.setState({userTaken: data.Message, userTakenColour:"red"});
+                }
+            }).catch((err) => {
+                console.error(err);
+            });
         }
 
 
@@ -150,13 +230,14 @@ export default class AddCustomers extends Component{
                 <form onSubmit={this.handleSubmit.bind(this)}>
                     <Grid style={{marginTop:"20px", marginBottom:"20px"}}>
 
-                        <Grid.Row columns={10} >
+                        <Grid.Row columns={14} >
                             <Grid.Column width={2} >
                                 <Label basic pointing='right'>Login Name </Label>
                             </Grid.Column>
                             <Grid.Column width={8}>
-                                <Input fluid id="loginName" onChange={this.takeInput.bind(this)}/>
+                                <Input fluid id="loginName" value={this.state.loginName} onChange={this.takeInput.bind(this)}/>
                             </Grid.Column>
+                            <Grid.Column width={4}><span><h3 style={{color:this.state.userTakenColour}}> {this.state.userTaken} </h3></span></Grid.Column>
                         </Grid.Row>
 
                         <Grid.Row columns={10} >
@@ -164,7 +245,7 @@ export default class AddCustomers extends Component{
                                 <Label basic pointing='right'>Forename </Label>
                             </Grid.Column>
                             <Grid.Column width={8}>
-                                <Input fluid id="firstName" onChange={this.takeInput.bind(this)}/>
+                                <Input fluid id="firstName" value={this.state.firstName} onChange={this.takeInput.bind(this)}/>
                             </Grid.Column>
                         </Grid.Row>
 
@@ -173,7 +254,7 @@ export default class AddCustomers extends Component{
                             <Label basic pointing='right'>Surname </Label>
                         </Grid.Column>
                         <Grid.Column width={8}>
-                            <Input fluid id="surname" onChange={this.takeInput.bind(this)}/>
+                            <Input fluid id="surname" value={this.state.surname} onChange={this.takeInput.bind(this)}/>
                         </Grid.Column>
                     </Grid.Row>
 
@@ -182,7 +263,7 @@ export default class AddCustomers extends Component{
                                 <Label basic pointing='right'>Email Address </Label>
                             </Grid.Column>
                             <Grid.Column width={8}>
-                                <Input fluid id="email" onChange={this.takeInput.bind(this)}/>
+                                <Input fluid id="email" value={this.state.email} onChange={this.takeInput.bind(this)}/>
                             </Grid.Column>
                         </Grid.Row>
 
@@ -191,7 +272,7 @@ export default class AddCustomers extends Component{
                                 <Label basic pointing='right'>Staff Member</Label>
                             </Grid.Column>
                             <Grid.Column width={8}>
-                                <Checkbox  id="staffMember" onChange={this.takeCheckBox.bind(this)}/>
+                                <Checkbox  id="staffMember" checked={this.state.staffMember} onChange={this.takeCheckBox.bind(this)}/>
                             </Grid.Column>
                         </Grid.Row>
 
@@ -200,7 +281,7 @@ export default class AddCustomers extends Component{
                                 <Label basic pointing='right'>House Number </Label>
                             </Grid.Column>
                             <Grid.Column width={2}>
-                                <Input fluid id="houseNumber" onChange={this.takeInput.bind(this)}/>
+                                <Input fluid id="houseNumber" value={this.state.houseNumber} onChange={this.takeInput.bind(this)}/>
                             </Grid.Column>
                         </Grid.Row>
 
@@ -209,7 +290,7 @@ export default class AddCustomers extends Component{
                                 <Label basic pointing='right'>Street </Label>
                             </Grid.Column>
                             <Grid.Column width={8}>
-                                <Input fluid id="street" onChange={this.takeInput.bind(this)}/>
+                                <Input fluid id="street" value={this.state.street} onChange={this.takeInput.bind(this)}/>
                             </Grid.Column>
                         </Grid.Row>
 
@@ -218,7 +299,7 @@ export default class AddCustomers extends Component{
                                 <Label basic pointing='right'>Postcode </Label>
                             </Grid.Column>
                             <Grid.Column width={8}>
-                                <Input fluid id="postcode" onChange={this.takeInput.bind(this)}/>
+                                <Input fluid id="postcode" value={this.state.postcode} onChange={this.takeInput.bind(this)}/>
                             </Grid.Column>
                         </Grid.Row>
 
@@ -227,7 +308,7 @@ export default class AddCustomers extends Component{
                                 <Label basic pointing='right'>Contact Number</Label>
                             </Grid.Column>
                             <Grid.Column width={8}>
-                                <Input fluid id="contactNumber" onChange={this.takeInput.bind(this)}/>
+                                <Input fluid id="contactNumber" value={this.state.contactNumber} onChange={this.takeInput.bind(this)}/>
                             </Grid.Column>
                         </Grid.Row>
 
@@ -237,7 +318,7 @@ export default class AddCustomers extends Component{
                                 <Label basic pointing='right'>Home Address</Label>
                             </Grid.Column>
                             <Grid.Column width={8}>
-                                <Checkbox id="homeAddress" onChange={this.takeCheckBox.bind(this)}/>
+                                <Checkbox id="homeAddress" checked={this.state.homeAddress} onChange={this.takeCheckBox.bind(this)}/>
                             </Grid.Column>
                         </Grid.Row>
 
@@ -246,10 +327,10 @@ export default class AddCustomers extends Component{
                                 <Label basic pointing='right'>Delivery Address</Label>
                             </Grid.Column>
                             <Grid.Column >
-                                <Checkbox  id="deliveryAddress" onChange={this.takeCheckBox.bind(this)}/>
+                                <Checkbox  id="deliveryAddress" checked={this.state.deliveryAddress} onChange={this.takeCheckBox.bind(this)}/>
                             </Grid.Column>
                             <Grid.Column width={3}>
-                                <Button color={'red'} name="deliveryAddress" onClick={()=>{this.setState({showDelivery:!this.state.showDelivery})}}>Add Delivery Address</Button>
+                                <div color={'red'} name="deliveryAddress" className="ui red button" onClick={()=>{this.setState({showDelivery:!this.state.showDelivery})}}>Add Delivery Address</div>
                             </Grid.Column>
                         </Grid.Row>
                         {this.state.showDelivery?
@@ -257,17 +338,17 @@ export default class AddCustomers extends Component{
                                 <Grid.Row columns={16}>
                                     <Grid.Column width={5}></Grid.Column>
                                     <Grid.Column width={2} ><Label basic pointing='right'>House Number </Label></Grid.Column>
-                                    <Grid.Column width={8}><Input fluid id="deliveryNum" onChange={this.takeInput.bind(this)}/></Grid.Column>
+                                    <Grid.Column width={8}><Input fluid id="deliveryNum" value={this.state.deliveryNum} onChange={this.takeInput.bind(this)}/></Grid.Column>
                                 </Grid.Row>
                                 <Grid.Row columns={16}>
                                     <Grid.Column width={5}></Grid.Column>
                                     <Grid.Column width={2} ><Label basic pointing='right'>Street</Label></Grid.Column>
-                                    <Grid.Column width={8}><Input fluid id="deliveryStreet" onChange={this.takeInput.bind(this)}/></Grid.Column>
+                                    <Grid.Column width={8}><Input fluid id="deliveryStreet" value={this.state.street} onChange={this.takeInput.bind(this)}/></Grid.Column>
                                 </Grid.Row>
                                 <Grid.Row columns={16}>
                                     <Grid.Column width={5}></Grid.Column>
                                     <Grid.Column width={2} ><Label basic pointing='right'>Postcode </Label></Grid.Column>
-                                    <Grid.Column width={8}><Input fluid id="deliveryPostcode" onChange={this.takeInput.bind(this)}/></Grid.Column>
+                                    <Grid.Column width={8}><Input fluid id="deliveryPostcode" value={this.state.deliveryPostcode} onChange={this.takeInput.bind(this)}/></Grid.Column>
                                 </Grid.Row>
                             </Grid>
                         :null}
@@ -277,7 +358,7 @@ export default class AddCustomers extends Component{
                                 <Label basic pointing='right'>Password</Label>
                             </Grid.Column>
                             <Grid.Column width={8}>
-                                <Input fluid type="password" id="password" onChange={this.takeInput.bind(this)}/>
+                                <Input fluid type="password" id="password" value={this.state.password} onChange={this.takeInput.bind(this)}/>
                             </Grid.Column>
                         </Grid.Row>
 
@@ -297,6 +378,17 @@ export default class AddCustomers extends Component{
                             </Grid.Column>
                         </Grid.Row>
 
+                        <Grid.Row>
+                            <Grid.Column width={2}></Grid.Column>
+                            <Grid.Column width={10}>
+                                {this.state.successMessage? <Message
+                                    success
+                                    header='Your user registration was successful'
+                                    content='You may now log-in with the username you have chosen'
+                                />: null}
+                            </Grid.Column>
+
+                        </Grid.Row>
 
                     </Grid>
                 </form>
