@@ -16,7 +16,7 @@ if ($_postData['action'] == 'GET_HOMEPRODUCTS') {
 
     $prodArray = [];
     try {
-        $stmt = $conn->prepare("SELECT p.id, p.name, p.description, p.price, p.onOffer, p.imgPath, c.cat FROM products as p join category as c on p.catId = c.id order by rand() LIMIT 3");
+        $stmt = $conn->prepare("SELECT p.id, p.name, p.description, p.price, p.onOffer, p.imgPath, c.cat FROM products AS p JOIN category AS c ON p.catId = c.id ORDER BY rand() LIMIT 3");
         $stmt->execute();
 
         if ($result = $stmt->get_result()) {
@@ -104,7 +104,7 @@ if ($_postData['action'] == 'SELECT_SPECIFICCATEGORY') {
         $cleanProd = strip_tags($cProd);
         $productArray = [];
         try {
-            $stmt = $conn->prepare("SELECT p.id, p.name, p.description, p.price, p.onOffer, p.imgPath, c.cat FROM products as p join category as c on p.catId = c.id WHERE c.cat=?");
+            $stmt = $conn->prepare("SELECT p.id, p.name, p.description, p.price, p.onOffer, p.imgPath, c.cat FROM products AS p JOIN category AS c ON p.catId = c.id WHERE c.cat=?");
             $stmt->bind_param("s", $cleanProd);
             $stmt->execute();
 
@@ -131,7 +131,7 @@ if ($_postData['action'] == 'SELECT_SPECIFICCATEGORY') {
 if ($_postData['action'] == 'GET_PRODUCTS') {
     $prodArray = [];
     try {
-        $stmt = $conn->prepare("SELECT p.id, p.name, p.description, p.price, p.onOffer, p.imgPath, c.cat FROM products as p join category as c on p.catId = c.id");
+        $stmt = $conn->prepare("SELECT p.id, p.name, p.description, p.price, p.onOffer, p.imgPath, c.cat FROM products AS p JOIN category AS c ON p.catId = c.id");
         $stmt->execute();
         if ($result = $stmt->get_result()) {
             while ($row = $result->fetch_assoc()) {
@@ -226,7 +226,7 @@ if ($_postData['action'] == 'GET_USERORDERHISTORY') {
         $cleanUserID = strip_tags($cUserID);
 
         try {
-            $stmt = $conn->prepare("SELECT s.id, p.name, sd.qty, sd.productPrice, SUM(sd.qty * sd.productPrice) as subTotal FROM sales as s JOIN salesdetails AS sd ON s.id = sd.salesId JOIN products AS p ON sd.productId = p.id WHERE s.userId = ? AND s.paid = 1 GROUP BY p.id;");
+            $stmt = $conn->prepare("SELECT s.id, p.name, sd.qty, sd.productPrice, SUM(sd.qty * sd.productPrice) AS subTotal FROM sales AS s JOIN salesdetails AS sd ON s.id = sd.salesId JOIN products AS p ON sd.productId = p.id WHERE s.userId = ? AND s.paid = 1 GROUP BY p.id;");
             $stmt->bind_param("i", $cleanUserID);
             $stmt->execute();
             if ($result = $stmt->get_result()) {
@@ -262,7 +262,7 @@ if ($_postData['action'] == 'GET_USERSALESHISTORY') {
         //TODO - Look at this to have several orders on without joining - currently shows individual orders but all order details
 
         try {
-            $stmt = $conn->prepare("SELECT id, DATE_FORMAT(saleDate, \"%W %d %M %Y\") as saleDate, totalPrice FROM shukers.sales WHERE userId = ? AND paid = 1 ORDER BY saleDate ASC;");
+            $stmt = $conn->prepare("SELECT id, DATE_FORMAT(saleDate, \"%W %d %M %Y\") AS saleDate, totalPrice FROM shukers.sales WHERE userId = ? AND paid = 1 ORDER BY saleDate ASC;");
             $stmt->bind_param("i", $cleanUserID);
             $stmt->execute();
             if ($result = $stmt->get_result()) {
@@ -292,7 +292,7 @@ if ($_postData['action'] == 'GET_USERBASKET') {
         $cleanUserID = strip_tags($cUserID);
 
         try {
-            $stmt = $conn->prepare("SELECT s.id, p.name, sd.qty, sd.productPrice, SUM(sd.qty * sd.productPrice) as subTotal FROM sales as s JOIN salesdetails AS sd ON s.id = sd.salesId JOIN products AS p ON sd.productId = p.id WHERE s.userId = ? AND s.paid = 0 GROUP BY p.id;");
+            $stmt = $conn->prepare("SELECT s.id, p.name, sd.qty, sd.productPrice, SUM(sd.qty * sd.productPrice) AS subTotal FROM sales AS s JOIN salesdetails AS sd ON s.id = sd.salesId JOIN products AS p ON sd.productId = p.id WHERE s.userId = ? AND s.paid = 0 GROUP BY p.id;");
             $stmt->bind_param("i", $cleanUserID);
             $stmt->execute();
             if ($result = $stmt->get_result()) {
@@ -324,7 +324,7 @@ if ($_postData['action'] == 'GET_USERBASKETTOTALPRICE') {
         $cleanUserID = strip_tags($cUserID);
 
         try {
-            $stmt = $conn->prepare("SELECT totalPrice FROM shukers.sales where userId = ? AND paid = 0;");
+            $stmt = $conn->prepare("SELECT totalPrice FROM shukers.sales WHERE userId = ? AND paid = 0;");
             $stmt->bind_param("i", $cleanUserID);
             $stmt->execute();
             $result = $stmt->get_result();
@@ -366,6 +366,38 @@ if ($_postData['action'] == 'GET_SALEID') {
     }
 }
 
+if ($_postData['action'] == 'USEREXIST') {
+    $dirtyuser = $_postData['userName'];
+    $loginexist = 0;
+
+    if (preg_match('/^[A-Za-z0-9]{1,30}$/', stripcslashes(trim($dirtyuser)))) {
+
+        $cUser = $conn->real_escape_string(trim($dirtyuser));
+
+        $cleanUser = strip_tags($cUser);
+
+        try {
+            $stmt = $conn->prepare("SELECT id, count(loginId) AS user FROM users WHERE loginId = ?");
+            $stmt->bind_param("s", $cleanUser);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $row = $result->fetch_assoc();
+            $loginCount = (int)$row['user'];
+            if ($loginCount === 1) {
+                $loginexist = true;
+                $userID = (int)$row['id'];
+            } else {
+                $loginexist = 0;
+                $userID = false;
+            }
+            echo($userID);
+
+        } catch (Exception $e) {
+            return false;
+        }
+    }
+}
+
 if ($_postData['action'] == 'ADD_PRODUCTTOBASKET') {
 
     $dirtyprodID = $_postData['Product'];
@@ -399,7 +431,7 @@ if ($_postData['action'] == 'ADD_PRODUCTTOBASKET') {
                 if ($stmt->execute()) {
                     echo json_encode(['Message' => 'New sale created', 'success' => true]);
 
-                    $stmt = $conn->prepare("INSERT INTO salesdetails(salesId,productId,productPrice,qty) VALUES(LAST_INSERT_ID(),?,(select price from products where id=?),?);");
+                    $stmt = $conn->prepare("INSERT INTO salesdetails(salesId,productId,productPrice,qty) VALUES(LAST_INSERT_ID(),?,(SELECT price FROM products WHERE id=?),?);");
                     $stmt->bind_param("iii", $cleanProductID, $cleanProductID, $cleanQty);
 
                     if ($stmt->execute()) {
@@ -417,12 +449,12 @@ if ($_postData['action'] == 'ADD_PRODUCTTOBASKET') {
 
         } else {
             try {
-                $stmt = $conn->prepare("insert into salesdetails (salesId, productId, productPrice, qty) values (?, ?, (select price from products where id = ?), ?);");
+                $stmt = $conn->prepare("INSERT INTO salesdetails (salesId, productId, productPrice, qty) VALUES (?, ?, (SELECT price FROM products WHERE id = ?), ?);");
                 $stmt->bind_param("iiii", $SalesID, $cleanProductID, $cleanProductID, $cleanQty);
 
                 if ($stmt->execute()) {
                     echo json_encode(['Message' => 'Product Added to Basket', 'success' => true]);
-                    $stmt = $conn->prepare("UPDATE sales SET totalPrice = (SELECT SUM(totalPrice) from salesdetails WHERE salesID = ?) WHERE `id` = ?;");
+                    $stmt = $conn->prepare("UPDATE sales SET totalPrice = (SELECT SUM(totalPrice) FROM salesdetails WHERE salesID = ?) WHERE `id` = ?;");
                     $stmt->bind_param("ii", $SalesID, $SalesID);
 
                     if ($stmt->execute()) {
@@ -441,4 +473,44 @@ if ($_postData['action'] == 'ADD_PRODUCTTOBASKET') {
 
     }
 
+}
+
+if ($_postData['action'] == 'UPDATE_PASSWORD') {
+
+    $dirtyuser = $_postData['userName'];
+    $dirtypass = $_postData['pass'];
+    $dirtyconpass = $_postData['conPass'];
+
+    if (preg_match('/^[0-9]{1,3}$/', stripcslashes(trim($dirtyuser))) && preg_match('/^[A-Za-z0-9\-!"£$%\^&*()]{5,15}$/', stripcslashes(trim($dirtypass)))) {
+
+        $cName = $conn->real_escape_string(trim($dirtyuser));
+        $cleanName = strip_tags($cName);
+        $cPass = $conn->real_escape_string(trim($dirtypass));
+        $cleanPass = strip_tags($cPass);
+        $cCPass = $conn->real_escape_string(trim($dirtyconpass));
+        $cleanConPass = strip_tags($cCPass);
+
+        try {
+            if ($cleanPass === $cleanConPass) {
+                $passHash = password_hash($cleanPass, 1);
+
+                $stmt = $conn->prepare("UPDATE users SET password = ? WHERE loginId = ?");
+                $stmt->bind_param("s", $passHash);
+                $stmt->bind_param("s", $cleanName);
+
+                if($stmt->execute()){
+                    echo 'password changed for user id = ' . $cleanName;
+                } else {
+                    echo 'error in sql';
+                }
+
+            };
+        } catch (Exception $e) {
+            return false;
+        }
+
+        return false;
+    } else {
+        return false;
+    }
 }

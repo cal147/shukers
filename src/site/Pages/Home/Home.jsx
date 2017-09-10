@@ -85,14 +85,8 @@ export default class home extends Component {
                                     <br/>
                                 </Grid.Column>):null}
                         </Grid.Row>
-                        <br/>
-
                     </Grid>
                 </div>
-                <br/>
-                <br/>
-                <br/>
-                <br/>
 
             </div>
         )
