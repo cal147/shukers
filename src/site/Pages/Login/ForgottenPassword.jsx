@@ -97,6 +97,7 @@ export default class login extends Component {
     render() {
 
         let form = null;
+        let confirmPasswordChange = null;
         if (this.state.usernameExist == null) {
             form =
                 <Form onSubmit={this.handleSubmit.bind(this)}>
@@ -106,9 +107,14 @@ export default class login extends Component {
                                 onChange={this.handelChangeUName.bind(this)}/>
                     <Button type='submit' color="black">Check Username</Button>
                 </Form>
-        } else if (this.state.usernameExist === 1) {
+        } else if (this.state.usernameExist >= 1) {
+            if (this.state.passwordChangeConfirmation === 0) {
+                confirmPasswordChange = <Message error>
+                    <Message.Header>Passwords do not match</Message.Header>
+                    Please check that you have entered both passwords in the same</Message>
+            }
             form =
-                <Form onSubmit={this.handlePasswordChange.bind(this)}>
+                <Form onSubmit={this.handlePasswordChange.bind(this)} error>
                     <Form.Group>
                         <Form.Input label='Password' placeholder='Password' type='password'
                                     value={this.state.password} width={4} required
@@ -119,7 +125,13 @@ export default class login extends Component {
                                     onChange={this.handelChangeCPWord.bind(this)}/>
                     </Form.Group>
                     <Button type='submit' color="black">Change Password</Button>
-                </Form>
+                    {confirmPasswordChange}
+                </Form>;
+            if (this.state.passwordChangeConfirmation >= 1) {
+                form = <Message success>
+                    <Message.Header>Password Changed!</Message.Header>
+                    Please log in to your account now!</Message>
+            }
         } else if (this.state.usernameExist === 0) {
             form =
                 <Form onSubmit={this.handleSubmit.bind(this)} error>

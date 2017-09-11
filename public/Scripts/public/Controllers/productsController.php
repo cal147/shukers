@@ -388,7 +388,7 @@ if ($_postData['action'] == 'USEREXIST') {
                 $userID = (int)$row['id'];
             } else {
                 $loginexist = 0;
-                $userID = false;
+                $userID = 0;
             }
             echo($userID);
 
@@ -481,7 +481,9 @@ if ($_postData['action'] == 'UPDATE_PASSWORD') {
     $dirtypass = $_postData['pass'];
     $dirtyconpass = $_postData['conPass'];
 
-    if (preg_match('/^[0-9]{1,3}$/', stripcslashes(trim($dirtyuser))) && preg_match('/^[A-Za-z0-9\-!"£$%\^&*()]{5,15}$/', stripcslashes(trim($dirtypass)))) {
+    if (preg_match('/^[0-9]{1,3}$/', stripcslashes(trim($dirtyuser))) &&
+        preg_match('/^[A-Za-z0-9\-!"£$%\^&*()]{5,15}$/',
+            stripcslashes(trim($dirtypass)))) {
 
         $cName = $conn->real_escape_string(trim($dirtyuser));
         $cleanName = strip_tags($cName);
@@ -489,28 +491,28 @@ if ($_postData['action'] == 'UPDATE_PASSWORD') {
         $cleanPass = strip_tags($cPass);
         $cCPass = $conn->real_escape_string(trim($dirtyconpass));
         $cleanConPass = strip_tags($cCPass);
+        if ($cleanPass === $cleanConPass) {
+            try {
 
-        try {
-            if ($cleanPass === $cleanConPass) {
                 $passHash = password_hash($cleanPass, 1);
 
-                $stmt = $conn->prepare("UPDATE users SET password = ? WHERE loginId = ?");
-                $stmt->bind_param("s", $passHash);
-                $stmt->bind_param("s", $cleanName);
+                $stmt = $conn->prepare("UPDATE users SET password = ? WHERE id = ?");
+                $stmt->bind_param("si", $passHash, $cleanName);
 
-                if($stmt->execute()){
-                    echo 'password changed for user id = ' . $cleanName;
+                if ($stmt->execute()) {
+                    echo $cleanName;
                 } else {
-                    echo 'error in sql';
+                    echo 0;
                 }
 
-            };
-        } catch (Exception $e) {
-            return false;
-        }
 
-        return false;
-    } else {
-        return false;
-    }
+            } catch (Exception $e) {
+
+                return false;
+            }
+        }
+    } else echo 0;
+} else {
+    return false;
+
 }
