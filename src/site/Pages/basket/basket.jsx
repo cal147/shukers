@@ -50,7 +50,6 @@ export default class basket extends Component {
 
         return (
             <div>
-                <h2>Basket Page</h2>
 
                 <Table unstackable celled striped color='red' verticalAlign='middle'>
                     <Table.Header>
@@ -84,7 +83,7 @@ export default class basket extends Component {
                 <form action="https://www.paypal.com/cgi-bin/webscr" method="post">
 
                     {/*Identify your business so that you can collect the payments.*/}
-                    <input type="hidden" name="business" value="KPVTE2YL3QLH4"/>
+                    <input type="hidden" name="business" value="shukersbutchers@gmail.com"/>
 
                     {/*Specify a Buy Now button.*/}
                     <input type="hidden" name="cmd" value="_xclick"/>
@@ -96,10 +95,10 @@ export default class basket extends Component {
 
                     {/*Display the payment button.*/}
                     <div className="PayPal_Button">
-                        <input type="image" name="submit" border="0"
+                        <input type="image" name="submit"
                                src="https://www.paypalobjects.com/webstatic/en_US/i/btn/png/btn_buynow_107x26.png"
                                alt="Buy Now"/>
-                        <input type="image" name="submit" border="0"
+                        <input type="image" name="submit"
                                src="https://www.paypalobjects.com/webstatic/en_US/i/buttons/cc-badges-ppmcvdam.png"
                                alt="Credit Card Badges"/>
                         <img alt="" border="0" width="1" height="1"

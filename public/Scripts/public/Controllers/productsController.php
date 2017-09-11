@@ -475,7 +475,7 @@ if ($_postData['action'] == 'ADD_PRODUCTTOBASKET') {
 
 }
 
-if ($_postData['action'] == 'UPDATE_PASSWORD') {
+if ($_postData['action'] == 'FORGOT_PASSWORD') {
 
     $dirtyuser = $_postData['userName'];
     $dirtypass = $_postData['pass'];
@@ -493,26 +493,67 @@ if ($_postData['action'] == 'UPDATE_PASSWORD') {
         $cleanConPass = strip_tags($cCPass);
         if ($cleanPass === $cleanConPass) {
             try {
-
                 $passHash = password_hash($cleanPass, 1);
-
                 $stmt = $conn->prepare("UPDATE users SET password = ? WHERE id = ?");
                 $stmt->bind_param("si", $passHash, $cleanName);
-
                 if ($stmt->execute()) {
                     echo $cleanName;
                 } else {
                     echo 0;
                 }
-
-
             } catch (Exception $e) {
-
                 return false;
             }
         }
     } else echo 0;
-} else {
-    return false;
+}
 
+if ($_postData['action'] == 'CHANGE_PASSWORD') {
+
+    $dirtyuser = $_postData['userID'];
+    $dirtycurPass = $_postData['currPass'];
+    $dirtypass = $_postData['pass'];
+    $dirtyconpass = $_postData['conPass'];
+
+    if (preg_match('/^[0-9]{1,3}$/', stripcslashes(trim($dirtyuser))) &&
+        preg_match('/^[A-Za-z0-9\-!"£$%\^&*()]{5,15}$/',
+            stripcslashes(trim($dirtypass))) &&
+        preg_match('/^[A-Za-z0-9\-!"£$%\^&*()]{5,15}$/',
+            stripcslashes(trim($dirtycurPass)))) {
+
+        $cName = $conn->real_escape_string(trim($dirtyuser));
+        $cleanName = strip_tags($cName);
+        $curPass = $conn->real_escape_string(trim($dirtycurPass));
+        $cleancurPass = strip_tags($curPass);
+        $cPass = $conn->real_escape_string(trim($dirtypass));
+        $cleanPass = strip_tags($cPass);
+        $cCPass = $conn->real_escape_string(trim($dirtyconpass));
+        $cleanConPass = strip_tags($cCPass);
+
+        try {
+            $stmt = $this->conn->prepare("SELECT password FROM users WHERE id = ?");
+            $stmt->bind_param("i", $cleanName);
+            $stmt->execute();
+            $res = $stmt->get_result();
+            $row = $res->fetch_assoc();
+            $hashPass = $row['password'];
+            if (password_verify($cleancurPass, $hashPass) == 1 && $cleanPass === $cleanConPass) {
+                try {
+                    $passHash = password_hash($cleanPass, 1);
+                    $curPassHash = password_hash($cleancurPass, 1);
+                    $stmt = $conn->prepare("UPDATE users SET password = ? WHERE id = ?");
+                    $stmt->bind_param("si", $passHash, $cleanName);
+                    if ($stmt->execute()) {
+                        echo $cleanName;
+                    } else {
+                        echo 0;
+                    }
+                } catch (Exception $e) {
+                    return false;
+                }
+            }
+        } catch (Exception $e) {
+            return false;
+        }
+    } else echo 0;
 }

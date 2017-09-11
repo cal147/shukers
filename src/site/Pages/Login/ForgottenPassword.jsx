@@ -56,7 +56,7 @@ export default class login extends Component {
             method: 'POST',
             headers: {"Content-type": "application/x-www-form-urlencoded; charset=UTF-8"},
             body: JSON.stringify({
-                action: "UPDATE_PASSWORD",
+                action: "FORGOT_PASSWORD",
                 userName: this.state.usernameExist,
                 pass: this.state.password,
                 conPass: this.state.confirmPassword

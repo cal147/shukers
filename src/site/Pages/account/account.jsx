@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import {Button, Form, Segment, Tab, Table} from "semantic-ui-react";
+import {Button, Dimmer, Form, Loader, Message, Segment, Tab, Table} from "semantic-ui-react";
 
 import publicUserStore from '../UserStore/PublicUserStore'
 import {serverScriptsPublic} from "../../../shared/urls";
@@ -27,19 +27,93 @@ export default class myAccount extends Component {
             this.setState({contactNumber: this.state.user.contactNum})
         }
 
+        setTimeout(() =>
+                fetch(serverScriptsPublic + "Controllers/productsController.php", {
+                    method: 'POST',
+                    headers: {"Content-type": "application/x-www-form-urlencoded; charset=UTF-8"},
+                    body: JSON.stringify({
+                        action: "USEREXIST",
+                        userName: this.state.userName
+                    }),
+                    mode: 'cors'
+                }).then(response => response.json()).then(data => {
+                    this.setState({usernameExist: data});
+                }).catch((err) => {
+                    console.error(err);
+                })
+            , 3000);
+
     };
 
     formChangePassword = e => {
+        this.setState({Loader: <Dimmer active><Loader>Changing Password</Loader></Dimmer>});
+
+
+        fetch(serverScriptsPublic + "Controllers/productsController.php", {
+            method: 'POST',
+            headers: {"Content-type": "application/x-www-form-urlencoded; charset=UTF-8"},
+            body: JSON.stringify({
+                action: "CHANGE_PASSWORD",
+                userID: this.state.user.id,
+                currPass: this.state.currentPassword,
+                pass: this.state.newPassword,
+                conPass: this.state.confirmPassword
+            }),
+            mode: 'cors'
+        }).then(response => response.json()).then(data => {
+            this.setState({passwordChangeConfirmation: data});
+        }).catch((err) => {
+            console.error(err);
+        });
+
+        setTimeout(() => this.loadingState(), 3000);
 
     };
-
-    // handel changes to input fields
 
     constructor() {
         super();
         this.state = {
             user: publicUserStore.getUser()
         };
+        let confirmPasswordChange = null;
+        let form =
+            <Form onSubmit={this.formChangePassword}>
+                <Form.Input label='Current Password*' placeholder='Current Password'
+                            value={this.state.currentPassword} width={8} type="password"
+                            required onChange={this.handelChangeCPass.bind(this)}/>
+                <Form.Input label='New Password*' placeholder='New Password'
+                            value={this.state.newPassword} type="password"
+                            width={8} required onChange={this.handelChangeNPass.bind(this)}/>
+                <Form.Input label='Confirm New Password*' placeholder='Confirm Password'
+                            value={this.state.confPassword} width={8} type="password"
+                            required onChange={this.handelChangeCNPass.bind(this)}/>
+                <Button type='submit' color="black">Change Password</Button>
+            </Form>;
+        if (this.state.passwordChangeConfirmation === 0) {
+            confirmPasswordChange = <Message error>
+                <Message.Header>Passwords do not match</Message.Header>
+                Please check that you have entered both new passwords in the same</Message>
+        }
+        form =
+            <Form onSubmit={this.formChangePassword}>
+                <Form.Input label='Current Password*' placeholder='Current Password'
+                            value={this.state.currentPassword} width={8} type="password"
+                            required onChange={this.handelChangeCPass.bind(this)}/>
+                <Form.Input label='New Password*' placeholder='New Password'
+                            value={this.state.newPassword} type="password"
+                            width={8} required onChange={this.handelChangeNPass.bind(this)}/>
+                <Form.Input label='Confirm New Password*' placeholder='Confirm Password'
+                            value={this.state.confPassword} width={8} type="password"
+                            required onChange={this.handelChangeCNPass.bind(this)}/>
+                {confirmPasswordChange}
+                <Button type='submit' color="black">Change Password</Button>
+
+            </Form>;
+        if (this.state.passwordChangeConfirmation >= 1) {
+            form = <Message success>
+                <Message.Header>Password Changed!</Message.Header>
+                Please log in to your account now!</Message>
+        }
         this.panes = [
 
             {// TODO - check other orders work well  //// TODO - maybe use segment instead of GRID
@@ -112,7 +186,7 @@ export default class myAccount extends Component {
                                                 value={this.state.contactNumber} width={8}
                                                 onChange={this.handelChangeCNum.bind(this)}/>
                                 </Form.Group>
-                                <Button type='submit' color="black">Sign Up</Button>
+                                <Button type='submit' color="black">Change Details</Button>
                             </Form>
                         </Segment>
                     </div>
@@ -120,22 +194,13 @@ export default class myAccount extends Component {
             },
             {
                 menuItem: 'Change Password', render: () =>
+
                 <Tab.Pane>
                     <div>
                         <h2>Please enter all the information required</h2>
                         <Segment inverted color="red">
-                            <Form onSubmit={this.formChangePassword}>
-                                <Form.Input label='Current Password*' placeholder='Current Password'
-                                            value={this.state.currentPassword} width={8} type="password"
-                                            required onChange={this.handelChangeCPass.bind(this)}/>
-                                <Form.Input label='New Password*' placeholder='New Password'
-                                            value={this.state.newPassword}
-                                            width={8} required onChange={this.handelChangeNPass.bind(this)}/>
-                                <Form.Input label='Confirm New Password*' placeholder='Confirm Password'
-                                            value={this.state.confPassword} width={8}
-                                            required onChange={this.handelChangeCNPass.bind(this)}/>
-                                <Button type='submit' color="black">Sign Up</Button>
-                            </Form>
+                            {this.state.Loader}
+                            {form}
                         </Segment>
                     </div>
                 </Tab.Pane>
@@ -166,8 +231,8 @@ export default class myAccount extends Component {
         ]
     }
 
-    test() {
-        return this.state.OrderHistory.id === this.state.PurchaseSalesHistory.id
+    loadingState() {
+        this.setState({Loader: null})
     }
 
     handelChangeFName(e) {
