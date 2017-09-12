@@ -107,6 +107,7 @@ export default class basket extends Component {
 
                 </form>
 
+                {/*TODO - Collect and Pay in store*/}
 
             </div>
         )
