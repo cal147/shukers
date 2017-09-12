@@ -70,7 +70,7 @@ export default class home extends Component {
                         <div>
                             <Grid.Row>
                                 <Divider/>
-                                <Divider horizontal>A selection of our finest products</Divider>
+                                <Divider horizontal                                                                 >A selection of our finest products</Divider>
                                 <Divider/>
                             </Grid.Row>
                         </div>
