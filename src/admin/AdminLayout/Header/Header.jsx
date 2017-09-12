@@ -41,7 +41,7 @@ export default class HeaDer extends Component{
 
 
                 </Menu.Item>
-                <Menu.Item> <Header style={{color:"white"}} size={"huge"}>Shukers Butchers staff portal</Header> </Menu.Item>
+                <Menu.Item> <Header style={{color:"white"}} size={"huge"}>Shukers Butchers Staff Portal</Header> </Menu.Item>
                 <Menu.Menu position='right'>
                     <Menu.Item><Header size="medium" style={{color:"white"}}>Logged in as {this.state.user.firstName + " " + this.state.user.surName}</Header></Menu.Item>
 

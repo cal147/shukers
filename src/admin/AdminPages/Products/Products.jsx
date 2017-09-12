@@ -16,7 +16,6 @@ export default class Products extends Component {
         super();
         //Add more panes in the pane array.
         this.panes = [
-            {menuItem: 'Search', render: () => <Tab.Pane>search tab</Tab.Pane>},
             {menuItem: 'Edit', render: () => <Tab.Pane>Edit tab</Tab.Pane>},
             {menuItem: 'Add', render: () => <AddPane/>},
         ]
