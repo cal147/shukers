@@ -29,7 +29,7 @@
     text-shadow: 0.1vw 0.1vw black;
 }
 
-@media (max-width: 800px) {
+@media (max-width: 801px) {
     .siteHeader-Text {
         text-align: center;
         font-size: x-large;
@@ -141,8 +141,4 @@
 
 .PayPal_Button {
     text-align: right;
-}
-
-.Pay_Text {
-
 }

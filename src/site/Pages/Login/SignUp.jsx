@@ -65,6 +65,9 @@ export default class SignUp extends Component {
                                         width={4} required onChange={this.handelChangeFName.bind(this)}/>
                             <Form.Input label='Last Name' placeholder='Last Name' value={this.state.lastName} width={4}
                                         required onChange={this.handelChangeLName.bind(this)}/>
+                            <Form.Input label='House Number' placeholder='House Number' value={this.state.hNum}
+                                        width={2}
+                                        required /*onChange={this.handelChangehNum.bind(this)}*/ type='number'/>
                         </Form.Group>
                         <Form.Group>
                             <Form.Input label='User Name' placeholder='User Name' value={this.state.userName} width={8}

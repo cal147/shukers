@@ -9,7 +9,7 @@ import * as PublicUserAction from '../Pages/publicActions/publicUserActions';
 import publicUserStore from '../../site/Pages/UserStore/PublicUserStore'
 
 export default class SiteLayout extends Component {
-    state = {activeItem: 'home', visible: false, modelOpen: null, modalOpen: false};
+    state = {visible: false, modalOpen: false};
 
     toggleVisibility = () => this.setState({visible: !this.state.visible});
 
@@ -20,6 +20,8 @@ export default class SiteLayout extends Component {
     handleClose = () => this.setState({modalOpen: false});
 
     handleResultSelect = (e, {result}) => {
+
+        this.toggleVisibility();
 
         this.setState({value: result.title});
 
@@ -40,7 +42,7 @@ export default class SiteLayout extends Component {
         }, 500)
     };
 
-    handleItemClick = (e, {name}) => this.setState({activeItem: name, visible: !this.state.visible});
+    handleItemClick = (e, {name}) => this.setState({visible: !this.state.visible});
 
     handleLogOutClick = () => {
         PublicUserAction.logoutUserPublic();
@@ -173,25 +175,78 @@ export default class SiteLayout extends Component {
 
         const {activeItem, isLoading, value} = this.state;
         let userloggedin = null;
+        let loggedIn = null;
         if (this.state.user.isLoggedIn === true) {
 
-            userloggedin = <Menu.Menu position='right'>
-                <Menu.Item className="myAccHeader" onClick={this.handleItemClick} as={Link} to='/myAccount'>My
-                    Account<br/>Welcome {this.state.user.firstName}</Menu.Item>
-                <Menu.Item name='basket' active={activeItem === 'basket'} onClick={this.handleItemClick}
-                           as={Link} to='/basket'/>
-                <Menu.Item name='Log Out' active={activeItem === 'LogOut'} onClick={this.handleLogOutClick}
-                           as={Link} to='/'/>
-            </Menu.Menu>
-        } else {
-            userloggedin = <Menu.Menu position='right'>
-                <Menu.Item name='Login' active={activeItem === 'login'} onClick={this.handleItemClick}
-                           as={Link} to='/login'/>
-                <Menu.Item name='Sign Up' active={activeItem === 'signUp'} onClick={this.handleItemClick}
-                           as={Link} to='/signUp'/>
-            </Menu.Menu>
+            userloggedin =
+                <Menu.Menu position='right'>
+                    <Menu.Item className="myAccHeader" onClick={this.handleItemClick} as={Link} to='/myAccount'>My
+                        Account<br/>Welcome {this.state.user.firstName}</Menu.Item>
+                    <Menu.Item name='basket' active={activeItem === 'basket'} onClick={this.handleItemClick}
+                               as={Link} to='/basket'/>
+                    <Menu.Item name='Log Out' active={activeItem === 'LogOut'} onClick={this.handleLogOutClick}
+                               as={Link} to='/'/>
+                </Menu.Menu>;
+            loggedIn = <div>
+                {this.state.productModal != null ? this.state.productModal.map((product, i) =>
+                    <Modal
+                        dimmer='blurring'
+                        onClose={this.handleClose}
+                        open={this.state.modalOpen}
+                    >
+                        <Modal.Header content={product.title + ' - £' + product.price}/>
+                        <Modal.Content image scrolling>
+                            <Image wrapped size="medium" src={prodImgResourcePublic + product.image}
+                                   alt={product.name}/>
+                            <Modal.Description>
+                                <h4 className="modal_description">{product.description}</h4>
+                            </Modal.Description>
+                        </Modal.Content>
+                        <Modal.Actions>
+                            <Label pointing="right">Please select quantity</Label>
+                            <select placeholder="QTY" onChange={this.handelQtyChange.bind(this)}>
+                                <option value={1}>1</option>
+                                <option value={2}>2</option>
+                                <option value={3}>3</option>
+                                <option value={4}>4</option>
+                                <option value={5}>5</option>
+                                <option value={null}>For more than 5 please call us</option>
+                            </select>
+                            <Button onClick={() => this.addProductToBasket(product.id, this.state.Qty)}>
+                                <Icon name='shop'/> Add to Basket
+                            </Button>
+                        </Modal.Actions>
+                    </Modal>) : null}
+            </div>
+        } else if (this.state.user.isLoggedIn === false) {
+            userloggedin =
+                <Menu.Menu position='right'>
+                    <Menu.Item name='Login' active={activeItem === 'login'} onClick={this.handleItemClick}
+                               as={Link} to='/login'/>
+                    <Menu.Item name='Sign Up' active={activeItem === 'signUp'} onClick={this.handleItemClick}
+                               as={Link} to='/signUp'/>
+                </Menu.Menu>;
+            loggedIn = <div>
+                {this.state.productModal != null ? this.state.productModal.map((product, i) =>
+                    <Modal
+                        dimmer='blurring'
+                        onClose={this.handleClose}
+                        open={this.state.modalOpen}
+                    >
+                        <Modal.Header content={product.title + ' - £' + product.price}/>
+                        <Modal.Content image scrolling>
+                            <Image wrapped size="medium" src={prodImgResourcePublic + product.image}
+                                   alt={product.name}/>
+                            <Modal.Description>
+                                <h4 className="modal_description">{product.description}</h4>
+                            </Modal.Description>
+                        </Modal.Content>
+                        <Modal.Actions>
+                            <h3>Please sign in to order this product</h3>
+                        </Modal.Actions>
+                    </Modal>) : null}
+            </div>
         }
-
         let winWidth = window.innerWidth;
         if (winWidth > 800) {
             return (
@@ -210,9 +265,10 @@ export default class SiteLayout extends Component {
                             <Dropdown.Menu>
                                 {this.state.Productsdata.map((product, i) => <Dropdown.Item
                                     key={product.cat} name='products' as={Link} to={"/products/" + product.cat}
-                                    onClick={this.toggleVisibility}>{product.cat}</Dropdown.Item>)}
+                                    onClick={this.handleItemClick}>{product.cat}</Dropdown.Item>)}
                             </Dropdown.Menu>
                         </Dropdown>
+                        {loggedIn}
                         {userloggedin}
                         <Menu.Menu>
                             <Menu.Item>
@@ -226,35 +282,7 @@ export default class SiteLayout extends Component {
                             </Menu.Item>
                         </Menu.Menu>
                     </Menu>
-                    {this.state.productModal != null ? this.state.productModal.map((product, i) =>
-                        <Modal
-                            dimmer='blurring'
-                            onClose={this.handleClose}
-                            open={this.state.modalOpen}
-                        >
-                            <Modal.Header content={product.title + ' - £' + product.price}/>
-                            <Modal.Content image scrolling>
-                                <Image wrapped size="medium" src={prodImgResourcePublic + product.image}
-                                       alt={product.name}/>
-                                <Modal.Description>
-                                    <h4 className="modal_description">{product.description}</h4>
-                                </Modal.Description>
-                            </Modal.Content>
-                            <Modal.Actions>
-                                <Label pointing="right">Please select quantity</Label>
-                                <select placeholder="QTY" onChange={this.handelQtyChange.bind(this)}>
-                                    <option value={1}>1</option>
-                                    <option value={2}>2</option>
-                                    <option value={3}>3</option>
-                                    <option value={4}>4</option>
-                                    <option value={5}>5</option>
-                                    <option value={null}>For more than 5 please call us</option>
-                                </select>
-                                <Button onClick={() => this.addProductToBasket(product.id, this.state.Qty)}>
-                                    <Icon name='shop'/> Add to Basket
-                                </Button>
-                            </Modal.Actions>
-                        </Modal>) : null}
+
                     <div>{this.props.children}</div>
                     <Footer/>
 
@@ -276,7 +304,13 @@ export default class SiteLayout extends Component {
                                  stackable inverted color={"red"}>
                             <h3><Icon name='browser'/><br/>For a better experience please visit us on a computer</h3>
                             <Menu.Item>
-                                <Search placeholder='Search...'/>
+                                <Search placeholder='Search for product...'
+                                        loading={isLoading}
+                                        onResultSelect={this.handleResultSelect}
+                                        onSearchChange={this.handleSearchChange}
+                                        results={this.state.ProductSearch}
+                                        value={value}
+                                />
                             </Menu.Item>
                             <Menu.Item name='home' active={activeItem === 'home'} onClick={this.handleItemClick}
                                        as={Link}
@@ -293,9 +327,9 @@ export default class SiteLayout extends Component {
                             </Dropdown>
                         </Sidebar>
                         <Sidebar.Pusher>
+                            {loggedIn}
                             {this.props.children}
                         </Sidebar.Pusher>
-
                         <Footer className="siteFooter"/>
                     </Sidebar.Pushable>
                 </div>

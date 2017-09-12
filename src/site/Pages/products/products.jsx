@@ -1,15 +1,10 @@
 import React, {Component} from "react";
-import {Link} from 'react-dom'
 import {prodImgResourcePublic, serverScriptsPublic} from '../../../shared/urls'
 import {Button, Grid, Header, Icon, Image, Label, Modal} from 'semantic-ui-react'
 
 import PublicUserStore from '../UserStore/PublicUserStore'
 
 export default class product extends Component {
-
-    state = {activeItem: '1'};
-
-    handleItemClick = (e, {name}) => this.setState({activeItem: name});
 
     constructor() {
         super();
@@ -112,7 +107,6 @@ export default class product extends Component {
     render() {
 
         let loggedIn = null;
-        // TODO need to look at add to basket button to add product to basket
         if (this.state.user.isLoggedIn) {
             loggedIn = <Grid columns={3} textAlign="center" className="prodOverGrid">
                 {this.state.Productsdata != null ? this.state.Productsdata.map((product, i) =>
@@ -175,7 +169,7 @@ export default class product extends Component {
                                     </Modal.Description>
                                 </Modal.Content>
                                 <Modal.Actions>
-                                    <Button as={Link} to='/login'>Please sign in to order</Button>
+                                    <h3>Please sign in to order this product</h3>
                                 </Modal.Actions>
                             </Modal>
 
