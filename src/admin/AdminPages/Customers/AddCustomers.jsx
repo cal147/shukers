@@ -193,7 +193,6 @@ export default class AddCustomers extends Component{
         }
 
         if(id === "loginName"){
-            console.log(tValue);
             fetch(serverScripts + "admin/Controllers/customersController.php", {
                 method: 'POST',
                 headers: {"Content-type": "application/x-www-form-urlencoded; charset=UTF-8"},
