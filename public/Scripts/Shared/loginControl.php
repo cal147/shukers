@@ -84,7 +84,7 @@ class loginControl{
                     $userArray = [];
                 }
             }catch (Exception $e){
-                echo ['fatal' => 'Login information could not loaded due to a systen exception'];
+                echo ['fatal' => 'Login information could not loaded due to a system exception'];
             }
         }
 

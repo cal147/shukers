@@ -1,22 +1,27 @@
-.publicPageLayout{
+.publicPageLayout {
     width: 90%;
-    margin-left: 5%;
-    margin-top: 0.5%;
-    margin-bottom: 0.5%;
+    margin: 0.5% 5%;
 }
 
-.siteHeader{
-    height: 180px;
+.siteHeader {
+    height: 170px;
     width: auto;
 }
 
-.siteHeader-Logo{
+.publicNavBar {
+    top: 0.5%;
+    clear: both;
+    position: sticky;
+    z-index: 1;
+}
+
+.siteHeader-Logo {
     width: 160px;
     margin-bottom: 0.5%;
     float: left;
 }
 
-.siteHeader-Text{
+.siteHeader-Text {
     line-height: 180px;
     text-align: center;
     font-size: 3vw;
@@ -24,7 +29,7 @@
     text-shadow: 0.1vw 0.1vw black;
 }
 
-@media (max-width: 800px) {
+@media (max-width: 801px) {
     .siteHeader-Text {
         text-align: center;
         font-size: x-large;
@@ -32,6 +37,29 @@
         padding-top: 3ch;
         color: red;
         text-shadow: 0.1vw 0.1vw black;
+    }
+
+    .publicPageLayout {
+        margin-top: 10%;
+    }
+
+    .siteSlider {
+        margin-top: 10px;
+        width: 600px;
+        height: 250px;
+        margin-right: auto;
+        margin-left: auto;
+    }
+
+    .sliderImg {
+        width: 600px;
+        margin-right: auto;
+        margin-left: auto;
+    }
+
+    .mobileSiteSlider {
+        width: 25rem;
+        height: 10rem;
     }
 }
 
@@ -44,10 +72,73 @@
         color: red;
         text-shadow: 0.1vw 0.1vw black;
     }
+
+    .homeImg {
+        width: 25rem;
+        height: 25rem;
+    }
 }
 
 .siteFooter {
-    clear: both;
+    position: sticky;
     bottom: 0.5%;
-    position: fixed;
+    /*margin-right: 5%;*/
+}
+
+.sliderImg {
+    height: 210px;
+}
+
+.mobileDropdown {
+    text-align: center;
+}
+
+.openingTime_Closed {
+    color: red;
+}
+
+.openingTime {
+    text-decoration: underline;
+
+}
+
+.homeAbout {
+    padding: 10% 20%;
+    text-align: center;
+}
+
+.prodDiv {
+    margin-top: 0.14rem;
+    text-align: center;
+}
+
+.prodImg {
+    width: 20rem;
+    height: 20rem;
+}
+
+.ui.grid {
+    margin-top: 0.14rem !important;
+    margin-bottom: 1rem !important;
+}
+
+.homeImg {
+    width: 25rem;
+    height: 25rem;
+}
+
+.modal_description {
+    padding: 10px;
+}
+
+.findUs_OpeningTime {
+    text-align: center;
+}
+
+.myAccHeader {
+    text-align: center;
+}
+
+.PayPal_Button {
+    text-align: right;
 }
