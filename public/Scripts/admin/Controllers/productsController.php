@@ -98,6 +98,7 @@ if(session_status() === PHP_SESSION_ACTIVE) {
 
                 } catch (Exception $e) {
                     echo json_encode(['Message' => 'Could not Delete this category', 'success' => false]);
+
                 }
 
 
