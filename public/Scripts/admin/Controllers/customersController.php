@@ -198,5 +198,69 @@ if(session_status() === PHP_SESSION_ACTIVE) {
             }
         }
 
+        if($_postData['action'] == "DELETE_USER"){
+            $id = $_postData['id'];
+            try{
+                $stmt = $conn->prepare("DELETE FROM address WHERE userId=?");
+                $stmt->bind_param("s", $id);
+
+                if($stmt->execute()){
+                    $stmt = $conn->prepare("DELETE FROM users WHERE id=?");
+                    $stmt->bind_param("s", $id);
+                    if($stmt->execute()) {
+                        echo json_encode(['Message' => 'Record Deleted', 'success' => true]);
+                        return;
+                    }
+                    echo json_encode(['Message' => 'Something went wrong!', 'success' => false]);
+                }else{
+                    echo json_encode(['Message' => 'Something went wrong!', 'success' => false]);
+                }
+
+
+
+            }catch(Exception $e){
+                echo json_encode(['Message' => 'Something went wrong!', 'success' => false]);
+            }
+
+        }
+
+        if($_postData['action']== "UPDATE_USER"){
+
+            $id = $conn->real_escape_string(strip_tags(trim($_postData['id'])));
+            $addressId = $conn->real_escape_string(strip_tags(trim($_postData['addressId'])));
+            $postcode = $conn->real_escape_string(strip_tags(trim($_postData['postcode'])));
+            $street = $conn->real_escape_string(strip_tags(trim($_postData['street'])));
+            $houseNumber = $conn->real_escape_string(strip_tags(trim($_postData['houseNum'])));
+            $email = $conn->real_escape_string(strip_tags(trim($_postData['email'])));
+            $surname = $conn->real_escape_string(strip_tags(trim($_postData['surname'])));
+            $firstName = $conn->real_escape_string(strip_tags(trim($_postData['forname'])));
+            $loginName = $conn->real_escape_string(strip_tags(trim($_postData['loginId'])));
+            $staffMember = $conn->real_escape_string(strip_tags(trim($_postData['isStaff'])));
+            $contactNumber = $conn->real_escape_string(strip_tags(trim($_postData['contactNumber'])));
+            $deliveryAddress = $conn->real_escape_string(strip_tags(trim($_postData['delivery'])));
+            $homeAddress = $conn->real_escape_string(strip_tags(trim($_postData['home'])));
+
+
+            try{
+                $stmt = $conn->prepare("UPDATE users SET loginId = ?, forname = ?, surname = ?, contactNumber = ?, isStaff = ?, email = ? WHERE id=?");
+                $stmt->bind_param("ssssisi", $loginName, $firstName, $surname, $contactNumber, $staffMember, $email, $id);
+
+                $stmt->execute();
+
+
+                $stmt->close();
+                $stmt = $conn->prepare("UPDATE address SET houseNum = ?, firstLine = ?, postcode = ?, home = ?, delivery = ? WHERE id= ?");
+
+                $stmt->bind_param("ssssii", $houseNumber, $street, $postcode, $homeAddress, $deliveryAddress, $addressId);
+                $stmt->execute();
+
+                $stmt->close();
+
+                echo json_encode(['Message' => 'Added', 'success' => true]);
+
+            }catch (Exception $e){
+                echo json_encode(['Message' => 'Something went wrong!', 'success' => false]);
+            }
+        }
     }
 }

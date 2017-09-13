@@ -105,7 +105,16 @@ if(session_status() === PHP_SESSION_ACTIVE) {
 
         }
 
-        if ($_postData['action'] == 'ADD_PRODUCT') {
+        if ($_postData['action'] == "ADD_PRODUCT"){
+            echo json_encode(['product' => 'product received', 'success' => true] );
+
+            $theFile = fopen("../../../Images/Products/".$_postData['name'], "w");
+            $fileData = $_postData['blob'];
+            $pos = strpos($fileData, ',');
+            $newFileData = substr_replace($fileData, '',0, $pos+1);
+            $b64dec = base64_decode($newFileData);
+            fwrite($theFile, $b64dec);
+            fclose($theFile);
 
         }
     }
