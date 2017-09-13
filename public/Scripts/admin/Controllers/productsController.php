@@ -115,7 +115,6 @@ if(session_status() === PHP_SESSION_ACTIVE) {
             $b64dec = base64_decode($newFileData);
             fwrite($theFile, $b64dec);
             fclose($theFile);
-
         }
     }
 }
