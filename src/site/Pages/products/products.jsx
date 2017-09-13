@@ -119,9 +119,13 @@ export default class product extends Component {
                                 dimmer='blurring'
                                 trigger={
                                     <Button><img className="prodImg" src={prodImgResourcePublic + product.imgPath}
-                                                 alt={product.name}/></Button>}>
+                                                 alt={product.name}/>
+                                        {product.onOffer == 1 ?
+                                            <img className="offerimage" src={prodImgResourcePublic + 'offer.png'}
+                                                 alt='offer'/> : null}</Button>}>
                                 <Header content={product.name + ' - £' + product.price}/>
                                 <Modal.Content image scrolling>
+
                                     <Image wrapped size="medium" src={prodImgResourcePublic + product.imgPath}
                                            alt={product.name}/>
                                     <Modal.Description>
@@ -151,15 +155,20 @@ export default class product extends Component {
             loggedIn = <Grid columns={3} textAlign="center" className="prodOverGrid">
                 {this.state.Productsdata != null ? this.state.Productsdata.map((product, i) =>
                     <Grid key={i} className="prodGrid" divided>
-                        <div className="prodDiv"><Grid.Row stretched as="h3">{product.name}</Grid.Row>
+                        <div className="prodDiv"><Grid.Row stretched as="h3">{product.name}
+                        </Grid.Row>
                             <br/>
 
                             {/*Modal shows the product page as pop up*/}
                             <Modal
                                 dimmer='blurring'
                                 trigger={
-                                    <Button><img className="prodImg" src={prodImgResourcePublic + product.imgPath}
-                                                 alt={product.name}/></Button>}>
+                                    <Button>
+                                        <img className="prodImg" src={prodImgResourcePublic + product.imgPath}
+                                             alt={product.name}/>
+                                        {product.onOffer == 1 ?
+                                            <img className="offerimage" src={prodImgResourcePublic + 'offer.png'}
+                                                 alt='offer'/> : null}</Button>}>
                                 <Header content={product.name + ' - £' + product.price}/>
                                 <Modal.Content image scrolling>
                                     <Image wrapped size="medium" src={prodImgResourcePublic + product.imgPath}

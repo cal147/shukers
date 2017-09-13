@@ -38,6 +38,7 @@ export default class myAccount extends Component {
                     mode: 'cors'
                 }).then(response => response.json()).then(data => {
                     this.setState({usernameExist: data});
+                    this.setState({Loader: null})
                 }).catch((err) => {
                     console.error(err);
                 })
@@ -62,6 +63,7 @@ export default class myAccount extends Component {
             mode: 'cors'
         }).then(response => response.json()).then(data => {
             this.setState({passwordChangeConfirmation: data});
+            this.setState({Loader: null})
         }).catch((err) => {
             console.error(err);
         });

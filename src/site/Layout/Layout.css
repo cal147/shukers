@@ -87,6 +87,7 @@
 
 .sliderImg {
     height: 210px;
+
 }
 
 .mobileDropdown {
@@ -115,6 +116,7 @@
 .prodImg {
     width: 20rem;
     height: 20rem;
+    z-index: -1;
 }
 
 .ui.grid {
@@ -141,4 +143,10 @@
 
 .PayPal_Button {
     text-align: right;
+}
+
+.offerimage {
+    width: 7rem;
+    vertical-align: top;
+    margin-left: -7rem;
 }
