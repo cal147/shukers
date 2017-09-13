@@ -51,8 +51,6 @@ class loginControl{
     //lodinId will be present in the class.
     public function getUserDetails(){
 
-        // $userArray = [];
-
         if($this->loginId != null){
 
             $sql = "select u.id, u.loginId, u.forname, u.surname, u.contactNumber, u.isStaff, a.houseNum, a.firstLine, a.secondLine, a.postcode, a.home, a.delivery from users as u inner join address as a on u.id = a.userId where u.loginId = ?";
@@ -84,7 +82,7 @@ class loginControl{
                     $userArray = [];
                 }
             }catch (Exception $e){
-                echo ['fatal' => 'Login information could not loaded due to a systen exception'];
+                echo ['fatal' => 'Login information could not loaded due to a system exception'];
             }
         }
 
