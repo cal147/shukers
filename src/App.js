@@ -1,43 +1,54 @@
 import React, {Component} from "react";
 import "./App.css";
 import {HashRouter, Route, Switch} from "react-router-dom";
-
 import home from "./site/Pages/Home/Home";
-import About from "./site/Pages/About/About";
+import findUs from "./site/Pages/findUs/findUs";
+import basket from "./site/Pages/basket/basket";
+import login from "./site/Pages/Login/login";
+import signUp from "./site/Pages/Login/SignUp";
+import ForgottenPassword from "./site/Pages/Login/ForgottenPassword";
+import product from "./site/Pages/products/products";
+import myAccount from "./site/Pages/account/account";
 import SiteLayout from './site/Layout/layout'
 import MainPage from './admin/index';
 import "./site/Layout/Layout.css"
 
 
 //This component will do the routing for the public side of the app.
-const Site = ()=>{
-                            //******************************************************
-                            //          Chris put your routes in here              *
-                            //******************************************************
-  return(
-      <HashRouter>
-        <div className="publicPageLayout" >
-            <SiteLayout>
-                <Switch>
-                    <Route exact path="/" component={home}/>
-                    <Route path="/about" component={About}/>
-                </Switch>
-            </SiteLayout>
-        </div>
-    </HashRouter>
-  );
+const Site = () => {
+    //******************************************************
+    //          Chris put your routes in here              *
+    //******************************************************
+
+    return (
+        <HashRouter>
+            <div className="publicPageLayout">
+                <SiteLayout>
+                    <Switch>
+                        <Route exact path="/" component={home}/>
+                        <Route path="/findUs" component={findUs}/>
+                        <Route path="/basket" component={basket}/>
+                        <Route path="/products" component={product}/>
+                        <Route path="/login" component={login}/>
+                        <Route path="/signUp" component={signUp}/>
+                        <Route path="/ForgottenPassword" component={ForgottenPassword}/>
+                        <Route path="/myAccount" component={myAccount}/>
+                    </Switch>
+                </SiteLayout>
+            </div>
+        </HashRouter>
+    );
 
 };
 
 
-
 export default class App extends Component {
 
-    constructor(){
+    constructor() {
         super();
-        if(document.location.hash.indexOf('/admin') !== -1){ //Had to change to indexOf instead of include as IE doesnt support include.
+        if (document.location.hash.indexOf('/admin') !== -1) { //Had to change to indexOf instead of include as IE doesnt support include.
             this.state = {siteToShow: <MainPage/>}; //The MainPage is the admin application.
-        }else{
+        } else {
             this.state = {siteToShow: <Site/>}
         }
 
