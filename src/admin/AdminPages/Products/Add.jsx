@@ -19,6 +19,9 @@ import {
 } from 'semantic-ui-react';
 import Dropzone from 'react-dropzone';
 
+
+import '../../AdminMaster.css'
+
 import adminUserStore from '../../AdminStores/AdminUserStore';
 import {serverScripts, imgResource} from '../../../shared/urls';
 
@@ -271,6 +274,7 @@ class Prod extends Component {
             price: 0,
             onOffer: false,
             images: [],
+            imageBin :null,
             errorMessage:"",
             errorState:true,
         };
@@ -322,13 +326,25 @@ class Prod extends Component {
         this.setState({price: e.target.value});
     }
 
-    onImageDrop(image) {
+    onImageDrop(acceptedFiles) {
         let addImage = this.state.images;
-        addImage.unshift(image[0]);
-        console.log(image[0]);
+        addImage.unshift(acceptedFiles[0]);
         this.setState({images: addImage});
-        console.log(this.state.images[0].name);
-        console.log(this.state.images[0].preview);
+
+        acceptedFiles.forEach(file => {
+            const reader = new FileReader();
+            reader.onload = () => {
+                const fileAsBinaryString = reader.result;
+                this.setState({imageBin: fileAsBinaryString});
+            };
+            reader.onabort = () => console.log('file reading was aborted');
+            reader.onerror = () => console.log('file reading has failed');
+
+            //reader.readAsBinaryString(file);
+            reader.readAsDataURL(file);
+            console.log(file);
+        });
+
     }
 
     validateandSubmit(){
@@ -344,14 +360,14 @@ class Prod extends Component {
         //
         // }
 
-
-        fetch(serverScripts + "admin/Controllers/imageController.php", {
+        fetch(serverScripts + "admin/Controllers/productsController.php", {
             method: 'POST',
             headers: {"Content-type": "application/x-www-form-urlencoded; charset=UTF-8"},
             body: JSON.stringify({
-                action: "ADD_IMAGE",
+                action: "ADD_PRODUCT",
                 name: this.state.images[0].name,
-                blob: this.state.images[0].preview
+                blob: this.state.imageBin,
+                sessionId: this.props.session
             }),
             mode: 'cors'
         }).then((response) => response.json()).then((data) => {
@@ -433,6 +449,7 @@ class Prod extends Component {
                                 </div>
 
                             </Dropzone>
+
                         </Grid.Column>
                         <Grid.Column width={8}>
 
@@ -455,7 +472,7 @@ class Prod extends Component {
                             <div  style={{color:"red", fontSize:"30px"}}>{this.state.errorMessage}</div>
                         </Grid.Column>
                         <Grid.Column width={2}>
-                            <Button color='red' onChange={this.validateandSubmit.bind(this)}>Add Product</Button>
+                            <Button color='red' onClick={this.validateandSubmit.bind(this)}>Add Product</Button>
                         </Grid.Column>
 
                     </Grid.Row>
