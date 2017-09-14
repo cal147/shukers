@@ -557,3 +557,85 @@ if ($_postData['action'] == 'CHANGE_PASSWORD') {
         }
     } else echo 0;
 }
+
+if ($_postData['action'] == 'NEW_USER') {
+
+    $firstName = $conn->real_escape_string(strip_tags(trim($_postData['firstName'])));
+    $lastName = $conn->real_escape_string(strip_tags(trim($_postData['lastName'])));
+    $userName = $conn->real_escape_string(strip_tags(trim($_postData['userName'])));
+    $password = $conn->real_escape_string(strip_tags(trim($_postData['password'])));
+    $contactNumber = $conn->real_escape_string(strip_tags(trim($_postData['contactNumber'])));
+    $email = $conn->real_escape_string(strip_tags(trim($_postData['email'])));
+    $houseNum = $conn->real_escape_string(strip_tags(trim($_postData['houseNum'])));
+    $address1 = $conn->real_escape_string(strip_tags(trim($_postData['address1'])));
+    $address2 = $conn->real_escape_string(strip_tags(trim($_postData['address2'])));
+    $postCode = $conn->real_escape_string(strip_tags(trim($_postData['postCode'])));
+    $DelhouseNum = $conn->real_escape_string(strip_tags(trim($_postData['DelhouseNum'])));
+    $Deladdress1 = $conn->real_escape_string(strip_tags(trim($_postData['Deladdress1'])));
+    $Deladdress2 = $conn->real_escape_string(strip_tags(trim($_postData['Deladdress2'])));
+    $DelpostCode = $conn->real_escape_string(strip_tags(trim($_postData['DelpostCode'])));
+    $deliveryAddressChecked = $conn->real_escape_string(strip_tags(trim($_postData['deliveryAddressChecked'])));
+    $homeAddressChecked = $conn->real_escape_string(strip_tags(trim($_postData['homeAddressChecked'])));
+    $hashPass = password_hash($password, PASSWORD_DEFAULT);
+
+    try {
+        $stmt = $conn->prepare("INSERT INTO users(loginId, forname, surname, password, contactNumber, email ) VALUES(?,?,?,?,?,?)");
+        $stmt->bind_param("ssssss", $userName, $firstName, $lastName, $hashPass, $contactNumber, $email);
+        $stmt->execute();
+
+        $userID = $conn->insert_id;
+        $stmt->close();
+
+        if ($deliveryAddressChecked == true) {
+            $deliveryAddressChecked = 1;
+            $homeAddressChecked = 1;
+
+            $stmt = $conn->prepare("INSERT INTO address (userId, houseNum, firstLine, secondline, postcode, home, delivery ) VALUES(?,?,?,?,?,?,?)");
+            $stmt->bind_param("iisssii", $userID, $houseNum, $address1, $address2, $postCode, $homeAddressChecked, $deliveryAddressChecked);
+            $stmt->execute();
+            echo('home and delivery address assigned');
+
+        } elseif ($deliveryAddressChecked == false) {
+            $deliveryAddressChecked = 0;
+            $homeAddressChecked = 1;
+
+            $stmt = $conn->prepare("INSERT INTO address (userId, houseNum, firstLine, secondline, postcode, home, delivery ) VALUES(?,?,?,?,?,?,?)");
+            $stmt->bind_param("iisssii", $userID, $houseNum, $address1, $address2, $postCode, $homeAddressChecked, $deliveryAddressChecked);
+            $stmt->execute();
+
+            $deliveryAddressChecked = 1;
+            $homeAddressChecked = 0;
+
+            $stmt = $conn->prepare("INSERT INTO address (userId, houseNum, firstLine, secondline, postcode, home, delivery ) VALUES(?,?,?,?,?,?,?)");
+            $stmt->bind_param("iisssii", $userID, $DelhouseNum, $Deladdress1, $Deladdress2, $DelpostCode, $homeAddressChecked, $deliveryAddressChecked);
+            $stmt->execute();
+            echo('home and delivery address different');
+        }
+
+    } catch (Exception $e) {
+        return false;
+    }
+
+}
+
+if ($_postData['action'] == 'CHECK_USER_NAME') {
+
+    $UserName = $conn->real_escape_string(strip_tags(trim($_postData['userName'])));
+
+    try {
+        $stmt = $conn->prepare("SELECT loginId FROM users WHERE loginId=?");
+        $stmt->bind_param("s", $UserName);
+        $stmt->execute();
+
+        if ($result = $stmt->get_result()) {
+            if ($result->num_rows == 0) {
+                echo json_encode(['Message' => 'ok', 'success' => true]);
+            } else {
+                echo json_encode(['Message' => 'The user name is already taken', 'success' => true]);
+            }
+        }
+
+    } catch (Exception $e) {
+        echo json_encode(['Message' => 'Something went wrong!', 'success' => false]);
+    }
+}
