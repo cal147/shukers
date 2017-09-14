@@ -1,6 +1,6 @@
 import React, {Component} from "react";
 import {prodImgResourcePublic, serverScriptsPublic} from '../../../shared/urls'
-import {Button, Grid, Header, Icon, Image, Label, Modal} from 'semantic-ui-react'
+import {Button, Grid, Icon, Image, Label, Modal} from 'semantic-ui-react'
 
 import PublicUserStore from '../UserStore/PublicUserStore'
 
@@ -118,12 +118,20 @@ export default class product extends Component {
                             <Modal
                                 dimmer='blurring'
                                 trigger={
-                                    <Button><img className="prodImg" src={prodImgResourcePublic + product.imgPath}
-                                                 alt={product.name}/>
+                                    <Button>
+                                        {product.threeForTen == 1 ?
+                                            <img className="threefor10image"
+                                                 src={prodImgResourcePublic + 'threefor10.png'}
+                                                 alt='offer'/> : null}
+                                        <img className="prodImg" src={prodImgResourcePublic + product.imgPath}
+                                             alt={product.name}/>
                                         {product.onOffer == 1 ?
                                             <img className="offerimage" src={prodImgResourcePublic + 'offer.png'}
                                                  alt='offer'/> : null}</Button>}>
-                                <Header content={product.name + ' - £' + product.price}/>
+                                <Modal.Header>{product.name + ' - £' + product.price}
+                                    {product.onOffer ? <div style={{color: 'red'}}>on offer</div> : null}
+                                    {product.threeForTen ? <div style={{color: 'blue'}}>3 For £10</div> : null}
+                                </Modal.Header>
                                 <Modal.Content image scrolling>
 
                                     <Image wrapped size="medium" src={prodImgResourcePublic + product.imgPath}
@@ -162,16 +170,21 @@ export default class product extends Component {
                             {/*Modal shows the product page as pop up*/}
                             <Modal
                                 dimmer='blurring'
-                                trigger={
-                                    <Button>
-                                        <img className="prodImg" src={prodImgResourcePublic + product.imgPath}
-                                             alt={product.name}/>
-                                        {product.onOffer == 1 ?
-                                            <img className="offerimage" src={prodImgResourcePublic + 'offer.png'}
-                                                 alt='offer'/> : null}</Button>}>
-                                <Header content={product.name + ' - £' + product.price}/>
+                                trigger={<Button>
+                                    {product.threeForTen == 1 ?
+                                        <img className="threefor10image" src={prodImgResourcePublic + 'threefor10.png'}
+                                             alt='offer'/> : null}
+                                    <img className="prodImg" src={prodImgResourcePublic + product.imgPath}
+                                         alt={product.name}/>
+                                    {product.onOffer == 1 ?
+                                        <img className="offerimage" src={prodImgResourcePublic + 'offer.png'}
+                                             alt='offer'/> : null}</Button>}>
+                                <Modal.Header>{product.name + ' - £' + product.price}
+                                    {product.onOffer ? <div style={{color: 'red'}}>on offer</div> : null}
+                                    {product.threeForTen ? <div style={{color: 'blue'}}>3 For £10</div> : null}
+                                </Modal.Header>
                                 <Modal.Content image scrolling>
-                                    <Image wrapped size="medium" src={prodImgResourcePublic + product.imgPath}
+                                    <Image className="prodImg" src={prodImgResourcePublic + product.imgPath}
                                            alt={product.name}/>
                                     <Modal.Description>
                                         <h4 className="modal_description">{product.desc}</h4>

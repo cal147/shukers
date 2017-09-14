@@ -194,7 +194,10 @@ export default class SiteLayout extends Component {
                         onClose={this.handleClose}
                         open={this.state.modalOpen}
                     >
-                        <Modal.Header content={product.title + ' - £' + product.price}/>
+                        <Modal.Header>{product.name + ' - £' + product.price}
+                            {product.onOffer ? <div style={{color: 'red'}}>on offer</div> : null}
+                            {product.threeForTen ? <div style={{color: 'blue'}}>3 For £10</div> : null}
+                        </Modal.Header>
                         <Modal.Content image scrolling>
                             <Image wrapped size="medium" src={prodImgResourcePublic + product.image}
                                    alt={product.name}/>
@@ -233,7 +236,10 @@ export default class SiteLayout extends Component {
                         onClose={this.handleClose}
                         open={this.state.modalOpen}
                     >
-                        <Modal.Header content={product.title + ' - £' + product.price}/>
+                        <Modal.Header>{product.name + ' - £' + product.price}
+                            {product.onOffer ? <div style={{color: 'red'}}>on offer</div> : null}
+                            {product.threeForTen ? <div style={{color: 'blue'}}>3 For £10</div> : null}
+                        </Modal.Header>
                         <Modal.Content image scrolling>
                             <Image wrapped size="medium" src={prodImgResourcePublic + product.image}
                                    alt={product.name}/>
@@ -313,11 +319,9 @@ export default class SiteLayout extends Component {
                                 />
                             </Menu.Item>
                             <Menu.Item name='home' active={activeItem === 'home'} onClick={this.handleItemClick}
-                                       as={Link}
-                                       to='/'/>
+                                       as={Link} to='/'/>
                             <Menu.Item name='findUs' active={activeItem === 'findUs'} onClick={this.handleItemClick}
-                                       as={Link}
-                                       to='/findUs'/>
+                                       as={Link} to='/findUs'/>
                             <Dropdown item text={'Products'}>
                                 <Dropdown.Menu>
                                     {this.state.Productsdata.map((product, i) => <Dropdown.Item
@@ -325,6 +329,7 @@ export default class SiteLayout extends Component {
                                         {product.cat}</Dropdown.Item>)}
                                 </Dropdown.Menu>
                             </Dropdown>
+                            {userloggedin}
                         </Sidebar>
                         <Sidebar.Pusher>
                             {loggedIn}

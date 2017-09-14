@@ -104,7 +104,7 @@ if ($_postData['action'] == 'SELECT_SPECIFICCATEGORY') {
         $cleanProd = strip_tags($cProd);
         $productArray = [];
         try {
-            $stmt = $conn->prepare("SELECT p.id, p.name, p.description, p.price, p.onOffer, p.imgPath, c.cat FROM products AS p JOIN category AS c ON p.catId = c.id WHERE c.cat=?");
+            $stmt = $conn->prepare("SELECT p.id, p.name, p.description, p.price, p.onOffer, p.3for10, p.imgPath, c.cat FROM products AS p JOIN category AS c ON p.catId = c.id WHERE c.cat=?");
             $stmt->bind_param("s", $cleanProd);
             $stmt->execute();
 
@@ -116,6 +116,7 @@ if ($_postData['action'] == 'SELECT_SPECIFICCATEGORY') {
                         'desc' => $row['description'],
                         'price' => $row['price'],
                         'onOffer' => $row['onOffer'],
+                        'threeForTen' => $row['3for10'],
                         'imgPath' => $row['imgPath'],
                         'cat' => $row['cat']
                     ]);
