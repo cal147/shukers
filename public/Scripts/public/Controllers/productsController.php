@@ -293,7 +293,7 @@ if ($_postData['action'] == 'GET_USERBASKET') {
         $cleanUserID = strip_tags($cUserID);
 
         try {
-            $stmt = $conn->prepare("SELECT s.id, p.name, sd.qty, sd.productPrice, SUM(sd.qty * sd.productPrice) AS subTotal FROM sales AS s JOIN salesdetails AS sd ON s.id = sd.salesId JOIN products AS p ON sd.productId = p.id WHERE s.userId = ? AND s.paid = 0 GROUP BY p.id;");
+            $stmt = $conn->prepare("SELECT s.id, p.name, sd.qty, sd.productPrice, SUM(sd.qty * sd.productPrice) AS subTotal, p.3for10 FROM sales AS s JOIN salesdetails AS sd ON s.id = sd.salesId JOIN products AS p ON sd.productId = p.id WHERE s.userId = ? AND s.paid = 0 GROUP BY p.id;");
             $stmt->bind_param("i", $cleanUserID);
             $stmt->execute();
             if ($result = $stmt->get_result()) {
@@ -303,10 +303,22 @@ if ($_postData['action'] == 'GET_USERBASKET') {
                         'name' => $row['name'],
                         'qty' => $row['qty'],
                         'price' => $row['productPrice'],
-                        'subPrice' => $row['subTotal']
+                        'subPrice' => $row['subTotal'],
+                        'threeForTen' => $row['3for10']
                     ]);
                 }
-                echo json_encode($orderArray);
+
+                for ($i = 0; $i <= sizeof($orderArray); $i++) {
+                    echo 'for statement';
+                    if ($orderArray['threeForTen']) {
+                        echo $orderArray['threeForTen'];
+                        array_push($orderOffer, [
+                            'id' => $orderArray['id'],
+                            'price' => $orderArray['productPrice'],
+                        ]);
+                    }
+                };
+                echo json_encode($orderOffer);
 
             }
         } catch (Exception $e) {
