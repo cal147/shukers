@@ -107,16 +107,122 @@ if(session_status() === PHP_SESSION_ACTIVE) {
         }
 
         if ($_postData['action'] == "ADD_PRODUCT"){
-            echo json_encode(['product' => 'product received', 'success' => true] );
 
-            $theFile = fopen("../../../Images/Products/".$_postData['name'], "w");
-            $fileData = $_postData['blob'];
-            $pos = strpos($fileData, ',');
-            $newFileData = substr_replace($fileData, '',0, $pos+1);
-            $b64dec = base64_decode($newFileData);
-            fwrite($theFile, $b64dec);
-            fclose($theFile);
+            $prodName= strip_tags($conn->real_escape_string(trim($_postData['prodName'])));
+            $desc= strip_tags($conn->real_escape_string(trim($_postData['description'])));
+            $price= strip_tags($conn->real_escape_string(trim($_postData['price'])));
+            $onOffer= strip_tags($conn->real_escape_string(trim($_postData['onOffer'])));
+            $cat = strip_tags($conn->real_escape_string(trim($_postData['category'])));
+            $imgName= strip_tags($conn->real_escape_string(trim($_postData['name'])));
+            $image= $_postData['blob'];
+
+
+            try {
+                $stmt = $conn->prepare("INSERT INTO products(name, description, price, onOffer, catId, imgPath) VALUES(?,?,?,?,?,?)");
+                $stmt->bind_param("ssdiis", $prodName, $desc, $price, $onOffer, $cat, $imgName);
+                if ($stmt->execute()) {
+                    echo json_encode(['product' => 'product received', 'success' => true] );
+
+                    $theFile = fopen("../../../Images/Products/".$imgName, "w");
+                    $fileData = $image;
+                    $pos = strpos($fileData, ',');
+                    $newFileData = substr_replace($fileData, '',0, $pos+1);
+                    $b64dec = base64_decode($newFileData);
+                    fwrite($theFile, $b64dec);
+                    fclose($theFile);
+
+
+                } else {
+                    echo json_encode(['product' => 'product received', 'success' => false] );
+                }
+
+            } catch (Exception $e) {
+                echo json_encode(['product' => 'product received', 'success' => false] );
+
+            }
+        }
+
+        if ($_postData['action'] == "GET_PRODUCTS"){
+
+            $products = [];
+            try {
+
+                $stmt = $conn->prepare("SELECT * FROM products");
+                $stmt->execute();
+
+                if ($result = $stmt->get_result()) {
+                    while ($row = $result->fetch_assoc()) {
+                        array_push($products, [
+                            'id' => $row['id'],
+                            'prodName' => $row['name'],
+                            'description' => $row['description'],
+                            'price' => $row['price'],
+                            'onOffer' => boolval($row['onOffer']),
+                            'catId' => $row['catId'],
+                            'imgName' => $row['imgPath'],
+                        ]);
+                    }
+                    echo json_encode($products);
+                }else{
+                    echo json_encode(['Message' => 'Something went wrong!', 'success' => false]);
+                }
+
+
+            } catch (Exception $e) {
+                return false;
+            }
+        }
+
+        if($_postData['action'] == "DELETE_PRODUCT"){
+
+            $id = $_postData['id'];
+            $imgName = $_postData['imgName'];
+            try{
+                $stmt = $conn->prepare("DELETE FROM products WHERE id=?");
+                $stmt->bind_param("s", $id);
+
+                if($stmt->execute()){
+                    echo json_encode(['Message' => 'Product Deleted', 'success' => true]);
+
+                    //Delete the image.
+                    $fileToDel = "../../../Images/Products/".$imgName;
+                    unlink($fileToDel);
+
+                }else{
+                    echo json_encode(['Message' => 'Something went wrong!', 'success' => false]);
+                }
+
+
+
+            }catch(Exception $e){
+                echo json_encode(['Message' => 'Something went wrong!', 'success' => false]);
+            }
+        }
+
+        if($_postData['action'] == "UPDATE_PRODUCT"){
+
+            $id = $conn->real_escape_string(strip_tags(trim($_postData['id'])));
+            $name = $conn->real_escape_string(strip_tags(trim($_postData['name'])));
+            $desc = $conn->real_escape_string(strip_tags(trim($_postData['desc'])));
+            $price = $conn->real_escape_string(strip_tags(trim($_postData['price'])));
+            $onOffer = $conn->real_escape_string(strip_tags(trim($_postData['onOffer'])));
+
+
+            try{
+                $stmt = $conn->prepare("UPDATE products SET  name = ?, description = ?, price = ?, onOffer = ? WHERE id=?");
+                $stmt->bind_param("ssdii", $name, $desc, $price, $onOffer, $id);
+
+                $stmt->execute();
+                $stmt->close();
+
+                echo json_encode(['Message' => 'Updated', 'success' => true]);
+
+            }catch (Exception $e){
+                echo json_encode(['Message' => 'Something went wrong!', 'success' => false]);
+            }
 
         }
+
+
     }
 }

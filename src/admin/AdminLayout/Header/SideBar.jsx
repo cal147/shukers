@@ -22,8 +22,6 @@ export default class SideBar extends Component{
 
     render(){
         const { activeItem } = this.state;
-
-        // inverted color={"red"} vertical style={{position:"fixed", top:"62px"}} className="left fixed menu"
         return(
             <Menu pointing vertical style={{position:"fixed", top:"60px"}} inverted color={"red"} className="left fixed menu">
 

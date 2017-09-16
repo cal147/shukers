@@ -113,8 +113,6 @@ export default class CustomerSearch extends Component {
         if(this.state.selectedCat != null && this.state.searchQuery != ""){
             this.setState({customerFilter: null}, ()=>{
                 this.state.customers.map((item, i)=>{
-                   //TODO Filter the results based on the query.
-                   // e.g if(item[this.state.selectedCat].contains(this.state.searchQuery)){tempArr.push(item)}
                    for(let k in item){
                        if( k==this.state.selectedCat && item[k].indexOf(this.state.searchQuery) != -1){
                            tempArr.push(item);
