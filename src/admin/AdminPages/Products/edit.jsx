@@ -103,7 +103,6 @@ export default class ProdEdit extends Component {
         if( this.state.searchQuery != ""){
             this.setState({productsFilter: null}, ()=>{
                 this.state.products.map((item, i)=>{
-                    //TODO Filter the results based on the query.
                     for(let k in item){
                         if(k=="prodName" && item[k].indexOf(this.state.searchQuery) != -1){
                             tempArr.push(item);
@@ -119,7 +118,7 @@ export default class ProdEdit extends Component {
 
 
     render(){
-
+        //TODO apply toggle to display products that are on offer.
         let id;
         let name;
         let description;
