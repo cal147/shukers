@@ -31,7 +31,6 @@ export default class SideBar extends Component{
                 <Menu.Item as={Link} to="/products" name='products' icon="product hunt" active={activeItem === 'products'} onClick={this.handleItemClick} className="menu-spacing"/>
                 <Menu.Item as={Link} to="/customers" name='customers' icon="users" active={activeItem === 'customerFilter'} onClick={this.handleItemClick} className="menu-spacing"/>
                 <Menu.Item as={Link} to="/orderhistory" name='order history' icon="archive" active={activeItem === 'order history'} onClick={this.handleItemClick} className="menu-spacing"/>
-                <Menu.Item as={Link} to="/offers" name='offers' icon="wizard" active={activeItem === 'offers'} onClick={this.handleItemClick} className="menu-spacing"/>
             </Menu>
         );
     }

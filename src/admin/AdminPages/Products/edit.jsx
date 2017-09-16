@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Grid, Tab, Divider, Input, Table, Modal, Button, Header, Icon, Checkbox, TextArea} from'semantic-ui-react';
+import {Grid, Tab, Divider, Input, Table, Modal, Button, Header, Icon, Checkbox, TextArea, Label} from'semantic-ui-react';
 
 import adminUserStore from '../../AdminStores/AdminUserStore';
 import {serverScripts} from '../../../shared/urls';
@@ -19,6 +19,7 @@ export default class ProdEdit extends Component {
             productDetailOpen: false,
             arrayIndex: null,
             productsFilter: null,
+            showOffersOnly:false,
         }
 
     }
@@ -116,6 +117,25 @@ export default class ProdEdit extends Component {
         }
     }
 
+    toggleOffers(e, data){
+        let tempArr = [];
+        this.setState({showOffersOnly:!this.state.showOffersOnly}, ()=>{
+            if(this.state.showOffersOnly){
+                this.setState({productsFilter: null}, ()=>{
+                    this.state.products.map((item, i)=>{
+                            console.log(item.onOffer)
+                            if(item.onOffer){
+                                tempArr.push(item);
+                            }
+                    });
+                    this.setState({productsFilter:tempArr, searchQuery:""});
+                });
+            }else{
+                this.setState({productsFilter:this.state.products});
+            }
+        });
+    }
+
 
     render(){
         //TODO apply toggle to display products that are on offer.
@@ -143,13 +163,17 @@ export default class ProdEdit extends Component {
                 <Grid>
                     <Grid.Row><Grid.Column><Divider horizontal>Filter</Divider></Grid.Column></Grid.Row>
 
-                    <Grid.Row centered>
+                    <Grid.Row>
 
-                        <Grid.Column width={4}>
+                        <Grid.Column width={3}>
                             <Input fluid id="Search" placeholder='Search...' onChange={(e)=>this.setState({searchQuery:e.target.value})} />
                         </Grid.Column>
                         <Grid.Column>
                             <div color={'red'} onClick={this.handleFilter.bind(this)} className="ui button">Filter</div>
+                        </Grid.Column>
+                        <Grid.Column width={3} floated="right">
+                            <Label pointing='right' basic >Show offers only</Label>
+                            <Checkbox toggle  defaultChecked={this.state.showOffersOnly} onChange={this.toggleOffers.bind(this)}/>
                         </Grid.Column>
                     </Grid.Row>
 
