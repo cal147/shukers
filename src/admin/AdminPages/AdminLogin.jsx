@@ -4,6 +4,7 @@
 
 import React, {Component} from 'react';
 import * as AdminUserAction from '../AdminActions/AdminUserAction';
+import salesStore from '../AdminStores/SalesStore'
 import {Form, Container, Button, Header} from 'semantic-ui-react'
 
 
@@ -36,6 +37,7 @@ export default class AdminLogin extends Component{
     handleSubmit (e){
         e.preventDefault();
         AdminUserAction.userLogin(this.refs.userName.value, this.refs.password.value);
+        salesStore.getSales();
     };
 
 

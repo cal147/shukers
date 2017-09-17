@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import '../AdminMaster.css';
-
+import * as AdminUserAction from '../AdminActions/AdminUserAction';
 
 export default class Orders extends Component{
 
