@@ -113,8 +113,6 @@ export default class SiteLayout extends Component {
             console.error(err);
         });
     }
-
-    // TODO - Add to basket -- FUCK ME!!
     addProductToBasket(productId, qty) {
 
         console.log(this.state.salesID);
@@ -170,8 +168,6 @@ export default class SiteLayout extends Component {
 
     render() {
 
-        // TODO - my account - current orders and recent purchases change password
-
 
         const {activeItem, isLoading, value} = this.state;
         let userloggedin = null;
@@ -215,9 +211,10 @@ export default class SiteLayout extends Component {
                                 <option value={5}>5</option>
                                 <option value={null}>For more than 5 please call us</option>
                             </select>
-                            <Button onClick={() => this.addProductToBasket(product.id, this.state.Qty)}>
+                            {this.state.Qty <= 5 ? <Button
+                                onClick={() => this.addProductToBasket(product.id, this.state.Qty, product.name)}>
                                 <Icon name='shop'/> Add to Basket
-                            </Button>
+                            </Button> : null}
                         </Modal.Actions>
                     </Modal>) : null}
             </div>

@@ -293,13 +293,14 @@ if ($_postData['action'] == 'GET_USERBASKET') {
         $cleanUserID = strip_tags($cUserID);
 
         try {
-            $stmt = $conn->prepare("SELECT s.id, p.name, sd.qty, sd.productPrice, SUM(sd.qty * sd.productPrice) AS subTotal, p.3for10 FROM sales AS s JOIN salesdetails AS sd ON s.id = sd.salesId JOIN products AS p ON sd.productId = p.id WHERE s.userId = ? AND s.paid = 0 GROUP BY p.id;");
+            $stmt = $conn->prepare("SELECT s.id, sd.id AS salesDetailsID, p.name, sd.qty, sd.productPrice, SUM(sd.qty * sd.productPrice) AS subTotal, p.3for10 FROM sales AS s JOIN salesdetails AS sd ON s.id = sd.salesId JOIN products AS p ON sd.productId = p.id WHERE s.userId = ? AND s.paid = 0 GROUP BY p.id;");
             $stmt->bind_param("i", $cleanUserID);
             $stmt->execute();
             if ($result = $stmt->get_result()) {
                 while ($row = $result->fetch_assoc()) {
                     array_push($orderArray, [
                         'id' => $row['id'],
+                        'sdId' => $row['salesDetailsID'],
                         'name' => $row['name'],
                         'qty' => $row['qty'],
                         'price' => $row['productPrice'],
@@ -307,18 +308,7 @@ if ($_postData['action'] == 'GET_USERBASKET') {
                         'threeForTen' => $row['3for10']
                     ]);
                 }
-
-                for ($i = 0; $i <= sizeof($orderArray); $i++) {
-                    echo 'for statement';
-                    if ($orderArray['threeForTen']) {
-                        echo $orderArray['threeForTen'];
-                        array_push($orderOffer, [
-                            'id' => $orderArray['id'],
-                            'price' => $orderArray['productPrice'],
-                        ]);
-                    }
-                };
-                echo json_encode($orderOffer);
+                echo json_encode($orderArray);
 
             }
         } catch (Exception $e) {
@@ -372,6 +362,39 @@ if ($_postData['action'] == 'GET_SALEID') {
             $SalesID = (int)$row['id'];
 
             echo($SalesID);
+
+        } catch (Exception $e) {
+            return false;
+        }
+    }
+}
+
+if ($_postData['action'] == 'REMOVEPRODUCTFROMBASKET') {
+    $saleIDArray = null;
+    $dirtyID = $_postData['id'];
+
+    if (preg_match('/^[0-9]{1,3}$/', stripcslashes(trim($dirtyID)))) {
+
+        $cID = $conn->real_escape_string(trim($dirtyID));
+
+        $cleanID = strip_tags($cID);
+
+        $SalesID = $conn->real_escape_string(strip_tags(trim($_postData['salesId'])));
+
+        try {
+            $stmt = $conn->prepare("DELETE FROM salesdetails WHERE id = ?");
+            $stmt->bind_param("i", $cleanID);
+
+            if ($stmt->execute()) {
+                echo json_encode(['Message' => 'product deleted', 'success' => true]);
+                $stmt = $conn->prepare("UPDATE sales SET totalPrice = (SELECT SUM(totalPrice) FROM salesdetails WHERE salesID = ?) WHERE `id` = ?;");
+                $stmt->bind_param("ii", $SalesID, $SalesID);
+                if ($stmt->execute()) {
+                    echo json_encode(['Message' => 'Price Updated', 'success' => true]);
+                } else {
+                    echo json_encode(['Message' => 'Sales table unable to update', 'success' => false]);
+                }
+            }
 
         } catch (Exception $e) {
             return false;

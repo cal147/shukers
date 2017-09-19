@@ -7,8 +7,6 @@ import {serverScriptsPublic} from "../../../shared/urls";
 
 export default class login extends Component {
 
-    // TODO - work out secure way of changing password
-
     state = {userName: null, password: null, confirmPassword: null, usernameExist: null};
 
     constructor() {

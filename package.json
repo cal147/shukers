@@ -7,6 +7,7 @@
     "react": "^15.6.1",
     "react-dom": "^15.6.1",
     "react-dropzone": "^4.1.2",
+    "react-format": "^1.2.0",
     "react-image": "^1.0.1",
     "react-responsive-carousel": "^3.1.25",
     "react-router-dom": "^4.2.2",

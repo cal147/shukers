@@ -1,6 +1,6 @@
 import React, {Component} from "react";
 import {prodImgResourcePublic, serverScriptsPublic} from '../../../shared/urls'
-import {Button, Grid, Icon, Image, Label, Modal} from 'semantic-ui-react'
+import {Button, Grid, Icon, Image, Label, Message, Modal} from 'semantic-ui-react'
 
 import PublicUserStore from '../UserStore/PublicUserStore'
 
@@ -20,11 +20,6 @@ export default class product extends Component {
     }
 
     componentWillMount() {
-        if (this.state.counter === 0) {
-            this.urlchange();
-            this.setState({counter: 1})
-        }
-        if (this.state.user.loggedin === false) {
             fetch(serverScriptsPublic + "Controllers/productsController.php", {
                 method: 'POST',
                 headers: {"Content-type": "application/x-www-form-urlencoded; charset=UTF-8"},
@@ -38,6 +33,9 @@ export default class product extends Component {
             }).catch((err) => {
                 console.error(err);
             });
+        if (this.state.counter === 0) {
+            this.urlchange();
+            this.setState({counter: 1})
         }
     }
 
@@ -70,10 +68,8 @@ export default class product extends Component {
         });
     }
 
-    // TODO - Add to basket -- FUCK ME!!
-    addProductToBasket(productId, qty) {
-
-        console.log(this.state.salesID);
+    addProductToBasket(productId, qty, name) {
+        alert(name + ' has been added to yout basket');
         fetch(serverScriptsPublic + "Controllers/productsController.php", {
             method: 'POST',
             headers: {"Content-type": "application/x-www-form-urlencoded; charset=UTF-8"},
@@ -90,6 +86,7 @@ export default class product extends Component {
         }).catch((err) => {
             console.error(err);
         });
+        // this.setState({productAdded: true})
     }
 
     urlchange() {
@@ -107,7 +104,12 @@ export default class product extends Component {
     render() {
 
         let loggedIn = null;
+        let addedToBasket = null;
         if (this.state.user.isLoggedIn) {
+            if (this.state.productAdded == true) {
+                addedToBasket =
+                    <Message success><Message.Header>{product.name + ' have been added to your basket'}</Message.Header></Message>;
+            }
             loggedIn = <Grid columns={3} textAlign="center" className="prodOverGrid">
                 {this.state.Productsdata != null ? this.state.Productsdata.map((product, i) =>
                     <Grid key={i} className="prodGrid" divided>
@@ -127,14 +129,15 @@ export default class product extends Component {
                                              alt={product.name}/>
                                         {product.onOffer == 1 ?
                                             <img className="offerimage" src={prodImgResourcePublic + 'offer.png'}
-                                                 alt='offer'/> : null}</Button>}>
+                                                 alt='offer'/> : null}</Button>}
+                                closeIcon>
                                 <Modal.Header>{product.name + ' - £' + product.price}
                                     {product.onOffer ? <div style={{color: 'red'}}>on offer</div> : null}
                                     {product.threeForTen ? <div style={{color: 'blue'}}>3 For £10</div> : null}
                                 </Modal.Header>
                                 <Modal.Content image scrolling>
 
-                                    <Image wrapped size="medium" src={prodImgResourcePublic + product.imgPath}
+                                    <Image size="medium" src={prodImgResourcePublic + product.imgPath}
                                            alt={product.name}/>
                                     <Modal.Description>
                                         <h4 className="modal_description">{product.desc}</h4>
@@ -150,9 +153,12 @@ export default class product extends Component {
                                         <option value={5}>5</option>
                                         <option value={null}>For more than 5 please call us</option>
                                     </select>
-                                    <Button onClick={() => this.addProductToBasket(product.id, this.state.Qty)}>
+                                    {this.state.Qty <= 5 ? <Button
+                                        onClick={() => this.addProductToBasket(product.id, this.state.Qty, product.name)}>
                                         <Icon name='shop'/> Add to Basket
-                                    </Button>
+                                    </Button> : null}
+
+                                    {addedToBasket}
                                 </Modal.Actions>
                             </Modal>
 

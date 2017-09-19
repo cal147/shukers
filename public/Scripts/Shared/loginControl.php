@@ -55,7 +55,7 @@ class loginControl{
 
         if($this->loginId != null){
 
-            $sql = "select u.id, u.loginId, u.forname, u.surname, u.contactNumber, u.isStaff, a.houseNum, a.firstLine, a.secondLine, a.postcode, a.home, a.delivery from users as u inner join address as a on u.id = a.userId where u.loginId = ?";
+            $sql = "SELECT u.id, u.loginId, u.forname, u.surname, u.contactNumber, u.isStaff, a.houseNum, a.firstLine, a.secondLine, a.postcode, a.home, a.delivery, u.email FROM users AS u INNER JOIN address AS a ON u.id = a.userId WHERE u.loginId = ?";
 
             try {
                 $stmt = $this->conn->prepare($sql);
@@ -77,6 +77,7 @@ class loginControl{
                             'postcode' => $row['postcode'],
                             'homeAddress' => boolval($row['home']),
                             'deliveryAddress' => boolval($row['delivery']),
+                            'email' => $row['email'],
                             'sessionId' => session_id()
                         ];
                     }

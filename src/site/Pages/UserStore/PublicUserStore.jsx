@@ -28,6 +28,7 @@ class PublicUserStore extends EventEmitter {
                 Staff: false,
                 isLoggedIn: false,
                 logInError: false,
+                email: false,
                 serverSession: null
             };
         } else {
@@ -47,6 +48,7 @@ class PublicUserStore extends EventEmitter {
                 Staff: data['isStaff'],
                 isLoggedIn: true,
                 logInError: false,
+                email: data['email'],
                 serverSession: data['sessionId']
             };
 
@@ -77,11 +79,16 @@ class PublicUserStore extends EventEmitter {
             this.user.addressL1 = data['adFirstLine'];
             this.user.addressL2 = data['adSecondLine'];
             this.user.postcode = data['postcode'];
+            this.user.DelhouseNum = data['DelhouseNum'];
+            this.user.DeladdressL1 = data['DeladFirstLine'];
+            this.user.DeladdressL2 = data['DeladSecondLine'];
+            this.user.Delpostcode = data['Delpostcode'];
             this.user.isHome = data['homeAddress'];
             this.user.isDelivery = data['deliveryAddress'];
             if (data['loginId'] != null) this.user.isLoggedIn = true;
             this.user.logInError = !data['success'];
             this.user.serverSession = data['sessionId'];
+            this.user.email = data['email'];
 
             if (data['loginId'] != null) sessionStorage.setItem("userData", JSON.stringify(data));
             this.emit("change");
@@ -120,10 +127,15 @@ class PublicUserStore extends EventEmitter {
                     this.user.addressL1 = null;
                     this.user.addressL2 = null;
                     this.user.postcode = null;
+                    this.user.DelhouseNum = null;
+                    this.user.DeladdressL1 = null;
+                    this.user.DeladdressL2 = null;
+                    this.user.Delpostcode = null;
                     this.user.isHome = null;
                     this.user.isDelivery = null;
                     this.user.isLoggedIn = false;
                     this.user.logInError = false;
+                    this.user.email = null;
 
                     sessionStorage.clear();
 

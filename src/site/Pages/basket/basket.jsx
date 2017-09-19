@@ -1,7 +1,9 @@
 import React, {Component} from "react";
-import {Table} from "semantic-ui-react";
+import {Button, Table} from "semantic-ui-react";
 import {serverScriptsPublic} from "../../../shared/urls";
 import publicUserStore from '../UserStore/PublicUserStore';
+import {FormattedNumber} from "react-intl";
+import {Money} from "react-format";
 
 
 export default class basket extends Component {
@@ -16,6 +18,19 @@ export default class basket extends Component {
     }
 
     componentWillMount() {
+        fetch(serverScriptsPublic + "Controllers/productsController.php", {
+            method: 'POST',
+            headers: {"Content-type": "application/x-www-form-urlencoded; charset=UTF-8"},
+            body: JSON.stringify({
+                action: "GET_SALEID",
+                User: this.state.user.id
+            }),
+            mode: 'cors'
+        }).then(response => response.json()).then(data => {
+            this.setState({salesID: data});
+        }).catch((err) => {
+            console.error(err);
+        });
         fetch(serverScriptsPublic + "Controllers/productsController.php", {
             method: 'POST',
             headers: {"Content-type": "application/x-www-form-urlencoded; charset=UTF-8"},
@@ -42,8 +57,25 @@ export default class basket extends Component {
         }).catch((err) => {
             console.error(err);
         });
+    }
 
+    removeProduct(sdId) {
 
+        fetch(serverScriptsPublic + "Controllers/productsController.php", {
+            method: 'POST',
+            headers: {"Content-type": "application/x-www-form-urlencoded; charset=UTF-8"},
+            body: JSON.stringify({
+                action: "REMOVEPRODUCTFROMBASKET",
+                id: sdId,
+                salesId: this.state.salesID
+            }),
+            mode: 'cors'
+        }).then(response => response.json()).then(data => {
+            this.setState({BasketData: data});
+        }).catch((err) => {
+            console.error(err);
+        });
+        window.location.reload()
     }
 
     render() {
@@ -57,24 +89,32 @@ export default class basket extends Component {
                         <Table.HeaderCell textAlign="center">Price</Table.HeaderCell>
                         <Table.HeaderCell textAlign="center">Quantity</Table.HeaderCell>
                         <Table.HeaderCell textAlign="center">Sub-Total</Table.HeaderCell>
+                        <Table.HeaderCell textAlign="center">Remove from basket</Table.HeaderCell>
                     </Table.Header>
                     {this.state.BasketData != null ? this.state.BasketData.map((basket, i) =>
                         <Table.Row key={i}>
                             <Table.Cell>{basket.name}</Table.Cell>
-                            <Table.Cell textAlign="center">{basket.qty}</Table.Cell>
                             <Table.Cell textAlign="center">£{basket.price}</Table.Cell>
+                            <Table.Cell textAlign="center">{basket.qty}</Table.Cell>
                             <Table.Cell textAlign="center">£{basket.subPrice}</Table.Cell>
+                            <Table.Cell textAlign="center"><Button icon='remove' color="red"
+                                                                   onClick={() => this.removeProduct(basket.sdId)}/></Table.Cell>
                         </Table.Row>
                     ) : null}
                     <Table.Row>
                         <Table.Cell colSpan={3}><strong>Online Payment Fee</strong></Table.Cell>
                         <Table.Cell textAlign="center"><strong>£0.20</strong></Table.Cell>
+                        <Table.Cell textAlign="center"> </Table.Cell>
                     </Table.Row>
                     <Table.Footer>
                         <Table.HeaderCell colSpan="2"> </Table.HeaderCell>
                         <Table.HeaderCell textAlign="center"><strong>Total Price</strong></Table.HeaderCell>
-                        <Table.HeaderCell
-                            textAlign="center"><strong>£{this.state.BasketTotalPrice}</strong></Table.HeaderCell>
+                        <Table.HeaderCell textAlign="center">
+                            <strong>
+                                <Money locale="en-UK" currency="GBP">{this.state.BasketTotalPrice}</Money>
+                            </strong>
+                        </Table.HeaderCell>
+                        <Table.HeaderCell textAlign="center"> </Table.HeaderCell>
 
                     </Table.Footer>
                 </Table>
