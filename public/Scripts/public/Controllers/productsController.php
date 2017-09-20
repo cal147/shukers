@@ -675,3 +675,20 @@ if ($_postData['action'] == 'CHECK_USER_NAME') {
         echo json_encode(['Message' => 'Something went wrong!', 'success' => false]);
     }
 }
+
+if ($_postData['action'] == 'PAY_INSTORE') {
+
+    $SaleID = $conn->real_escape_string(strip_tags(trim($_postData['saleID'])));
+
+    try {
+        $stmt = $conn->prepare("UPDATE sales SET collection = 1 WHERE id = ?");
+        $stmt->bind_param("s", $SaleID);
+        if ($stmt->execute()) {
+            echo json_encode(['Message' => 'Order being processed for collection', 'success' => true]);
+        } else {
+            echo json_encode(['Message' => 'Order unable to be processed for collection', 'success' => false]);
+        }
+    } catch (Exception $e) {
+        echo json_encode(['Message' => 'Something went wrong!', 'success' => false]);
+    }
+}

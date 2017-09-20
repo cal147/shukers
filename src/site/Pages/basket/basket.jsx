@@ -2,7 +2,6 @@ import React, {Component} from "react";
 import {Button, Table} from "semantic-ui-react";
 import {serverScriptsPublic} from "../../../shared/urls";
 import publicUserStore from '../UserStore/PublicUserStore';
-import {FormattedNumber} from "react-intl";
 import {Money} from "react-format";
 
 
@@ -78,6 +77,29 @@ export default class basket extends Component {
         window.location.reload()
     }
 
+    collectInStore() {
+        let fulldate = new Date(new Date().getTime() + 24 * 60 * 60 * 1000);
+        let tomorrowDate = fulldate.toDateString();
+
+        fetch(serverScriptsPublic + "Controllers/productsController.php", {
+            method: 'POST',
+            headers: {"Content-type": "application/x-www-form-urlencoded; charset=UTF-8"},
+            body: JSON.stringify({
+                action: "PAY_INSTORE",
+                saleID: this.state.salesId
+            }),
+            mode: 'cors'
+        }).then(response => response.json()).then(data => {
+            if (data.Message === "Order being processed for collection") {
+                alert('Your order will be ready for collection before 4 on ' + tomorrowDate)
+            } else {
+                alert('something went wrong!')
+            }
+        }).catch((err) => {
+            console.error(err);
+        });
+    }
+
     render() {
 
         return (
@@ -148,6 +170,8 @@ export default class basket extends Component {
                 </form>
 
                 {/*TODO - Collect and Pay in store*/}
+
+                <Button negative onClick={() => this.collectInStore()}>Collect and Pay in store tomorrow</Button>
 
             </div>
         )
