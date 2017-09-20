@@ -86,7 +86,7 @@ export default class basket extends Component {
             headers: {"Content-type": "application/x-www-form-urlencoded; charset=UTF-8"},
             body: JSON.stringify({
                 action: "PAY_INSTORE",
-                saleID: this.state.salesId
+                saleID: this.state.salesID
             }),
             mode: 'cors'
         }).then(response => response.json()).then(data => {

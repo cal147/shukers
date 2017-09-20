@@ -179,7 +179,7 @@ export default class myAccount extends Component {
 
         this.panes = [
 
-            {// TODO - check other orders work well  //// TODO - maybe use segment instead of GRID
+            /*{// TODO - check other orders work well  //// TODO - maybe use segment instead of GRID
 
                 menuItem: 'Order History', render: () =>
                 <Tab.Pane>
@@ -243,7 +243,7 @@ export default class myAccount extends Component {
                     ) : <h3>You do not have any recent orders.</h3>}
 
                 </Tab.Pane>
-            },
+            },*/
             {
                 menuItem: 'Personal Details', render: () =>
                 <Tab.Pane>

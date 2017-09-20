@@ -89,8 +89,7 @@ export default class SignUp extends Component {
                 }),
                 mode: 'cors'
             }).then(response => response.json()).then(data => {
-                this.setState({passwordChangeConfirmation: data});
-                this.setState({Loader: null});
+                this.setState({passwordChangeConfirmation: data, Loader: null});
             }).catch((err) => {
                 console.error(err);
             });

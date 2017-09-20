@@ -57,7 +57,8 @@ export default class SiteLayout extends Component {
             ProductSearch: [],
             ProductModal: null,
             width: 800,
-            user: publicUserStore.getUser()
+            user: publicUserStore.getUser(),
+            Qty: 1
         }
     }
 
@@ -209,9 +210,10 @@ export default class SiteLayout extends Component {
                                 <option value={3}>3</option>
                                 <option value={4}>4</option>
                                 <option value={5}>5</option>
-                                <option value={null}>For more than 5 please call us</option>
+                                <option value={6}>6</option>
+                                <option value={null}>For more than 6 please call us</option>
                             </select>
-                            {this.state.Qty <= 5 ? <Button
+                            {this.state.Qty <= 6 ? <Button
                                 onClick={() => this.addProductToBasket(product.id, this.state.Qty, product.name)}>
                                 <Icon name='shop'/> Add to Basket
                             </Button> : null}
