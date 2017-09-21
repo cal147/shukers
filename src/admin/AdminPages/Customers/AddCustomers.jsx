@@ -271,7 +271,7 @@ export default class AddCustomers extends Component{
                                 <Label basic pointing='right'>Staff Member</Label>
                             </Grid.Column>
                             <Grid.Column width={8}>
-                                <Checkbox  id="staffMember" checked={this.state.staffMember} onChange={this.takeCheckBox.bind(this)}/>
+                                <Checkbox  id="staffMember" defaultChecked={this.state.staffMember} onChange={this.takeCheckBox.bind(this)}/>
                             </Grid.Column>
                         </Grid.Row>
 
@@ -317,7 +317,7 @@ export default class AddCustomers extends Component{
                                 <Label basic pointing='right'>Home Address</Label>
                             </Grid.Column>
                             <Grid.Column width={8}>
-                                <Checkbox id="homeAddress" checked={this.state.homeAddress} onChange={this.takeCheckBox.bind(this)}/>
+                                <Checkbox id="homeAddress" defaultChecked={this.state.homeAddress} onChange={this.takeCheckBox.bind(this)}/>
                             </Grid.Column>
                         </Grid.Row>
 
@@ -326,7 +326,7 @@ export default class AddCustomers extends Component{
                                 <Label basic pointing='right'>Delivery Address</Label>
                             </Grid.Column>
                             <Grid.Column >
-                                <Checkbox  id="deliveryAddress" checked={this.state.deliveryAddress} onChange={this.takeCheckBox.bind(this)}/>
+                                <Checkbox  id="deliveryAddress" defaultChecked={this.state.deliveryAddress} onChange={this.takeCheckBox.bind(this)}/>
                             </Grid.Column>
                             <Grid.Column width={3}>
                                 <div color={'red'} name="deliveryAddress" className="ui red button" onClick={()=>{this.setState({showDelivery:!this.state.showDelivery})}}>Add Delivery Address</div>
@@ -342,7 +342,7 @@ export default class AddCustomers extends Component{
                                 <Grid.Row columns={16}>
                                     <Grid.Column width={5}></Grid.Column>
                                     <Grid.Column width={2} ><Label basic pointing='right'>Street</Label></Grid.Column>
-                                    <Grid.Column width={8}><Input fluid id="deliveryStreet" value={this.state.street} onChange={this.takeInput.bind(this)}/></Grid.Column>
+                                    <Grid.Column width={8}><Input fluid id="deliveryStreet" value={this.state.deliveryStreet} onChange={this.takeInput.bind(this)}/></Grid.Column>
                                 </Grid.Row>
                                 <Grid.Row columns={16}>
                                     <Grid.Column width={5}></Grid.Column>

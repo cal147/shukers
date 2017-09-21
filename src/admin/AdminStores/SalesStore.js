@@ -54,7 +54,7 @@ class SalesStore extends EventEmitter{
 
     dispatchSale(id){
         //TODO Mark the sale as completed in the database.
-
+        console.log("In the store " + id);
 
     }
 

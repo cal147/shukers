@@ -138,7 +138,6 @@ export default class ProdEdit extends Component {
 
 
     render(){
-        //TODO apply toggle to display products that are on offer.
         let id;
         let name;
         let description;

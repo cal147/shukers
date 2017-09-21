@@ -19,14 +19,17 @@ if(session_status() === PHP_SESSION_ACTIVE) {
             $sales = [];
 
             try{
-                $stmt = $conn->prepare("SELECT id, userId, saleDate, totalPrice, paid, dispatched FROM sales WHERE paid=1 AND dispatched = 0");
+                $stmt = $conn->prepare("SELECT s.id, CONCAT(u.forname, ' ', surname) AS 'name', CONCAT(a.houseNum, ' ', firstLine) AS 'street', u.contactNumber, a.postcode, s.saleDate, s.totalPrice, s.paid, s.dispatched FROM sales AS s INNER JOIN users AS u on u.id = s.userId INNER JOIN address as a on u.id = a.userId WHERE paid=1 AND dispatched = 0 AND a.delivery = 1");
                 $stmt->execute();
 
                 if ($result = $stmt->get_result()) {
                     while ($row = $result->fetch_assoc()) {
                         array_push($sales, [
                             'id' => $row['id'],
-                            'userId' => $row['userId'],
+                            'name' => $row['name'],
+                            'street' => $row['street'],
+                            'contactNumber' => $row['contactNumber'],
+                            'postcode' => $row['postcode'],
                             'saleDate' => $row['saleDate'],
                             'totalPrice' => $row['totalPrice'],
                             'paid' => boolval($row['paid']),
@@ -48,6 +51,36 @@ if(session_status() === PHP_SESSION_ACTIVE) {
         if ($_postData['action'] == 'MARK_AS_DISPATCHED') {
 
         }
+
+
+        if ($_postData['action'] == 'GET_SALE_DETAILS') {
+
+            $saleDetails = [];
+            try{
+                $stmt = $conn->prepare("SELECT p.name, s.qty, p.price FROM salesDetails AS s INNER JOIN products AS p on p.id = s.productId WHERE saleId = ?");
+                $stmt->bind_param("i", $_postData['id']);
+                $stmt->execute();
+
+                if ($result = $stmt->get_result()) {
+                    while ($row = $result->fetch_assoc()) {
+                        array_push($saleDetails, [
+                            'product' => $row['name'],
+                            'qty' => $row['qty'],
+                            'price' => $row['price']
+                        ]);
+                    }
+                    echo json_encode(['saledetails' => $saleDetails, 'success' => true]);
+                }else{
+                    echo json_encode(['Message' => 'Something went wrong!', 'success' => false]);
+                }
+
+                $stmt->close();
+
+            }catch (Exception $e) {
+                echo json_encode(['Message' => 'Something went wrong!', 'success' => false]);
+            }
+        }
+
 
 
     }
