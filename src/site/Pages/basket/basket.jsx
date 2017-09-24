@@ -95,7 +95,7 @@ export default class basket extends Component {
         }).catch((err) => {
             console.error(err);
         });
-        // TODO - currently showing sub price but if user puts product in again doesnt show in basket
+        // TODO - currently showing sub price but if user puts product in again doesn't show in basket
 
         fetch(serverScriptsPublic + "Controllers/productsController.php", {
             method: 'POST',
