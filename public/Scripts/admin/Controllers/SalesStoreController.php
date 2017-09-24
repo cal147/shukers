@@ -95,7 +95,40 @@ if(session_status() === PHP_SESSION_ACTIVE) {
             }
         }
 
+        if($_postData['action'] == 'GET_ALL_SALES'){
+            $sales = [];
 
+            try{
+                $stmt = $conn->prepare("SELECT s.id, CONCAT(u.forname, ' ', surname) AS 'name', CONCAT(a.houseNum, ' ', firstLine) AS 'street', u.contactNumber, a.postcode, s.saleDate, s.totalPrice, s.paid, s.dispatched, s.collection FROM sales AS s INNER JOIN users AS u on u.id = s.userId INNER JOIN address as a on u.id = a.userId WHERE a.delivery = 1 ORDER BY s.id DESC");
+                $stmt->execute();
+
+                if ($result = $stmt->get_result()) {
+                    while ($row = $result->fetch_assoc()) {
+                        array_push($sales, [
+                            'id' => $row['id'],
+                            'name' => $row['name'],
+                            'street' => $row['street'],
+                            'contactNumber' => $row['contactNumber'],
+                            'postcode' => $row['postcode'],
+                            'saleDate' => $row['saleDate'],
+                            'totalPrice' => $row['totalPrice'],
+                            'paid' => boolval($row['paid']),
+                            'dispatched' => boolval($row['dispatched']),
+                            'collection' => boolval($row['collection']),
+                        ]);
+                    }
+                    echo json_encode(['sales' => $sales, 'success' => true]);
+                }else{
+                    echo json_encode(['Message' => 'Something went wrong!', 'success' => false]);
+                }
+
+                $stmt->close();
+
+            }catch (Exception $e){
+                echo json_encode(['Message' => 'Something went wrong!', 'success' => false]);
+            }
+
+        }
 
     }
 }

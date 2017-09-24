@@ -187,7 +187,7 @@ export default class ProdEdit extends Component {
                         <Table celled>
                             <Table.Header>
                                 <Table.Row>
-                                    <Table.HeaderCell width={1} textAlign="center">User ID</Table.HeaderCell>
+                                    <Table.HeaderCell width={1} textAlign="center">Product ID</Table.HeaderCell>
                                     <Table.HeaderCell width={2} textAlign="center">Product Name</Table.HeaderCell>
                                     <Table.HeaderCell width={8} textAlign="center">Description</Table.HeaderCell>
                                     <Table.HeaderCell width={1} textAlign="center">Price</Table.HeaderCell>

@@ -30,7 +30,6 @@ export default class Orders extends Component{
     }
 
     componentWillMount(){
-        //TODO Need to change this listener. Listener doesnt unmount when component does.
        salesStore.addListener("change", this.saleStoreChange);
 
 
@@ -47,7 +46,6 @@ export default class Orders extends Component{
     }
 
     rowClick(id){
-        //TODO fetch product details from the Id
         fetch(serverScripts+"admin/Controllers/SalesStoreController.php", {
             method: 'POST',
             headers:{"Content-type": "application/x-www-form-urlencoded; charset=UTF-8"},
@@ -131,7 +129,6 @@ export default class Orders extends Component{
                             </Table.Header>
 
                             <Table.Body>
-                                {/*TODO map order details in here*/}
                                 {this.state.orderDetails != null ? this.state.orderDetails.map((item, i) =>
                                         <Table.Row key={i} onClick={()=>this.rowClick(item.id, i)} className="customerTable">
                                             <Table.Cell textAlign="center">{item.product}</Table.Cell>
