@@ -53,8 +53,23 @@ class SalesStore extends EventEmitter{
     }
 
     dispatchSale(id){
-        //TODO Mark the sale as completed in the database.
-        console.log("In the store " + id);
+        fetch(serverScripts+"admin/Controllers/SalesStoreController.php", {
+            method: 'POST',
+            headers:{"Content-type": "application/x-www-form-urlencoded; charset=UTF-8"},
+            body: JSON.stringify({
+                action: "MARK_AS_DISPATCHED",
+                sessionId : this.user.serverSession,
+                id: id
+            }),
+            mode: 'cors'
+        }).then((response)=>response.json()).then((data)=>{
+            if(data.success) {
+                this.refreshSales();
+                this.emit("change");
+            }
+        }).catch((err)=>{
+            console.error(err);
+        });
 
     }
 

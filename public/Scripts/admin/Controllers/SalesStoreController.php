@@ -19,7 +19,7 @@ if(session_status() === PHP_SESSION_ACTIVE) {
             $sales = [];
 
             try{
-                $stmt = $conn->prepare("SELECT s.id, CONCAT(u.forname, ' ', surname) AS 'name', CONCAT(a.houseNum, ' ', firstLine) AS 'street', u.contactNumber, a.postcode, s.saleDate, s.totalPrice, s.paid, s.dispatched FROM sales AS s INNER JOIN users AS u on u.id = s.userId INNER JOIN address as a on u.id = a.userId WHERE paid=1 AND dispatched = 0 AND a.delivery = 1");
+                $stmt = $conn->prepare("SELECT s.id, CONCAT(u.forname, ' ', surname) AS 'name', CONCAT(a.houseNum, ' ', firstLine) AS 'street', u.contactNumber, a.postcode, s.saleDate, s.totalPrice, s.paid, s.dispatched, s.collection FROM sales AS s INNER JOIN users AS u on u.id = s.userId INNER JOIN address as a on u.id = a.userId WHERE paid=1 AND dispatched = 0 AND a.delivery = 1");
                 $stmt->execute();
 
                 if ($result = $stmt->get_result()) {
@@ -33,7 +33,8 @@ if(session_status() === PHP_SESSION_ACTIVE) {
                             'saleDate' => $row['saleDate'],
                             'totalPrice' => $row['totalPrice'],
                             'paid' => boolval($row['paid']),
-                            'dispatched' => boolval($row['dispatched'])
+                            'dispatched' => boolval($row['dispatched']),
+                            'collection' => boolval($row['collection']),
                         ]);
                     }
                     echo json_encode(['sales' => $sales, 'success' => true]);
@@ -49,7 +50,20 @@ if(session_status() === PHP_SESSION_ACTIVE) {
         }
 
         if ($_postData['action'] == 'MARK_AS_DISPATCHED') {
+            $id = strip_tags($conn->real_escape_string(trim($_postData['id'])));
 
+            try{
+                $stmt = $conn->prepare("UPDATE sales SET  dispatched = 1 WHERE id=?");
+                $stmt->bind_param("i", $id);
+
+                $stmt->execute();
+                $stmt->close();
+
+                echo json_encode(['Message' => 'Updated', 'success' => true]);
+
+            }catch (Exception $e){
+                echo json_encode(['Message' => 'Something went wrong!', 'success' => false]);
+            }
         }
 
 

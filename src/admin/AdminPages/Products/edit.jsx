@@ -71,8 +71,9 @@ export default class ProdEdit extends Component {
 
     }
 
-    updateProduct(id, name, desc, price, onOffer){
+    updateProduct(id, name, desc, price, onOffer, threeForTen, units){
 
+        console.log(units);
         fetch(serverScripts + "admin/Controllers/productsController.php", {
             method: 'POST',
             headers: {"Content-type": "application/x-www-form-urlencoded; charset=UTF-8"},
@@ -83,7 +84,9 @@ export default class ProdEdit extends Component {
                 name : name,
                 desc:desc,
                 price:price,
-                onOffer:onOffer
+                onOffer:onOffer,
+                threeForTen : threeForTen,
+                units: units,
             }),
             mode: 'cors'
         }).then((response) => response.json()).then((data) => {
@@ -143,8 +146,9 @@ export default class ProdEdit extends Component {
         let description;
         let price;
         let onOffer;
-        let catId;
+        let threeForTen;
         let imgPath;
+        let units;
 
 
         if(this.state.productsFilter!=null && this.state.arrayIndex !=null){
@@ -153,8 +157,9 @@ export default class ProdEdit extends Component {
             description = this.state.productsFilter[this.state.arrayIndex].description;
             price = this.state.productsFilter[this.state.arrayIndex].price;
             onOffer = this.state.productsFilter[this.state.arrayIndex].onOffer;
-            catId = this.state.productsFilter[this.state.arrayIndex].catId;
+            threeForTen = this.state.productsFilter[this.state.arrayIndex].threeForTen;
             imgPath = this.state.productsFilter[this.state.arrayIndex].imgName;
+            units = this.state.productsFilter[this.state.arrayIndex].units;
         }
 
         return(
@@ -186,7 +191,9 @@ export default class ProdEdit extends Component {
                                     <Table.HeaderCell width={2} textAlign="center">Product Name</Table.HeaderCell>
                                     <Table.HeaderCell width={8} textAlign="center">Description</Table.HeaderCell>
                                     <Table.HeaderCell width={1} textAlign="center">Price</Table.HeaderCell>
+                                    <Table.HeaderCell width={1} textAlign="center">Units</Table.HeaderCell>
                                     <Table.HeaderCell width={1} textAlign="center">Offer</Table.HeaderCell>
+                                    <Table.HeaderCell width={1} textAlign="center">Three For Ten</Table.HeaderCell>
                                 </Table.Row>
                             </Table.Header>
 
@@ -197,7 +204,9 @@ export default class ProdEdit extends Component {
                                             <Table.Cell textAlign="center">{item.prodName}</Table.Cell>
                                             <Table.Cell textAlign="center">{item.description}</Table.Cell>
                                             <Table.Cell textAlign="center">{"£"+item.price}</Table.Cell>
+                                            <Table.Cell textAlign="center">{item.units}</Table.Cell>
                                             <Table.Cell textAlign="center">{item.onOffer?<span style={{color:"green", fontSize:"30px"}}>&#x2714;</span>:<span style={{color:"red", fontSize:"30px"}}>&#x2718;</span>}</Table.Cell>
+                                            <Table.Cell textAlign="center">{item.threeForTen?<span style={{color:"green", fontSize:"30px"}}>&#x2714;</span>:<span style={{color:"red", fontSize:"30px"}}>&#x2718;</span>}</Table.Cell>
                                             </Table.Row>
                                     )
                                     :null}
@@ -259,10 +268,27 @@ export default class ProdEdit extends Component {
                                     </Table.Row>
                                     <Table.Row>
                                         <Table.Cell>
+                                            <Header as='h4' image>Units</Header>
+                                        </Table.Cell>
+                                        <Table.Cell >
+                                            <Input id="units" defaultValue={units} onChange={(e)=> units=e.target.value}/>
+                                        </Table.Cell>
+                                    </Table.Row>
+                                    <Table.Row>
+                                        <Table.Cell>
                                             <Header as='h4' image>Offer</Header>
                                         </Table.Cell>
                                         <Table.Cell >
                                             <Checkbox id="onOffer" defaultChecked={onOffer} onChange={(e, data)=> onOffer=data.checked}/>
+                                        </Table.Cell>
+                                    </Table.Row>
+
+                                    <Table.Row>
+                                        <Table.Cell>
+                                            <Header as='h4' image>Three For Ten</Header>
+                                        </Table.Cell>
+                                        <Table.Cell >
+                                            <Checkbox id="threeForTen" defaultChecked={threeForTen} onChange={(e, data)=> threeForTen=data.checked}/>
                                         </Table.Cell>
                                     </Table.Row>
 
@@ -276,7 +302,7 @@ export default class ProdEdit extends Component {
                             <Button color='red' onClick={()=>this.deleteProduct(id, imgPath)}>
                                 <Icon name='remove' /> Delete Product
                             </Button>
-                            <Button color='green' style={{float:"right"}} onClick={()=>this.updateProduct(id, name, description, price, onOffer)}>
+                            <Button color='green' style={{float:"right"}} onClick={()=>this.updateProduct(id, name, description, price, onOffer, threeForTen, units)}>
                                 <Icon name='checkmark' /> Update
                             </Button>
                         </div>

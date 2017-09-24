@@ -273,7 +273,9 @@ class Prod extends Component {
             nameInput: "",
             prodDesc: "",
             price: 0,
+            units: "",
             onOffer: false,
+            threeForTen: false,
             images: null,
             imageBin :null,
             errorMessage:"",
@@ -316,12 +318,20 @@ class Prod extends Component {
         this.setState({nameInput: e.target.value});
     }
 
+    handleUnitInput(e) {
+        this.setState({units: e.target.value});
+    }
+
     descInput(e, data) {
         this.setState({prodDesc: data.value});
     }
 
     onOffer(e, data) {
         this.setState({onOffer: data.checked});
+    }
+
+    threeForTen(e, data) {
+        this.setState({threeForTen: data.checked});
     }
 
     price(e, data) {
@@ -355,6 +365,7 @@ class Prod extends Component {
         this.state.prodDesc === "" ? this.setState({errorMessage:"Enter description", errorState:true}): this.setState({errorState:false});
         this.state.price === 0 ? this.setState({errorMessage:"Enter a price", errorState:true}): this.setState({errorState:false});
         this.state.images.length === 0 ? this.setState({errorMessage:"You haven't added an image", errorState:true}): this.setState({errorState:false});
+        this.state.units === "" ? this.setState({errorMessage:"Enter units", errorState:true}): this.setState({errorState:false});
         if(!this.state.errorState){
             //upload the file.
             this.setState({loading: true});
@@ -372,7 +383,9 @@ class Prod extends Component {
                     category: this.state.selectedCat,
                     name: this.state.images.name,
                     blob: this.state.imageBin,
-                    sessionId: this.props.session
+                    sessionId: this.props.session,
+                    threeForTen: this.state.threeForTen,
+                    units: this.state.units,
                 }),
                 mode: 'cors'
             }).then((response) => response.json()).then((data) => {
@@ -383,6 +396,7 @@ class Prod extends Component {
                            nameInput: "",
                            prodDesc: "",
                            price: 0,
+                           units:"",
                            onOffer: false,
                            images: null,
                            imageBin :null,
@@ -442,6 +456,11 @@ class Prod extends Component {
                     <Grid.Row>
                         <Grid.Column><Checkbox toggle label={<label>On Offer</label>} checked={this.state.onOffer}
                                                onChange={this.onOffer.bind(this)}/></Grid.Column>
+                        <Grid.Column><Checkbox toggle label={<label>Three For Ten</label>} checked={this.state.threeForTen}
+                                               onChange={this.threeForTen.bind(this)}/></Grid.Column>
+
+                    </Grid.Row>
+                    <Grid.Row>
                         <Grid.Column>
                             <Label size={"large"} pointing="right" basic>Price</Label>
                             <Input labelPosition='right' type='text' onChange={this.price.bind(this)} value={this.state.price}>
@@ -449,6 +468,14 @@ class Prod extends Component {
                                 <input size={6} pattern="[0-9.]{2,6}" name="pounds"/>
                             </Input>
                         </Grid.Column>
+
+                        <Grid.Column>
+                            <Label size={"large"} pointing="right" basic>Unit</Label>
+                            <div className="ui input"><input type="text" placeholder="Unit" value={this.state.units}
+                                                             onChange={this.handleUnitInput.bind(this)}/></div>
+
+                        </Grid.Column>
+
                     </Grid.Row>
                     <Grid.Row>
                         <Grid.Column>
