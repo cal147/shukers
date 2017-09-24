@@ -73,7 +73,6 @@ export default class ProdEdit extends Component {
 
     updateProduct(id, name, desc, price, onOffer, threeForTen, units){
 
-        console.log(units);
         fetch(serverScripts + "admin/Controllers/productsController.php", {
             method: 'POST',
             headers: {"Content-type": "application/x-www-form-urlencoded; charset=UTF-8"},
@@ -229,7 +228,7 @@ export default class ProdEdit extends Component {
                                 <Table.Header>
                                     <Table.Row>
                                         <Table.HeaderCell>Fields</Table.HeaderCell>
-                                        <Table.HeaderCell>User Detail</Table.HeaderCell>
+                                        <Table.HeaderCell>Product Detail</Table.HeaderCell>
                                     </Table.Row>
                                 </Table.Header>
 
