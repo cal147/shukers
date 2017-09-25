@@ -20,27 +20,30 @@ export default class basket extends Component {
         let threeForTenCost = [];
         let threeForTenProdCount = 0;
         let totalPrice = 0;
-        let threeForTenQualify = 0;
-        let threeForTenRemainingCost = 0;
+        let threeForTenQualify;
+        let threeForTenRemainingCost;
         let allThreeForTenProdsPrice = 0;
 
         for (let i = 0; i < products.length; i++) {
             if (products[i].threeForTen) {
-                threeForTenCost.push(Number(products[i].price));
+                threeForTenCost.push(parseFloat(products[i].price));
                 threeForTenProdCount++;
-                allThreeForTenProdsPrice += Number(products[i].price);
+                allThreeForTenProdsPrice += parseFloat(products[i].price);
+
             }
-            totalPrice += Number(products[i].price);
+            totalPrice += parseFloat(products[i].price);
+
         }
 
-        threeForTenQualify = Math.floor(threeForTenProdCount / 3);
+        console.log("three for 10 prod arr ", threeForTenCost, " three for 10 count ", threeForTenProdCount, " all three for 10 ", allThreeForTenProdsPrice, " total cost " , totalPrice)
+        threeForTenQualify = threeForTenProdCount % 3;
         threeForTenRemainingCost = this.getRemainingCost(threeForTenCost, threeForTenQualify);
 
 
-        console.log('total Price - ' + totalPrice);
-        console.log('allThreeForTenProdsPrice - ' + allThreeForTenProdsPrice);
-        console.log('threeForTenQualify - ' + threeForTenQualify);
-        console.log('threeForTenRemainingCost - ' + threeForTenRemainingCost);
+        // console.log('total Price - ' + totalPrice);
+        // console.log('allThreeForTenProdsPrice - ' + allThreeForTenProdsPrice);
+        // console.log('threeForTenQualify - ' + threeForTenQualify);
+        // console.log('threeForTenRemainingCost - ' + threeForTenRemainingCost);
 
         if (allThreeForTenProdsPrice == threeForTenRemainingCost) {
             threeForTenQualify = 0
@@ -59,8 +62,8 @@ export default class basket extends Component {
             if (i < qualProd) threeTenCost += totalCostArr[i];
         }
 
-        console.log(totalCostArr);
-        console.log(threeTenCost);
+        // console.log(totalCostArr);
+        // console.log(threeTenCost);
 
         if (threeTenCost < (qualProds * 10)) {
             return totalCost
@@ -157,6 +160,7 @@ export default class basket extends Component {
     render() {
 
         let priceWithDiscount = this.calculatePrice(this.state.BasketData);
+        console.log('basket data ',priceWithDiscount)
         let discount = this.state.BasketTotalPrice - priceWithDiscount;
 
         return (
@@ -186,14 +190,14 @@ export default class basket extends Component {
                         <Table.Cell textAlign="center"> </Table.Cell>
                     </Table.Row>
                     {/*TODO - sort this so that only values more than £10 show and are discounted from tthe price*/}
-                    {discount > 0 ?
+
                         <Table.Row>
                             <Table.Cell colSpan={2}> </Table.Cell>
                             <Table.Cell textAlign="center" positive><strong>3 for £10 Discount</strong></Table.Cell>
                             <Table.Cell textAlign="center" positive><strong><Money locale="en-UK"
                                                                                    currency="GBP">{discount}</Money></strong></Table.Cell>
                             <Table.Cell/>
-                        </Table.Row> : null}
+                        </Table.Row>
                     <Table.Footer>
                         <Table.HeaderCell colSpan="2"> </Table.HeaderCell>
                         <Table.HeaderCell textAlign="center"><strong>Total Price</strong></Table.HeaderCell>

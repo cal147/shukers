@@ -305,7 +305,7 @@ if ($_postData['action'] == 'GET_USERBASKET') {
                         'qty' => $row['qty'],
                         'price' => $row['productPrice'],
                         'subPrice' => $row['subTotal'],
-                        'threeForTen' => $row['3for10']
+                        'threeForTen' => boolval($row['3for10'])
                     ]);
                 }
                 echo json_encode($orderArray);
