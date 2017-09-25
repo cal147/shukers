@@ -32,7 +32,7 @@ export default class Orders extends Component{
 
     componentWillMount(){
        salesStore.addListener("change", this.saleStoreChange);
-        this.setState({loading:true});
+        this.setState({loading:true, orders:salesStore.getSales()});
     }
 
     componentDidMount(){
