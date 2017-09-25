@@ -5,7 +5,7 @@ import salesStore from '../AdminStores/SalesStore'
 import adminUserStore from '../AdminStores/AdminUserStore';
 import {serverScripts} from '../../shared/urls';
 
-import {Grid, Divider, Input, Table, Modal, Button, Header, Icon} from'semantic-ui-react';
+import {Grid, Divider, Input, Table, Modal, Button, Header, Icon, Dimmer, Loader} from'semantic-ui-react';
 
 export default class OrderHistory extends Component{
 
@@ -23,11 +23,13 @@ export default class OrderHistory extends Component{
             currentOrder:null,
             userDetailOpen: false,
             orderDetails: null,
+            loading:false,
         }
         this.getAllSales();
     }
 
     getAllSales(){
+        this.setState({loading:true});
         fetch(serverScripts+"admin/Controllers/SalesStoreController.php", {
             method: 'POST',
             headers:{"Content-type": "application/x-www-form-urlencoded; charset=UTF-8"},
@@ -40,6 +42,7 @@ export default class OrderHistory extends Component{
             if(data.success) {
                 this.setState({orders: data.sales});
             }
+            this.setState({loading:false});
         }).catch((err)=>{
             console.error(err);
         });
@@ -47,6 +50,7 @@ export default class OrderHistory extends Component{
 
 
     rowClick(id){
+        this.setState({loading:true});
         fetch(serverScripts+"admin/Controllers/SalesStoreController.php", {
             method: 'POST',
             headers:{"Content-type": "application/x-www-form-urlencoded; charset=UTF-8"},
@@ -61,6 +65,7 @@ export default class OrderHistory extends Component{
 
                 this.setState({orderDetails: data.saledetails, userDetailOpen:true, currentOrder:id});
             }
+            this.setState({loading:false});
         }).catch((err)=>{
             console.error(err);
         });
@@ -151,7 +156,9 @@ export default class OrderHistory extends Component{
                         </Button>
                     </Modal.Actions>
                 </Modal>
-
+                <Dimmer active={this.state.loading} inverted>
+                    <Loader>Loading</Loader>
+                </Dimmer>
 
             </div>
 

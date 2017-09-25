@@ -5,7 +5,7 @@ import salesStore from '../AdminStores/SalesStore'
 import adminUserStore from '../AdminStores/AdminUserStore';
 import {serverScripts} from '../../shared/urls';
 
-import {Grid, Tab, Divider, Input, Table, Modal, Button, Header, Icon, Checkbox} from'semantic-ui-react';
+import {Grid, Tab, Divider, Table, Modal, Button, Header, Icon, Dimmer, Loader} from'semantic-ui-react';
 
 export default class Orders extends Component{
 
@@ -23,6 +23,7 @@ export default class Orders extends Component{
             currentOrder:null,
             userDetailOpen: false,
             orderDetails: null,
+            loading:false
         }
 
         this.saleStoreChange = this.saleStoreChange.bind(this);
@@ -31,8 +32,11 @@ export default class Orders extends Component{
 
     componentWillMount(){
        salesStore.addListener("change", this.saleStoreChange);
+        this.setState({loading:true});
+    }
 
-
+    componentDidMount(){
+        this.setState({loading:false});
     }
 
     componentWillUnmount(){
@@ -46,6 +50,7 @@ export default class Orders extends Component{
     }
 
     rowClick(id){
+        this.setState({loading:true});
         fetch(serverScripts+"admin/Controllers/SalesStoreController.php", {
             method: 'POST',
             headers:{"Content-type": "application/x-www-form-urlencoded; charset=UTF-8"},
@@ -60,6 +65,7 @@ export default class Orders extends Component{
 
                 this.setState({orderDetails: data.saledetails, userDetailOpen:true, currentOrder:id});
             }
+            this.setState({loading:false});
         }).catch((err)=>{
             console.error(err);
         });
@@ -152,7 +158,9 @@ export default class Orders extends Component{
                         </Button>
                     </Modal.Actions>
                 </Modal>
-
+                <Dimmer active={this.state.loading} inverted>
+                    <Loader>Loading</Loader>
+                </Dimmer>
 
             </div>
 

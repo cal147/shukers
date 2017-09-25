@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Grid, Tab, Divider, Input, Table, Modal, Button, Header, Icon, Checkbox, TextArea, Label} from'semantic-ui-react';
+import {Grid, Tab, Divider, Input, Table, Modal, Button, Header, Icon, Checkbox, TextArea, Label, Dimmer, Loader} from'semantic-ui-react';
 
 import adminUserStore from '../../AdminStores/AdminUserStore';
 import {serverScripts} from '../../../shared/urls';
@@ -20,15 +20,19 @@ export default class ProdEdit extends Component {
             arrayIndex: null,
             productsFilter: null,
             showOffersOnly:false,
+            loading:false
         }
 
     }
 
-    componentWillMount(){
+    componentWillMount() {
         this.getProductList();
     }
 
+
+
     getProductList(){
+        this.setState({loading:true});
         fetch(serverScripts + "admin/Controllers/productsController.php", {
             method: 'POST',
             headers: {"Content-type": "application/x-www-form-urlencoded; charset=UTF-8"},
@@ -38,7 +42,7 @@ export default class ProdEdit extends Component {
             }),
             mode: 'cors'
         }).then((response) => response.json()).then((data) => {
-            this.setState({products: data, productsFilter: data});
+            this.setState({products: data, productsFilter: data, loading:false});
 
         }).catch((err) => {
             console.error(err);
@@ -50,6 +54,7 @@ export default class ProdEdit extends Component {
     }
 
     deleteProduct(id, imgName){
+        this.setState({loading:true});
         fetch(serverScripts + "admin/Controllers/productsController.php", {
             method: 'POST',
             headers: {"Content-type": "application/x-www-form-urlencoded; charset=UTF-8"},
@@ -62,7 +67,7 @@ export default class ProdEdit extends Component {
             mode: 'cors'
         }).then((response) => response.json()).then((data) => {
             if(data.success){
-                this.setState({productDetailOpen: false, arrayIndex: null,});
+                this.setState({productDetailOpen: false, arrayIndex: null, loading:false});
                 this.getProductList();
             }
         }).catch((err) => {
@@ -72,7 +77,7 @@ export default class ProdEdit extends Component {
     }
 
     updateProduct(id, name, desc, price, onOffer, threeForTen, units){
-
+        this.setState({loading:true});
         fetch(serverScripts + "admin/Controllers/productsController.php", {
             method: 'POST',
             headers: {"Content-type": "application/x-www-form-urlencoded; charset=UTF-8"},
@@ -90,7 +95,7 @@ export default class ProdEdit extends Component {
             mode: 'cors'
         }).then((response) => response.json()).then((data) => {
             if(data.success){
-                this.setState({productDetailOpen: false, arrayIndex: null,});
+                this.setState({productDetailOpen: false, arrayIndex: null, loading:false});
                 this.getProductList();
             }
         }).catch((err) => {
@@ -313,6 +318,9 @@ export default class ProdEdit extends Component {
                     </Modal.Actions>
                 </Modal>
 
+                <Dimmer active={this.state.loading} inverted>
+                    <Loader>Loading</Loader>
+                </Dimmer>
 
             </Tab.Pane>
 

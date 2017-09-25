@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import '../../AdminMaster.css';
 
-import {Tab, Grid, Button, Label, Checkbox, Input, Message} from 'semantic-ui-react';
+import {Tab, Grid, Button, Label, Checkbox, Input, Message, Dimmer, Loader} from 'semantic-ui-react';
 
 import adminUserStore from '../../AdminStores/AdminUserStore';
 import {serverScripts} from '../../../shared/urls';
@@ -35,10 +35,18 @@ export default class AddCustomers extends Component{
             showDelivery:false,
             contactNumber:"",
             successMessage:false,
+            loading: false
         };
     }
 
 
+    conponentWillMount(){
+        this.setState({loading:true});
+    }
+
+    componentDidMount(){
+        this.setState({loading:false});
+    }
 
     handleSubmit(event) {
        event.preventDefault();
@@ -60,6 +68,7 @@ export default class AddCustomers extends Component{
         if(!this.state.errorState){
             console.log(this.state);
             if(this.state.showDelivery){
+                this.setState({loading:true});
                 fetch(serverScripts + "admin/Controllers/customersController.php", {
                     method: 'POST',
                     headers: {"Content-type": "application/x-www-form-urlencoded; charset=UTF-8"},
@@ -111,6 +120,7 @@ export default class AddCustomers extends Component{
                             showDelivery:false,
                             contactNumber:""
                         });
+                        this.setState({loading:false});
                     }else{
                         alert(data.Message);
                     }
@@ -119,6 +129,7 @@ export default class AddCustomers extends Component{
                     console.error(err);
                 });
             }else{
+                this.setState({loading:true});
                 fetch(serverScripts + "admin/Controllers/customersController.php", {
                     method: 'POST',
                     headers: {"Content-type": "application/x-www-form-urlencoded; charset=UTF-8"},
@@ -164,8 +175,10 @@ export default class AddCustomers extends Component{
                             contactNumber:"",
                             successMessage:true
                         });
+                        this.setState({loading:false});
                     }else{
                         alert(data.Message);
+                        this.setState({loading:false});
                     }
 
 
@@ -193,6 +206,7 @@ export default class AddCustomers extends Component{
         }
 
         if(id === "loginName"){
+            this.setState({loading:true});
             fetch(serverScripts + "admin/Controllers/customersController.php", {
                 method: 'POST',
                 headers: {"Content-type": "application/x-www-form-urlencoded; charset=UTF-8"},
@@ -208,6 +222,7 @@ export default class AddCustomers extends Component{
                 }else{
                     this.setState({userTaken: data.Message, userTakenColour:"red"});
                 }
+                this.setState({loading:false});
             }).catch((err) => {
                 console.error(err);
             });
@@ -391,6 +406,10 @@ export default class AddCustomers extends Component{
 
                     </Grid>
                 </form>
+
+                <Dimmer active={this.state.loading} inverted>
+                    <Loader>Loading</Loader>
+                </Dimmer>
             </Tab.Pane>
 
         );
