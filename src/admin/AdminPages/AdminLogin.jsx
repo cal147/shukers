@@ -78,6 +78,7 @@ export default class AdminLogin extends Component{
                     <Loader>Loading</Loader>
                 </Dimmer>
             </div>
+
         );
     }
 }
