@@ -87,6 +87,7 @@
 
 .sliderImg {
     height: 210px;
+
 }
 
 .mobileDropdown {
@@ -141,4 +142,18 @@
 
 .PayPal_Button {
     text-align: right;
+}
+
+.offerimage {
+    width: 7rem;
+    vertical-align: top;
+    margin-left: -7rem;
+}
+
+.threefor10image {
+    position: relative;
+    width: 7rem;
+    vertical-align: top;
+    margin-left: -7rem;
+    left: 7rem !important;
 }

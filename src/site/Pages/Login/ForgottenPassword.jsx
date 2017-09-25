@@ -7,8 +7,6 @@ import {serverScriptsPublic} from "../../../shared/urls";
 
 export default class login extends Component {
 
-    // TODO - work out secure way of changing password
-
     state = {userName: null, password: null, confirmPassword: null, usernameExist: null};
 
     constructor() {
@@ -36,7 +34,7 @@ export default class login extends Component {
             }),
             mode: 'cors'
         }).then(response => response.json()).then(data => {
-            this.setState({usernameExist: data});
+            this.setState({usernameExist: data}, () => this.setState({Loader: null}));
         }).catch((err) => {
             console.error(err);
         });
@@ -63,13 +61,10 @@ export default class login extends Component {
             }),
             mode: 'cors'
         }).then(response => response.json()).then(data => {
-            this.setState({passwordChangeConfirmation: data});
+            this.setState({passwordChangeConfirmation: data}, () => this.setState({Loader: null}));
         }).catch((err) => {
             console.error(err);
         });
-
-        setTimeout(() => this.loadingState(), 3000);
-        setTimeout(() => console.log(this.state.usernameExist), 3000);
 
 
     };

@@ -57,7 +57,8 @@ export default class SiteLayout extends Component {
             ProductSearch: [],
             ProductModal: null,
             width: 800,
-            user: publicUserStore.getUser()
+            user: publicUserStore.getUser(),
+            Qty: 1
         }
     }
 
@@ -113,8 +114,6 @@ export default class SiteLayout extends Component {
             console.error(err);
         });
     }
-
-    // TODO - Add to basket -- FUCK ME!!
     addProductToBasket(productId, qty) {
 
         console.log(this.state.salesID);
@@ -170,8 +169,6 @@ export default class SiteLayout extends Component {
 
     render() {
 
-        // TODO - my account - current orders and recent purchases change password
-
 
         const {activeItem, isLoading, value} = this.state;
         let userloggedin = null;
@@ -194,7 +191,10 @@ export default class SiteLayout extends Component {
                         onClose={this.handleClose}
                         open={this.state.modalOpen}
                     >
-                        <Modal.Header content={product.title + ' - £' + product.price}/>
+                        <Modal.Header>{product.name + ' - £' + product.price}
+                            {product.onOffer ? <div style={{color: 'red'}}>on offer</div> : null}
+                            {product.threeForTen ? <div style={{color: 'blue'}}>3 For £10</div> : null}
+                        </Modal.Header>
                         <Modal.Content image scrolling>
                             <Image wrapped size="medium" src={prodImgResourcePublic + product.image}
                                    alt={product.name}/>
@@ -210,11 +210,13 @@ export default class SiteLayout extends Component {
                                 <option value={3}>3</option>
                                 <option value={4}>4</option>
                                 <option value={5}>5</option>
-                                <option value={null}>For more than 5 please call us</option>
+                                <option value={6}>6</option>
+                                <option value={null}>For more than 6 please call us</option>
                             </select>
-                            <Button onClick={() => this.addProductToBasket(product.id, this.state.Qty)}>
+                            {this.state.Qty <= 6 ? <Button
+                                onClick={() => this.addProductToBasket(product.id, this.state.Qty, product.name)}>
                                 <Icon name='shop'/> Add to Basket
-                            </Button>
+                            </Button> : null}
                         </Modal.Actions>
                     </Modal>) : null}
             </div>
@@ -233,7 +235,10 @@ export default class SiteLayout extends Component {
                         onClose={this.handleClose}
                         open={this.state.modalOpen}
                     >
-                        <Modal.Header content={product.title + ' - £' + product.price}/>
+                        <Modal.Header>{product.name + ' - £' + product.price}
+                            {product.onOffer ? <div style={{color: 'red'}}>on offer</div> : null}
+                            {product.threeForTen ? <div style={{color: 'blue'}}>3 For £10</div> : null}
+                        </Modal.Header>
                         <Modal.Content image scrolling>
                             <Image wrapped size="medium" src={prodImgResourcePublic + product.image}
                                    alt={product.name}/>
@@ -313,11 +318,9 @@ export default class SiteLayout extends Component {
                                 />
                             </Menu.Item>
                             <Menu.Item name='home' active={activeItem === 'home'} onClick={this.handleItemClick}
-                                       as={Link}
-                                       to='/'/>
+                                       as={Link} to='/'/>
                             <Menu.Item name='findUs' active={activeItem === 'findUs'} onClick={this.handleItemClick}
-                                       as={Link}
-                                       to='/findUs'/>
+                                       as={Link} to='/findUs'/>
                             <Dropdown item text={'Products'}>
                                 <Dropdown.Menu>
                                     {this.state.Productsdata.map((product, i) => <Dropdown.Item
@@ -325,6 +328,7 @@ export default class SiteLayout extends Component {
                                         {product.cat}</Dropdown.Item>)}
                                 </Dropdown.Menu>
                             </Dropdown>
+                            {userloggedin}
                         </Sidebar>
                         <Sidebar.Pusher>
                             {loggedIn}

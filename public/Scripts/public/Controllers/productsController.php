@@ -104,7 +104,7 @@ if ($_postData['action'] == 'SELECT_SPECIFICCATEGORY') {
         $cleanProd = strip_tags($cProd);
         $productArray = [];
         try {
-            $stmt = $conn->prepare("SELECT p.id, p.name, p.description, p.price, p.onOffer, p.imgPath, c.cat FROM products AS p JOIN category AS c ON p.catId = c.id WHERE c.cat=?");
+            $stmt = $conn->prepare("SELECT p.id, p.name, p.description, p.price, p.onOffer, p.3for10, p.imgPath, c.cat FROM products AS p JOIN category AS c ON p.catId = c.id WHERE c.cat=?");
             $stmt->bind_param("s", $cleanProd);
             $stmt->execute();
 
@@ -116,6 +116,7 @@ if ($_postData['action'] == 'SELECT_SPECIFICCATEGORY') {
                         'desc' => $row['description'],
                         'price' => $row['price'],
                         'onOffer' => $row['onOffer'],
+                        'threeForTen' => $row['3for10'],
                         'imgPath' => $row['imgPath'],
                         'cat' => $row['cat']
                     ]);
@@ -259,7 +260,7 @@ if ($_postData['action'] == 'GET_USERSALESHISTORY') {
 
         $cleanUserID = strip_tags($cUserID);
 
-        //TODO - Look at this to have several orders on without joining - currently shows individual orders but all order details
+        //TODO - Look at this to have several orders on without joining - currently shows individual orders but all order details ///// think about remove
 
         try {
             $stmt = $conn->prepare("SELECT id, DATE_FORMAT(saleDate, \"%W %d %M %Y\") AS saleDate, totalPrice FROM shukers.sales WHERE userId = ? AND paid = 1 ORDER BY saleDate ASC;");
@@ -292,17 +293,19 @@ if ($_postData['action'] == 'GET_USERBASKET') {
         $cleanUserID = strip_tags($cUserID);
 
         try {
-            $stmt = $conn->prepare("SELECT s.id, p.name, sd.qty, sd.productPrice, SUM(sd.qty * sd.productPrice) AS subTotal FROM sales AS s JOIN salesdetails AS sd ON s.id = sd.salesId JOIN products AS p ON sd.productId = p.id WHERE s.userId = ? AND s.paid = 0 GROUP BY p.id;");
+            $stmt = $conn->prepare("SELECT s.id, sd.id AS salesDetailsID, p.name, sd.qty, sd.productPrice, SUM(sd.qty * sd.productPrice) AS subTotal, p.3for10 FROM sales AS s JOIN salesdetails AS sd ON s.id = sd.salesId JOIN products AS p ON sd.productId = p.id WHERE s.userId = ? AND s.paid = 0 AND s.collection = 0 GROUP BY p.id ORDER BY p.price;");
             $stmt->bind_param("i", $cleanUserID);
             $stmt->execute();
             if ($result = $stmt->get_result()) {
                 while ($row = $result->fetch_assoc()) {
                     array_push($orderArray, [
                         'id' => $row['id'],
+                        'sdId' => $row['salesDetailsID'],
                         'name' => $row['name'],
                         'qty' => $row['qty'],
                         'price' => $row['productPrice'],
-                        'subPrice' => $row['subTotal']
+                        'subPrice' => $row['subTotal'],
+                        'threeForTen' => boolval($row['3for10'])
                     ]);
                 }
                 echo json_encode($orderArray);
@@ -324,7 +327,7 @@ if ($_postData['action'] == 'GET_USERBASKETTOTALPRICE') {
         $cleanUserID = strip_tags($cUserID);
 
         try {
-            $stmt = $conn->prepare("SELECT totalPrice FROM shukers.sales WHERE userId = ? AND paid = 0;");
+            $stmt = $conn->prepare("SELECT totalPrice FROM shukers.sales WHERE userId = ? AND paid = 0 AND collection = 0;");
             $stmt->bind_param("i", $cleanUserID);
             $stmt->execute();
             $result = $stmt->get_result();
@@ -359,6 +362,39 @@ if ($_postData['action'] == 'GET_SALEID') {
             $SalesID = (int)$row['id'];
 
             echo($SalesID);
+
+        } catch (Exception $e) {
+            return false;
+        }
+    }
+}
+
+if ($_postData['action'] == 'REMOVEPRODUCTFROMBASKET') {
+    $saleIDArray = null;
+    $dirtyID = $_postData['id'];
+
+    if (preg_match('/^[0-9]{1,3}$/', stripcslashes(trim($dirtyID)))) {
+
+        $cID = $conn->real_escape_string(trim($dirtyID));
+
+        $cleanID = strip_tags($cID);
+
+        $SalesID = $conn->real_escape_string(strip_tags(trim($_postData['salesId'])));
+
+        try {
+            $stmt = $conn->prepare("DELETE FROM salesdetails WHERE id = ?");
+            $stmt->bind_param("i", $cleanID);
+
+            if ($stmt->execute()) {
+                echo json_encode(['Message' => 'product deleted', 'success' => true]);
+                $stmt = $conn->prepare("UPDATE sales SET totalPrice = (SELECT SUM(totalPrice) FROM salesdetails WHERE salesID = ?) WHERE `id` = ?;");
+                $stmt->bind_param("ii", $SalesID, $SalesID);
+                if ($stmt->execute()) {
+                    echo json_encode(['Message' => 'Price Updated', 'success' => true]);
+                } else {
+                    echo json_encode(['Message' => 'Sales table unable to update', 'success' => false]);
+                }
+            }
 
         } catch (Exception $e) {
             return false;
@@ -556,4 +592,194 @@ if ($_postData['action'] == 'CHANGE_PASSWORD') {
             return false;
         }
     } else echo 0;
+}
+
+if ($_postData['action'] == 'NEW_USER') {
+
+    $firstName = $conn->real_escape_string(strip_tags(trim($_postData['firstName'])));
+    $lastName = $conn->real_escape_string(strip_tags(trim($_postData['lastName'])));
+    $userName = $conn->real_escape_string(strip_tags(trim($_postData['userName'])));
+    $password = $conn->real_escape_string(strip_tags(trim($_postData['password'])));
+    $contactNumber = $conn->real_escape_string(strip_tags(trim($_postData['contactNumber'])));
+    $email = $conn->real_escape_string(strip_tags(trim($_postData['email'])));
+    $houseNum = $conn->real_escape_string(strip_tags(trim($_postData['houseNum'])));
+    $address1 = $conn->real_escape_string(strip_tags(trim($_postData['address1'])));
+    $address2 = $conn->real_escape_string(strip_tags(trim($_postData['address2'])));
+    $postCode = $conn->real_escape_string(strip_tags(trim($_postData['postCode'])));
+    $DelhouseNum = $conn->real_escape_string(strip_tags(trim($_postData['DelhouseNum'])));
+    $Deladdress1 = $conn->real_escape_string(strip_tags(trim($_postData['Deladdress1'])));
+    $Deladdress2 = $conn->real_escape_string(strip_tags(trim($_postData['Deladdress2'])));
+    $DelpostCode = $conn->real_escape_string(strip_tags(trim($_postData['DelpostCode'])));
+    $deliveryAddressChecked = $conn->real_escape_string(strip_tags(trim($_postData['deliveryAddressChecked'])));
+    $homeAddressChecked = $conn->real_escape_string(strip_tags(trim($_postData['homeAddressChecked'])));
+    $hashPass = password_hash($password, PASSWORD_DEFAULT);
+
+    try {
+        $stmt = $conn->prepare("INSERT INTO users(loginId, forname, surname, password, contactNumber, email ) VALUES(?,?,?,?,?,?)");
+        $stmt->bind_param("ssssss", $userName, $firstName, $lastName, $hashPass, $contactNumber, $email);
+        $stmt->execute();
+
+        $userID = $conn->insert_id;
+        $stmt->close();
+
+        if ($deliveryAddressChecked == true) {
+            $deliveryAddressChecked = 1;
+            $homeAddressChecked = 1;
+
+            $stmt = $conn->prepare("INSERT INTO address (userId, houseNum, firstLine, secondline, postcode, home, delivery ) VALUES(?,?,?,?,?,?,?)");
+            $stmt->bind_param("iisssii", $userID, $houseNum, $address1, $address2, $postCode, $homeAddressChecked, $deliveryAddressChecked);
+            $stmt->execute();
+            echo('home and delivery address assigned');
+
+        } elseif ($deliveryAddressChecked == false) {
+            $deliveryAddressChecked = 0;
+            $homeAddressChecked = 1;
+
+            $stmt = $conn->prepare("INSERT INTO address (userId, houseNum, firstLine, secondline, postcode, home, delivery ) VALUES(?,?,?,?,?,?,?)");
+            $stmt->bind_param("iisssii", $userID, $houseNum, $address1, $address2, $postCode, $homeAddressChecked, $deliveryAddressChecked);
+            $stmt->execute();
+
+            $deliveryAddressChecked = 1;
+            $homeAddressChecked = 0;
+
+            $stmt = $conn->prepare("INSERT INTO address (userId, houseNum, firstLine, secondline, postcode, home, delivery ) VALUES(?,?,?,?,?,?,?)");
+            $stmt->bind_param("iisssii", $userID, $DelhouseNum, $Deladdress1, $Deladdress2, $DelpostCode, $homeAddressChecked, $deliveryAddressChecked);
+            $stmt->execute();
+            echo('home and delivery address different');
+        }
+
+    } catch (Exception $e) {
+        return false;
+    }
+
+}
+
+if ($_postData['action'] == 'CHECK_USER_NAME') {
+
+    $UserName = $conn->real_escape_string(strip_tags(trim($_postData['userName'])));
+
+    try {
+        $stmt = $conn->prepare("SELECT loginId FROM users WHERE loginId=?");
+        $stmt->bind_param("s", $UserName);
+        $stmt->execute();
+
+        if ($result = $stmt->get_result()) {
+            if ($result->num_rows == 0) {
+                echo json_encode(['Message' => 'ok', 'success' => true]);
+            } else {
+                echo json_encode(['Message' => 'The user name is already taken', 'success' => true]);
+            }
+        }
+
+    } catch (Exception $e) {
+        echo json_encode(['Message' => 'Something went wrong!', 'success' => false]);
+    }
+}
+
+if ($_postData['action'] == 'PAY_INSTORE') {
+
+    $SaleID = $conn->real_escape_string(strip_tags(trim($_postData['saleID'])));
+
+    try {
+        $stmt = $conn->prepare("UPDATE sales SET collection = 1 WHERE id = ?");
+        $stmt->bind_param("s", $SaleID);
+        if ($stmt->execute()) {
+            echo json_encode(['Message' => 'Order being processed for collection', 'success' => true]);
+        } else {
+            echo json_encode(['Message' => 'Order unable to be processed for collection', 'success' => false]);
+        }
+    } catch (Exception $e) {
+        echo json_encode(['Message' => 'Something went wrong!', 'success' => false]);
+    }
+}
+
+if ($_postData['action'] == 'CHECK_DELIVERYADDRESS') {
+    $delAddress = [];
+    $dirtyuserID = $_postData['User'];
+
+    if (preg_match('/^[0-9]{1,3}$/', stripcslashes(trim($dirtyuserID)))) {
+
+        $cUserID = $conn->real_escape_string(trim($dirtyuserID));
+
+        $cleanUserID = strip_tags($cUserID);
+
+        try {
+            $stmt = $conn->prepare("SELECT houseNum, firstLine, secondLine, postcode FROM address WHERE userId = ? AND delivery = 0 AND home = 1;");
+            $stmt->bind_param("i", $cleanUserID);
+            $stmt->execute();
+
+            $result = $stmt->get_result();
+            $row = $result->fetch_assoc();
+            $rowcount = (int)$row['houseNum'];
+            if ($rowcount === 1) {
+                array_push($delAddress, [
+                    'delAddress' => true,
+                    'houseNum' => $row['houseNum'],
+                    'firstLine' => $row['firstLine'],
+                    'secondLine' => $row['secondLine'],
+                    'postCode' => $row['postcode']
+                ]);
+
+                echo json_encode($delAddress);
+            } else return null;
+
+        } catch (Exception $e) {
+            return null;
+        }
+    }
+}
+
+if ($_postData['action'] == 'UPDATE_ADDRESS') {
+
+    $firstName = $conn->real_escape_string(strip_tags(trim($_postData['firstName'])));
+    $lastName = $conn->real_escape_string(strip_tags(trim($_postData['lastName'])));
+    $userID = $conn->real_escape_string(strip_tags(trim($_postData['userID'])));
+    $contactNumber = $conn->real_escape_string(strip_tags(trim($_postData['contactNumber'])));
+    $email = $conn->real_escape_string(strip_tags(trim($_postData['email'])));
+    $houseNum = $conn->real_escape_string(strip_tags(trim($_postData['houseNum'])));
+    $address1 = $conn->real_escape_string(strip_tags(trim($_postData['address1'])));
+    $address2 = $conn->real_escape_string(strip_tags(trim($_postData['address2'])));
+    $postCode = $conn->real_escape_string(strip_tags(trim($_postData['postCode'])));
+    $DelhouseNum = $conn->real_escape_string(strip_tags(trim($_postData['DelhouseNum'])));
+    $Deladdress1 = $conn->real_escape_string(strip_tags(trim($_postData['Deladdress1'])));
+    $Deladdress2 = $conn->real_escape_string(strip_tags(trim($_postData['Deladdress2'])));
+    $DelpostCode = $conn->real_escape_string(strip_tags(trim($_postData['DelpostCode'])));
+    $deliveryAddressChecked = $conn->real_escape_string(strip_tags(trim($_postData['deliveryAddressChecked'])));
+
+    try {
+        $stmt = $conn->prepare("DELETE FROM address WHERE userId = ?");
+        $stmt->bind_param("i", $userID);
+        $stmt->execute();
+
+        if ($deliveryAddressChecked == true) {
+            $deliveryAddressChecked = 1;
+            $homeAddressChecked = 1;
+
+            $stmt = $conn->prepare("INSERT INTO address (userId, houseNum, firstLine, secondline, postcode, home, delivery ) VALUES(?,?,?,?,?,?,?)");
+            $stmt->bind_param("iisssii", $userID, $houseNum, $address1, $address2, $postCode, $homeAddressChecked, $deliveryAddressChecked);
+            $stmt->execute();
+            echo json_encode(['Message' => 'Address Updated', 'success' => true]);
+
+        } elseif ($deliveryAddressChecked == false) {
+            $deliveryAddressChecked = 0;
+            $homeAddressChecked = 1;
+
+            $stmt = $conn->prepare("INSERT INTO address (userId, houseNum, firstLine, secondline, postcode, home, delivery ) VALUES(?,?,?,?,?,?,?)");
+            $stmt->bind_param("iisssii", $userID, $houseNum, $address1, $address2, $postCode, $homeAddressChecked, $deliveryAddressChecked);
+            $stmt->execute();
+
+            $deliveryAddressChecked = 1;
+            $homeAddressChecked = 0;
+
+            $stmt = $conn->prepare("INSERT INTO address (userId, houseNum, firstLine, secondline, postcode, home, delivery ) VALUES(?,?,?,?,?,?,?)");
+            $stmt->bind_param("iisssii", $userID, $DelhouseNum, $Deladdress1, $Deladdress2, $DelpostCode, $homeAddressChecked, $deliveryAddressChecked);
+            $stmt->execute();
+            echo json_encode(['Message' => 'Address Updated', 'success' => true]);
+
+        }
+
+    } catch (Exception $e) {
+        return false;
+    }
+
 }
