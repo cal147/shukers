@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Grid, Tab, Divider, Input, Table, Modal, Button, Header, Icon, Checkbox} from'semantic-ui-react';
+import {Grid, Tab, Divider, Input, Table, Modal, Button, Header, Icon, Checkbox, Dimmer, Loader} from'semantic-ui-react';
 
 import adminUserStore from '../../AdminStores/AdminUserStore';
 import {serverScripts} from '../../../shared/urls';
@@ -22,15 +22,22 @@ export default class CustomerSearch extends Component {
             arrayIndex: null,
             updateRecord: [],
             customerFilter: null,
+            loading:false
         }
 
     }
 
     componentWillMount(){
         this.getCustomerList();
+        this.setState({loading:true});
+    }
+
+    componentDidMount(){
+        this.setState({loading:false});
     }
 
     getCustomerList(){
+        this.setState({loading:true});
         fetch(serverScripts + "admin/Controllers/customersController.php", {
             method: 'POST',
             headers: {"Content-type": "application/x-www-form-urlencoded; charset=UTF-8"},
@@ -40,7 +47,7 @@ export default class CustomerSearch extends Component {
             }),
             mode: 'cors'
         }).then((response) => response.json()).then((data) => {
-            this.setState({customers: data, customerFilter: data});
+            this.setState({customers: data, customerFilter: data, loading:false});
 
         }).catch((err) => {
             console.error(err);
@@ -52,6 +59,7 @@ export default class CustomerSearch extends Component {
     }
 
     deleteUser(id){
+        this.setState({loading:true});
         fetch(serverScripts + "admin/Controllers/customersController.php", {
             method: 'POST',
             headers: {"Content-type": "application/x-www-form-urlencoded; charset=UTF-8"},
@@ -63,7 +71,7 @@ export default class CustomerSearch extends Component {
             mode: 'cors'
         }).then((response) => response.json()).then((data) => {
             if(data.success){
-                this.setState({userDetailOpen: false, arrayIndex: null,});
+                this.setState({userDetailOpen: false, arrayIndex: null, loading:false});
                 this.getCustomerList();
             }
         }).catch((err) => {
@@ -73,7 +81,7 @@ export default class CustomerSearch extends Component {
     }
 
     updateUser(id, loginId, forname, surname, houseNum, street, postcode, contactNumber, email, delivery, home, isStaff, addressId){
-
+        this.setState({loading:true});
         fetch(serverScripts + "admin/Controllers/customersController.php", {
             method: 'POST',
             headers: {"Content-type": "application/x-www-form-urlencoded; charset=UTF-8"},
@@ -97,7 +105,7 @@ export default class CustomerSearch extends Component {
             mode: 'cors'
         }).then((response) => response.json()).then((data) => {
             if(data.success){
-                this.setState({userDetailOpen: false, arrayIndex: null,});
+                this.setState({userDetailOpen: false, arrayIndex: null, loading:false});
                 this.getCustomerList();
             }
         }).catch((err) => {
@@ -113,8 +121,6 @@ export default class CustomerSearch extends Component {
         if(this.state.selectedCat != null && this.state.searchQuery != ""){
             this.setState({customerFilter: null}, ()=>{
                 this.state.customers.map((item, i)=>{
-                   //TODO Filter the results based on the query.
-                   // e.g if(item[this.state.selectedCat].contains(this.state.searchQuery)){tempArr.push(item)}
                    for(let k in item){
                        if( k==this.state.selectedCat && item[k].indexOf(this.state.searchQuery) != -1){
                            tempArr.push(item);
@@ -367,6 +373,10 @@ export default class CustomerSearch extends Component {
                         </Button>
                     </Modal.Actions>
                 </Modal>
+
+                <Dimmer active={this.state.loading} inverted>
+                    <Loader>Loading</Loader>
+                </Dimmer>
 
             </Tab.Pane>
         );

@@ -17,3 +17,10 @@ export function logoutUser(){
         type: "USER_LOGOUT"
     });
 }
+
+export function saleDispatched(id){
+    Dispatcher.dispatch({
+        type: "DISPATCH_SALE",
+        id
+    });
+}

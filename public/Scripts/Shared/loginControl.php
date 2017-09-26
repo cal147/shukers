@@ -51,8 +51,6 @@ class loginControl{
     //lodinId will be present in the class.
     public function getUserDetails(){
 
-        // $userArray = [];
-
         if($this->loginId != null){
 
             $sql = "SELECT u.id, u.loginId, u.forname, u.surname, u.contactNumber, u.isStaff, a.houseNum, a.firstLine, a.secondLine, a.postcode, a.home, a.delivery, u.email FROM users AS u INNER JOIN address AS a ON u.id = a.userId WHERE u.loginId = ?";

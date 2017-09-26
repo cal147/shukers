@@ -15,7 +15,8 @@ import {
     Confirm,
     TextArea,
     Checkbox,
-    Input
+    Input,
+    Message
 } from 'semantic-ui-react';
 import Dropzone from 'react-dropzone';
 
@@ -272,11 +273,14 @@ class Prod extends Component {
             nameInput: "",
             prodDesc: "",
             price: 0,
+            units: "",
             onOffer: false,
-            images: [],
+            threeForTen: false,
+            images: null,
             imageBin :null,
             errorMessage:"",
             errorState:true,
+            success:false,
         };
     }
 
@@ -314,6 +318,10 @@ class Prod extends Component {
         this.setState({nameInput: e.target.value});
     }
 
+    handleUnitInput(e) {
+        this.setState({units: e.target.value});
+    }
+
     descInput(e, data) {
         this.setState({prodDesc: data.value});
     }
@@ -322,14 +330,18 @@ class Prod extends Component {
         this.setState({onOffer: data.checked});
     }
 
+    threeForTen(e, data) {
+        this.setState({threeForTen: data.checked});
+    }
+
     price(e, data) {
         this.setState({price: e.target.value});
     }
 
     onImageDrop(acceptedFiles) {
-        let addImage = this.state.images;
-        addImage.unshift(acceptedFiles[0]);
-        this.setState({images: addImage});
+        // let addImage = this.state.images;
+        // addImage.unshift(acceptedFiles[0]);
+        this.setState({images: acceptedFiles[0]});
 
         acceptedFiles.forEach(file => {
             const reader = new FileReader();
@@ -342,39 +354,62 @@ class Prod extends Component {
 
             //reader.readAsBinaryString(file);
             reader.readAsDataURL(file);
-            console.log(file);
         });
 
     }
 
     validateandSubmit(){
 
-        // this.state.selectedCat === "" ? this.setState({errorMessage:"Select a Category", errorState:true}): this.setState({errorState:false});
-        // this.state.nameInput === "" ? this.setState({errorMessage:"Enter a name", errorState:true}): this.setState({errorState:false});
-        // this.state.prodDesc === "" ? this.setState({errorMessage:"Enter description", errorState:true}): this.setState({errorState:false});
-        // this.state.price === 0 ? this.setState({errorMessage:"Enter a price", errorState:true}): this.setState({errorState:false});
-        // this.state.images.length === 0 ? this.setState({errorMessage:"You haven't added an image", errorState:true}): this.setState({errorState:false});
-        // if(!this.state.errorState){
-        //     //upload the file.
-        //     this.setState({loading: true});
-        //
-        // }
+        this.state.selectedCat === "" ? this.setState({errorMessage:"Select a Category", errorState:true}): this.setState({errorState:false});
+        this.state.nameInput === "" ? this.setState({errorMessage:"Enter a name", errorState:true}): this.setState({errorState:false});
+        this.state.prodDesc === "" ? this.setState({errorMessage:"Enter description", errorState:true}): this.setState({errorState:false});
+        this.state.price === 0 ? this.setState({errorMessage:"Enter a price", errorState:true}): this.setState({errorState:false});
+        this.state.images.length === 0 ? this.setState({errorMessage:"You haven't added an image", errorState:true}): this.setState({errorState:false});
+        this.state.units === "" ? this.setState({errorMessage:"Enter units", errorState:true}): this.setState({errorState:false});
+        if(!this.state.errorState){
+            //upload the file.
+            this.setState({loading: true});
 
-        fetch(serverScripts + "admin/Controllers/productsController.php", {
-            method: 'POST',
-            headers: {"Content-type": "application/x-www-form-urlencoded; charset=UTF-8"},
-            body: JSON.stringify({
-                action: "ADD_PRODUCT",
-                name: this.state.images[0].name,
-                blob: this.state.imageBin,
-                sessionId: this.props.session
-            }),
-            mode: 'cors'
-        }).then((response) => response.json()).then((data) => {
-            console.log(data);
-        }).catch((err) => {
-            console.error(err);
-        });
+
+            fetch(serverScripts + "admin/Controllers/productsController.php", {
+                method: 'POST',
+                headers: {"Content-type": "application/x-www-form-urlencoded; charset=UTF-8"},
+                body: JSON.stringify({
+                    action: "ADD_PRODUCT",
+                    prodName: this.state.nameInput,
+                    description: this.state.prodDesc,
+                    price: this.state.price,
+                    onOffer: this.state.onOffer,
+                    category: this.state.selectedCat,
+                    name: this.state.images.name,
+                    blob: this.state.imageBin,
+                    sessionId: this.props.session,
+                    threeForTen: this.state.threeForTen,
+                    units: this.state.units,
+                }),
+                mode: 'cors'
+            }).then((response) => response.json()).then((data) => {
+                this.setState({loading: false, success: data.success}, ()=>{
+                   if(this.state.success){
+                       this.setState({
+                           selectedCat: "",
+                           nameInput: "",
+                           prodDesc: "",
+                           price: 0,
+                           units:"",
+                           onOffer: false,
+                           images: null,
+                           imageBin :null,
+                           errorMessage:"",
+                           errorState:true,
+                       });
+                   }
+                });
+            }).catch((err) => {
+                console.error(err);
+            });
+
+        }
 
 
     }
@@ -384,8 +419,6 @@ class Prod extends Component {
 
         const imgStyle = {
             width: "50%",
-            marginLeft: "20%",
-            marginTop: "10%",
             textAlign: "center"
         };
 
@@ -416,20 +449,33 @@ class Prod extends Component {
                     <Grid.Row>
                         <Grid.Column width={16}><Label size={"large"} pointing="below"
                                                        basic>Description</Label></Grid.Column>
-                        <Grid.Column><TextArea placeholder='Enter description' style={{width: "660px"}}
+                        <Grid.Column><TextArea placeholder='Enter description' value={this.state.prodDesc} style={{width: "660px"}}
                                                onChange={this.descInput.bind(this)}/></Grid.Column>
                     </Grid.Row>
 
                     <Grid.Row>
-                        <Grid.Column><Checkbox toggle label={<label>On Offer</label>}
+                        <Grid.Column><Checkbox toggle label={<label>On Offer</label>} checked={this.state.onOffer}
                                                onChange={this.onOffer.bind(this)}/></Grid.Column>
+                        <Grid.Column><Checkbox toggle label={<label>Three For Ten</label>} checked={this.state.threeForTen}
+                                               onChange={this.threeForTen.bind(this)}/></Grid.Column>
+
+                    </Grid.Row>
+                    <Grid.Row>
                         <Grid.Column>
                             <Label size={"large"} pointing="right" basic>Price</Label>
-                            <Input labelPosition='right' type='text' onChange={this.price.bind(this)}>
+                            <Input labelPosition='right' type='text' onChange={this.price.bind(this)} value={this.state.price}>
                                 <Label basic>£</Label>
                                 <input size={6} pattern="[0-9.]{2,6}" name="pounds"/>
                             </Input>
                         </Grid.Column>
+
+                        <Grid.Column>
+                            <Label size={"large"} pointing="right" basic>Unit</Label>
+                            <div className="ui input"><input type="text" placeholder="Unit" value={this.state.units}
+                                                             onChange={this.handleUnitInput.bind(this)}/></div>
+
+                        </Grid.Column>
+
                     </Grid.Row>
                     <Grid.Row>
                         <Grid.Column>
@@ -439,40 +485,35 @@ class Prod extends Component {
                     <Grid.Row columns={10}>
                         <Grid.Column width={2}>
                             <Dropzone
-                                multiple={true}
+                                multiple={false}
                                 accept="image/*"
                                 onDrop={this.onImageDrop.bind(this)}
                             >
-                                <div style={imgStyle}>
-                                    <img src={imgResource + "photo-128.png"} alt="Add"/><br/>
-                                    <span>Drag or click to add image</span>
-                                </div>
-
+                                {this.state.images != null?<img src={this.state.images.preview} alt={this.state.images.name} style={{height: "190px", padding:"5px"}}/>:
+                                    <div style={{width: "50%", textAlign: "center", marginLeft:"20%", marginTop:"10%"}}><img src={imgResource + "photo-128.png"} alt="Add" /><br/><span>Drag or click to add image</span></div>}
                             </Dropzone>
 
                         </Grid.Column>
-                        <Grid.Column width={8}>
 
-                            <div>
-                                {this.state.images.map((f, i) =>
-                                    <img key={i} src={f.preview} alt={f.name} style={{
-                                        border: "2px dashed gray",
-                                        margin: "10px",
-                                        width: "200px",
-                                        padding: "5px"
-                                    }}/>
-                                )}
-                            </div>
-                        </Grid.Column>
                     </Grid.Row>
 
                     <Grid.Row>
-                        {/* TODO The submit button */}
                         <Grid.Column width={5}>
                             <div  style={{color:"red", fontSize:"30px"}}>{this.state.errorMessage}</div>
                         </Grid.Column>
                         <Grid.Column width={2}>
                             <Button color='red' onClick={this.validateandSubmit.bind(this)}>Add Product</Button>
+                        </Grid.Column>
+
+                    </Grid.Row>
+                    <Grid.Row>
+                        <Grid.Column width={2}></Grid.Column>
+                        <Grid.Column width={10}>
+                            {this.state.success? <Message
+                                success
+                                header='The product wass added'
+                                content='The product will now appear on the web site'
+                            />: null}
                         </Grid.Column>
 
                     </Grid.Row>

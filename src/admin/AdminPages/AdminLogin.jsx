@@ -4,7 +4,8 @@
 
 import React, {Component} from 'react';
 import * as AdminUserAction from '../AdminActions/AdminUserAction';
-import {Form, Container, Button, Header} from 'semantic-ui-react'
+import salesStore from '../AdminStores/SalesStore'
+import {Form, Container, Button, Header, Dimmer, Loader} from 'semantic-ui-react'
 
 
 
@@ -12,7 +13,9 @@ export default class AdminLogin extends Component{
 
     constructor(){
         super();
-
+        this.state={
+            loading:false,
+        }
         this.container ={
             width: "25%",
             height:"Auto",
@@ -32,10 +35,19 @@ export default class AdminLogin extends Component{
 
    }
 
+   componentWillMount(){
+       this.setState({loading:true});
+   }
+   componentDidMount(){
+       this.setState({loading:false});
+   }
+
     //This handles the submit from the form. sends the users imput of for validation.
     handleSubmit (e){
         e.preventDefault();
-        AdminUserAction.userLogin(this.refs.userName.value, this.refs.password.value);
+        this.setState({loading:true});
+        AdminUserAction.userLogin(this.refs.userName.value, this.refs.password.value, ()=>{this.setState({loading:false});});
+        salesStore.getSales();
     };
 
 
@@ -62,7 +74,11 @@ export default class AdminLogin extends Component{
                     </Form>
                 </Container>
                 {this.props.error?<h2 style={this.error}>Enter the correct details</h2>:"" }
+                <Dimmer active={this.state.loading} inverted>
+                    <Loader>Loading</Loader>
+                </Dimmer>
             </div>
+
         );
     }
 }
