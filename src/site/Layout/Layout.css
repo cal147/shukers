@@ -157,3 +157,8 @@
     margin-left: -7rem;
     left: 7rem !important;
 }
+
+.conf {
+    text-align: center;
+    margin: 0 20vw;
+}

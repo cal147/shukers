@@ -26,24 +26,20 @@ export default class basket extends Component {
 
         for (let i = 0; i < products.length; i++) {
             if (products[i].threeForTen) {
-                threeForTenCost.push(parseFloat(products[i].price));
-                threeForTenProdCount++;
-                allThreeForTenProdsPrice += parseFloat(products[i].price);
-
+                for (let k = 0; k < products[i].qty; k++) {
+                    threeForTenCost.push(parseFloat(products[i].price));
+                    allThreeForTenProdsPrice += parseFloat(products[i].price);
+                    threeForTenProdCount++;
+                }
             }
-            totalPrice += parseFloat(products[i].price);
-
+            totalPrice += parseFloat(products[i].subPrice);
         }
 
-        console.log("three for 10 prod arr ", threeForTenCost, " three for 10 count ", threeForTenProdCount, " all three for 10 ", allThreeForTenProdsPrice, " total cost " , totalPrice)
-        threeForTenQualify = threeForTenProdCount % 3;
+        // console.log("three for 10 prod arr ", threeForTenCost, " three for 10 count ", threeForTenProdCount, " all three for 10 ", allThreeForTenProdsPrice, " total cost " , totalPrice)
+        threeForTenQualify = Math.floor(threeForTenProdCount / 3);
         threeForTenRemainingCost = this.getRemainingCost(threeForTenCost, threeForTenQualify);
 
-
-        // console.log('total Price - ' + totalPrice);
-        // console.log('allThreeForTenProdsPrice - ' + allThreeForTenProdsPrice);
-        // console.log('threeForTenQualify - ' + threeForTenQualify);
-        // console.log('threeForTenRemainingCost - ' + threeForTenRemainingCost);
+        // console.log("three for 10 quali prod ", threeForTenQualify, " three for 10 rem ", threeForTenRemainingCost,);
 
         if (allThreeForTenProdsPrice == threeForTenRemainingCost) {
             threeForTenQualify = 0
@@ -54,6 +50,7 @@ export default class basket extends Component {
     getRemainingCost(totalCostArr, qualProds) {
 
         let qualProd = qualProds * 3;
+        // console.log('qualProd - ',qualProd, ' qualProdS - ', qualProds)
         let threeTenCost = 0;
         let totalCost = 0;
 
@@ -61,9 +58,6 @@ export default class basket extends Component {
             totalCost += totalCostArr[i];
             if (i < qualProd) threeTenCost += totalCostArr[i];
         }
-
-        // console.log(totalCostArr);
-        // console.log(threeTenCost);
 
         if (threeTenCost < (qualProds * 10)) {
             return totalCost
@@ -160,7 +154,6 @@ export default class basket extends Component {
     render() {
 
         let priceWithDiscount = this.calculatePrice(this.state.BasketData);
-        console.log('basket data ',priceWithDiscount)
         let discount = this.state.BasketTotalPrice - priceWithDiscount;
 
         return (
@@ -189,23 +182,21 @@ export default class basket extends Component {
                         <Table.Cell textAlign="center"><strong>£0.20</strong></Table.Cell>
                         <Table.Cell textAlign="center"> </Table.Cell>
                     </Table.Row>
-                    {/*TODO - sort this so that only values more than £10 show and are discounted from tthe price*/}
+                    {/*TODO - sort this so that only values more than £10 show and are discounted from the price*/}
 
-                        <Table.Row>
-                            <Table.Cell colSpan={2}> </Table.Cell>
-                            <Table.Cell textAlign="center" positive><strong>3 for £10 Discount</strong></Table.Cell>
-                            <Table.Cell textAlign="center" positive><strong><Money locale="en-UK"
-                                                                                   currency="GBP">{discount}</Money></strong></Table.Cell>
-                            <Table.Cell/>
-                        </Table.Row>
+                    {discount > 0 ? <Table.Row>
+                        <Table.Cell colSpan={2}> </Table.Cell>
+                        <Table.Cell textAlign="center" positive><strong>3 for £10 Discount</strong></Table.Cell>
+                        <Table.Cell textAlign="center" positive><strong><Money locale="en-UK"
+                                                                               currency="GBP">{discount}</Money></strong></Table.Cell>
+                        <Table.Cell/>
+                    </Table.Row> : null}
                     <Table.Footer>
                         <Table.HeaderCell colSpan="2"> </Table.HeaderCell>
                         <Table.HeaderCell textAlign="center"><strong>Total Price</strong></Table.HeaderCell>
                         <Table.HeaderCell textAlign="center">
                             <strong>
                                 <Money locale="en-UK" currency="GBP">{priceWithDiscount}</Money>
-                                <br/>
-                                <Money locale="en-UK" currency="GBP">{this.state.BasketTotalPrice}</Money>
                             </strong>
                         </Table.HeaderCell>
                         <Table.HeaderCell textAlign="center"> </Table.HeaderCell>
@@ -214,35 +205,37 @@ export default class basket extends Component {
                 </Table>
 
                 {/*TODO - get payment complete and turn basket to paid in SQL - sort out return to website to send data to SQL*/}
-                <form action="https://www.paypal.com/cgi-bin/webscr" method="post">
+                {priceWithDiscount > 0 ? <div>
+                    <form action="https://www.paypal.com/cgi-bin/webscr" method="post">
 
-                    {/*Identify your business so that you can collect the payments.*/}
-                    <input type="hidden" name="business" value="shukersbutchers@gmail.com"/>
+                        {/*Identify your business so that you can collect the payments.*/}
+                        <input type="hidden" name="business" value="shukersbutchers@gmail.com"/>
 
-                    {/*Specify a Buy Now button.*/}
-                    <input type="hidden" name="cmd" value="_xclick"/>
+                        {/*Specify a Buy Now button.*/}
+                        <input type="hidden" name="cmd" value="_xclick"/>
 
-                    {/*Specify details about the item that buyers will purchase.*/}
-                    <input type="hidden" name="item_name" value="Shukers Products"/>
-                    <input type="hidden" name="amount" value={this.state.BasketTotalPrice}/>
-                    <input type="hidden" name="currency_code" value="GBP"/>
+                        {/*Specify details about the item that buyers will purchase.*/}
+                        <input type="hidden" name="item_name" value="Shukers Products"/>
+                        <input type="hidden" name="amount" value={priceWithDiscount}/>
+                        <input type="hidden" name="currency_code" value="GBP"/>
 
-                    {/*Display the payment button.*/}
-                    <div className="PayPal_Button">
-                        <input type="image" name="submit"
-                               src="https://www.paypalobjects.com/webstatic/en_US/i/btn/png/btn_buynow_107x26.png"
-                               alt="Buy Now"/>
-                        <input type="image" name="submit"
-                               src="https://www.paypalobjects.com/webstatic/en_US/i/buttons/cc-badges-ppmcvdam.png"
-                               alt="Credit Card Badges"/>
-                        <img alt="" border="0" width="1" height="1"
-                             src="https://www.paypalobjects.com/en_GB/i/scr/pixel.gif"/>
-                    </div>
+                        {/*Display the payment button.*/}
+                        <div className="PayPal_Button">
+                            <input type="image" name="submit"
+                                   src="https://www.paypalobjects.com/webstatic/en_US/i/btn/png/btn_buynow_107x26.png"
+                                   alt="Buy Now"/>
+                            <input type="image" name="submit"
+                                   src="https://www.paypalobjects.com/webstatic/en_US/i/buttons/cc-badges-ppmcvdam.png"
+                                   alt="Credit Card Badges"/>
+                            <img alt="" border="0" width="1" height="1"
+                                 src="https://www.paypalobjects.com/en_GB/i/scr/pixel.gif"/>
+                        </div>
 
-                </form>
+                    </form>
 
-                <Button negative onClick={() => this.collectInStore()}>Collect and Pay in store tomorrow</Button>
+                    <Button negative onClick={() => this.collectInStore()}>Collect and Pay in store tomorrow</Button>
 
+                </div> : null}
             </div>
         )
     }

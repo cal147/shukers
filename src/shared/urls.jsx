@@ -1,6 +1,4 @@
-
-
-export var serverScripts = "http://localhost/shukers/public/Scripts/";
-export var serverScriptsPublic = "http://localhost/shukers/public/Scripts/public/";
-export var imgResource  =  "http://localhost/shukers/public/Images/";
-export var prodImgResourcePublic  =  "http://localhost/shukers/public/Images/Products/";
+export const serverScripts = "http://localhost/shukers/public/Scripts/";
+export const serverScriptsPublic = "http://localhost/shukers/public/Scripts/public/";
+export const imgResource = "http://localhost/shukers/public/Images/";
+export const prodImgResourcePublic = "http://localhost/shukers/public/Images/Products/";

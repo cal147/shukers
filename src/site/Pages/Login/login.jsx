@@ -42,7 +42,7 @@ export default class login extends Component {
             window.location.reload();
         } else if (this.state.user.isLoggedIn === false) {
             this.setState({
-                FormMessage: <Message error header="Login falied" content="Please check login details"/>
+                FormMessage: <Message error header="Login failed" content="Please check login details"/>
             });
         }
     }

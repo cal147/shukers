@@ -229,7 +229,7 @@ export default class SiteLayout extends Component {
                                as={Link} to='/signUp'/>
                 </Menu.Menu>;
             loggedIn = <div>
-                {this.state.productModal != null ? this.state.productModal.map((product, i) =>
+                {this.state.productModal !== null ? this.state.productModal.map((product, i) =>
                     <Modal
                         dimmer='blurring'
                         onClose={this.handleClose}
@@ -301,9 +301,9 @@ export default class SiteLayout extends Component {
                 <div>
                     <Button onClick={this.toggleVisibility} icon="content" content="Menu" labelPosition="left"/>
 
-                    <Header/>
-                    <Sidebar.Pushable>
 
+                    <Sidebar.Pushable className="sidebarPushable">
+                        <Header/>
 
                         <Sidebar as={Menu} animation='scale down' width='wide' visible={visible} icon='labeled'
                                  stackable inverted color={"red"}>

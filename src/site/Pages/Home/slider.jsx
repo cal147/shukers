@@ -7,7 +7,7 @@ export default class imgSlider extends Component {
 
     render() {
 
-        var settings = {
+        const settings = {
             infinite: true,
             slidesToShow: 1,
             slidesToScroll: 1,

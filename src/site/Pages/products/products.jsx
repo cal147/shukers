@@ -70,6 +70,7 @@ export default class product extends Component {
 
     addProductToBasket(productId, qty, name) {
         alert(name + ' has been added to yout basket');
+        setTimeout(() => window.location.reload(), 10);
         fetch(serverScriptsPublic + "Controllers/productsController.php", {
             method: 'POST',
             headers: {"Content-type": "application/x-www-form-urlencoded; charset=UTF-8"},
@@ -86,7 +87,6 @@ export default class product extends Component {
         }).catch((err) => {
             console.error(err);
         });
-        // this.setState({productAdded: true})
     }
 
     urlchange() {

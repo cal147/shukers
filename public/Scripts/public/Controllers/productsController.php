@@ -293,7 +293,7 @@ if ($_postData['action'] == 'GET_USERBASKET') {
         $cleanUserID = strip_tags($cUserID);
 
         try {
-            $stmt = $conn->prepare("SELECT s.id, sd.id AS salesDetailsID, p.name, sd.qty, sd.productPrice, SUM(sd.qty * sd.productPrice) AS subTotal, p.3for10 FROM sales AS s JOIN salesdetails AS sd ON s.id = sd.salesId JOIN products AS p ON sd.productId = p.id WHERE s.userId = ? AND s.paid = 0 AND s.collection = 0 GROUP BY p.id ORDER BY p.price;");
+            $stmt = $conn->prepare("SELECT s.id, sd.id AS salesDetailsID, p.name, sd.qty, sd.productPrice, SUM(sd.qty * sd.productPrice) AS subTotal, p.3for10 FROM sales AS s JOIN salesdetails AS sd ON s.id = sd.salesId JOIN products AS p ON sd.productId = p.id WHERE s.userId = ? AND s.paid = 0 AND s.collection = 0 GROUP BY p.id ORDER BY sd.id;");
             $stmt->bind_param("i", $cleanUserID);
             $stmt->execute();
             if ($result = $stmt->get_result()) {
@@ -332,7 +332,7 @@ if ($_postData['action'] == 'GET_USERBASKETTOTALPRICE') {
             $stmt->execute();
             $result = $stmt->get_result();
             $row = $result->fetch_assoc();
-            $BasketTotalPrice = (double)$row['totalPrice'];
+            $BasketTotalPrice = $row['totalPrice'];
 
             echo $BasketTotalPrice;
 
