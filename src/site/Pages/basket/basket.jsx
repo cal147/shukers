@@ -169,7 +169,7 @@ export default class basket extends Component {
                     </Table.Header>
                     {this.state.BasketData != null ? this.state.BasketData.map((basket, i) =>
                         <Table.Row key={i}>
-                            <Table.Cell>{basket.name}</Table.Cell>
+                            <Table.Cell>{basket.name + ' - ' + basket.units}</Table.Cell>
                             <Table.Cell textAlign="center">£{basket.price}</Table.Cell>
                             <Table.Cell textAlign="center">{basket.qty}</Table.Cell>
                             <Table.Cell textAlign="center">£{basket.subPrice}</Table.Cell>

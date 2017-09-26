@@ -104,7 +104,7 @@ if ($_postData['action'] == 'SELECT_SPECIFICCATEGORY') {
         $cleanProd = strip_tags($cProd);
         $productArray = [];
         try {
-            $stmt = $conn->prepare("SELECT p.id, p.name, p.description, p.price, p.onOffer, p.3for10, p.imgPath, c.cat FROM products AS p JOIN category AS c ON p.catId = c.id WHERE c.cat=?");
+            $stmt = $conn->prepare("SELECT p.id, p.name, p.description, p.price, p.onOffer, p.3for10, p.imgPath, c.cat, p.units FROM products AS p JOIN category AS c ON p.catId = c.id WHERE c.cat=?");
             $stmt->bind_param("s", $cleanProd);
             $stmt->execute();
 
@@ -118,7 +118,8 @@ if ($_postData['action'] == 'SELECT_SPECIFICCATEGORY') {
                         'onOffer' => $row['onOffer'],
                         'threeForTen' => $row['3for10'],
                         'imgPath' => $row['imgPath'],
-                        'cat' => $row['cat']
+                        'cat' => $row['cat'],
+                        'units' => $row['units']
                     ]);
                 }
             }
@@ -293,7 +294,7 @@ if ($_postData['action'] == 'GET_USERBASKET') {
         $cleanUserID = strip_tags($cUserID);
 
         try {
-            $stmt = $conn->prepare("SELECT s.id, sd.id AS salesDetailsID, p.name, sd.qty, sd.productPrice, SUM(sd.qty * sd.productPrice) AS subTotal, p.3for10 FROM sales AS s JOIN salesdetails AS sd ON s.id = sd.salesId JOIN products AS p ON sd.productId = p.id WHERE s.userId = ? AND s.paid = 0 AND s.collection = 0 GROUP BY p.id ORDER BY sd.id;");
+            $stmt = $conn->prepare("SELECT s.id, sd.id AS salesDetailsID, p.name, sd.qty, sd.productPrice, SUM(sd.qty * sd.productPrice) AS subTotal, p.3for10, p.units FROM sales AS s JOIN salesdetails AS sd ON s.id = sd.salesId JOIN products AS p ON sd.productId = p.id WHERE s.userId = ? AND s.paid = 0 AND s.collection = 0 GROUP BY p.id ORDER BY sd.id;");
             $stmt->bind_param("i", $cleanUserID);
             $stmt->execute();
             if ($result = $stmt->get_result()) {
@@ -305,7 +306,8 @@ if ($_postData['action'] == 'GET_USERBASKET') {
                         'qty' => $row['qty'],
                         'price' => $row['productPrice'],
                         'subPrice' => $row['subTotal'],
-                        'threeForTen' => boolval($row['3for10'])
+                        'threeForTen' => boolval($row['3for10']),
+                        'units' => $row['units']
                     ]);
                 }
                 echo json_encode($orderArray);
