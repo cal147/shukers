@@ -3,6 +3,7 @@ import React, {Component} from "react";
 export default class confirmation extends Component {
 
     componentWillMount() {
+
         /*fetch(serverScriptsPublic + "Controllers/productsController.php", {
             method: 'POST',
             headers: {"Content-type": "application/x-www-form-urlencoded; charset=UTF-8"},
