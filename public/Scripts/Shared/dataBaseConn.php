@@ -4,7 +4,7 @@
  class Database{
      //Constant mysql details ensures they cant be changed later in the program.
     const SERVER = 'localhost';
-    const USERNAME = 'root';
+    const USERNAME = 'shukers';
     const PASSWORD = '';
     const DATABASE = 'shukers';
 
