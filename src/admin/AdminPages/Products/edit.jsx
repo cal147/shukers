@@ -112,7 +112,7 @@ export default class ProdEdit extends Component {
             this.setState({productsFilter: null}, ()=>{
                 this.state.products.map((item, i)=>{
                     for(let k in item){
-                        if(k=="prodName" && item[k].indexOf(this.state.searchQuery) != -1){
+                        if(k=="prodName" && item[k].toLowerCase().indexOf(this.state.searchQuery.toLowerCase()) != -1){
                             tempArr.push(item);
                         }
                     }
