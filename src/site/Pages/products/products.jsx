@@ -51,7 +51,6 @@ export default class product extends Component {
         }
     }
 
-
     getSpecificProducts(cat) {
         fetch(serverScriptsPublic + "Controllers/productsController.php", {
             method: 'POST',
@@ -70,6 +69,9 @@ export default class product extends Component {
 
     addProductToBasket(productId, qty, name) {
         alert(name + ' has been added to yout basket');
+        {
+            this.state.salesID != null ? setTimeout(() => window.location.reload(), 10) : null
+        }
         fetch(serverScriptsPublic + "Controllers/productsController.php", {
             method: 'POST',
             headers: {"Content-type": "application/x-www-form-urlencoded; charset=UTF-8"},
@@ -86,7 +88,6 @@ export default class product extends Component {
         }).catch((err) => {
             console.error(err);
         });
-        // this.setState({productAdded: true})
     }
 
     urlchange() {
@@ -100,9 +101,7 @@ export default class product extends Component {
         this.setState({Qty: e.target.value});
     }
 
-
     render() {
-
         let loggedIn = null;
         let addedToBasket = null;
         if (this.state.user.isLoggedIn) {
@@ -113,7 +112,8 @@ export default class product extends Component {
             loggedIn = <Grid columns={3} textAlign="center" className="prodOverGrid">
                 {this.state.Productsdata != null ? this.state.Productsdata.map((product, i) =>
                     <Grid key={i} className="prodGrid" divided>
-                        <div className="prodDiv"><Grid.Row stretched as="h3">{product.name}</Grid.Row>
+                        <div className="prodDiv"><Grid.Row stretched
+                                                           as="h3">{product.name + ' - ' + product.units}</Grid.Row>
                             <br/>
 
                             {/*Modal shows the product page as pop up*/}
@@ -131,7 +131,7 @@ export default class product extends Component {
                                             <img className="offerimage" src={prodImgResourcePublic + 'offer.png'}
                                                  alt='offer'/> : null}</Button>}
                                 closeIcon>
-                                <Modal.Header>{product.name + ' - £' + product.price}
+                                <Modal.Header>{product.name + ' - £' + product.price + ' - ' + product.units}
                                     {product.onOffer ? <div style={{color: 'red'}}>on offer</div> : null}
                                     {product.threeForTen ? <div style={{color: 'blue'}}>3 For £10</div> : null}
                                 </Modal.Header>
@@ -158,11 +158,9 @@ export default class product extends Component {
                                         onClick={() => this.addProductToBasket(product.id, this.state.Qty, product.name)}>
                                         <Icon name='shop'/> Add to Basket
                                     </Button> : null}
-
                                     {addedToBasket}
                                 </Modal.Actions>
                             </Modal>
-
                             <br/><h4>Price: £{product.price}</h4><br/></div>
                     </Grid>) : null}
             </Grid>
@@ -170,10 +168,9 @@ export default class product extends Component {
             loggedIn = <Grid columns={3} textAlign="center" className="prodOverGrid">
                 {this.state.Productsdata != null ? this.state.Productsdata.map((product, i) =>
                     <Grid key={i} className="prodGrid" divided>
-                        <div className="prodDiv"><Grid.Row stretched as="h3">{product.name}
+                        <div className="prodDiv"><Grid.Row stretched as="h3">{product.name + ' - ' + product.units}
                         </Grid.Row>
                             <br/>
-
                             {/*Modal shows the product page as pop up*/}
                             <Modal
                                 dimmer='blurring'
@@ -186,7 +183,7 @@ export default class product extends Component {
                                     {product.onOffer == 1 ?
                                         <img className="offerimage" src={prodImgResourcePublic + 'offer.png'}
                                              alt='offer'/> : null}</Button>}>
-                                <Modal.Header>{product.name + ' - £' + product.price}
+                                <Modal.Header>{product.name + ' - £' + product.price + ' - ' + product.units}
                                     {product.onOffer ? <div style={{color: 'red'}}>on offer</div> : null}
                                     {product.threeForTen ? <div style={{color: 'blue'}}>3 For £10</div> : null}
                                 </Modal.Header>
@@ -201,12 +198,10 @@ export default class product extends Component {
                                     <h3>Please sign in to order this product</h3>
                                 </Modal.Actions>
                             </Modal>
-
                             <br/><h4>Price: £{product.price}</h4><br/></div>
                     </Grid>) : null}
             </Grid>
         }
-
         return (
             <div>
                 {loggedIn}

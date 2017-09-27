@@ -191,7 +191,7 @@ export default class SiteLayout extends Component {
                         onClose={this.handleClose}
                         open={this.state.modalOpen}
                     >
-                        <Modal.Header>{product.name + ' - £' + product.price}
+                        <Modal.Header>{product.name + ' - £' + product.price + ' - ' + product.units}
                             {product.onOffer ? <div style={{color: 'red'}}>on offer</div> : null}
                             {product.threeForTen ? <div style={{color: 'blue'}}>3 For £10</div> : null}
                         </Modal.Header>
@@ -235,7 +235,7 @@ export default class SiteLayout extends Component {
                         onClose={this.handleClose}
                         open={this.state.modalOpen}
                     >
-                        <Modal.Header>{product.name + ' - £' + product.price}
+                        <Modal.Header>{product.name + ' - £' + product.price + ' - ' + product.units}
                             {product.onOffer ? <div style={{color: 'red'}}>on offer</div> : null}
                             {product.threeForTen ? <div style={{color: 'blue'}}>3 For £10</div> : null}
                         </Modal.Header>
@@ -301,9 +301,9 @@ export default class SiteLayout extends Component {
                 <div>
                     <Button onClick={this.toggleVisibility} icon="content" content="Menu" labelPosition="left"/>
 
-                    <Header/>
-                    <Sidebar.Pushable>
 
+                    <Sidebar.Pushable className="sidebarPushable">
+                        <Header/>
 
                         <Sidebar as={Menu} animation='scale down' width='wide' visible={visible} icon='labeled'
                                  stackable inverted color={"red"}>

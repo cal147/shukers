@@ -9,6 +9,7 @@ import signUp from "./site/Pages/Login/SignUp";
 import ForgottenPassword from "./site/Pages/Login/ForgottenPassword";
 import product from "./site/Pages/products/products";
 import myAccount from "./site/Pages/account/account";
+import confirmation from "./site/Pages/confirmation/confirmation";
 import SiteLayout from './site/Layout/layout'
 import MainPage from './admin/index';
 import "./site/Layout/Layout.css"
@@ -33,6 +34,7 @@ const Site = () => {
                         <Route path="/signUp" component={signUp}/>
                         <Route path="/ForgottenPassword" component={ForgottenPassword}/>
                         <Route path="/myAccount" component={myAccount}/>
+                        <Route path="/confirmation" component={confirmation}/>
                     </Switch>
                 </SiteLayout>
             </div>

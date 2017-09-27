@@ -372,7 +372,7 @@ export default class myAccount extends Component {
                                     {this.state.deliveryAddressChecked === undefined ? null :
 
                                         <Checkbox label="Delivery Address"
-                                                  defaultChecked={this.state.user.isHome === false && this.state.user.isDelivery === true ? false : true}
+                                                  defaultChecked={!(this.state.user.isHome === false && this.state.user.isDelivery === true)}
                                                   onChange={() => this.setState({deliveryAddressChecked: !this.state.deliveryAddressChecked})}/>
                                     }
                                 </Form.Group>
