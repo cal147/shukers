@@ -14,6 +14,7 @@ class SalesStore extends EventEmitter{
 
         this.refreshSales();
 
+
     }
 
 
@@ -48,7 +49,7 @@ class SalesStore extends EventEmitter{
         if(count == 0) {
             setTimeout(() => {
                 this.refreshSales();
-            }, 30000); //TODO Gets sales data from the server every 5 mins. SET TO FIVE MINS.
+            }, 60000*5); //Gets sales data from the server every 5 mins.
             count++;
         }
     }
