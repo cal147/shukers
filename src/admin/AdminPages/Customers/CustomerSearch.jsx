@@ -82,6 +82,7 @@ export default class CustomerSearch extends Component {
 
     updateUser(id, loginId, forname, surname, houseNum, street, postcode, contactNumber, email, delivery, home, isStaff, addressId){
         this.setState({loading:true});
+        console.log("Home ", home , " delivery ", delivery);
         fetch(serverScripts + "admin/Controllers/customersController.php", {
             method: 'POST',
             headers: {"Content-type": "application/x-www-form-urlencoded; charset=UTF-8"},
@@ -267,7 +268,7 @@ export default class CustomerSearch extends Component {
                                             <Header as='h4' image>Login Name</Header>
                                         </Table.Cell>
                                         <Table.Cell>
-                                            <Input id="loginId" defaultValue={loginId} onChange={(e)=> loginId=e.target.value}/>
+                                            <Input id="loginId" defaultValue={loginId} readOnly/>
                                         </Table.Cell>
                                     </Table.Row>
                                     <Table.Row>
