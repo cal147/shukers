@@ -235,10 +235,10 @@ if(session_status() === PHP_SESSION_ACTIVE) {
             $surname = $conn->real_escape_string(strip_tags(trim($_postData['surname'])));
             $firstName = $conn->real_escape_string(strip_tags(trim($_postData['forname'])));
             $loginName = $conn->real_escape_string(strip_tags(trim($_postData['loginId'])));
-            $staffMember = $conn->real_escape_string(strip_tags(trim($_postData['isStaff'])));
+            $staffMember = (int) $conn->real_escape_string(strip_tags(trim($_postData['isStaff'])));
             $contactNumber = $conn->real_escape_string(strip_tags(trim($_postData['contactNumber'])));
-            $deliveryAddress = $conn->real_escape_string(strip_tags(trim($_postData['delivery'])));
-            $homeAddress = $conn->real_escape_string(strip_tags(trim($_postData['home'])));
+            $deliveryAddress = (int) $conn->real_escape_string(strip_tags(trim($_postData['delivery'])));
+            $homeAddress = (int) $conn->real_escape_string(strip_tags(trim($_postData['home'])));
 
 
             try{
