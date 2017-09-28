@@ -123,7 +123,7 @@ export default class CustomerSearch extends Component {
             this.setState({customerFilter: null}, ()=>{
                 this.state.customers.map((item, i)=>{
                    for(let k in item){
-                       if( k==this.state.selectedCat && item[k].indexOf(this.state.searchQuery) != -1){
+                       if( k==this.state.selectedCat && item[k].toLowerCase().indexOf(this.state.searchQuery.toLowerCase()) != -1){
                            tempArr.push(item);
                        }
                    }
