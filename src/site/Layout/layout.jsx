@@ -46,6 +46,7 @@ export default class SiteLayout extends Component {
 
     handleLogOutClick = () => {
         PublicUserAction.logoutUserPublic();
+
         this.setState({loggedin: false});
         window.location.reload()
     };

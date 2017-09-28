@@ -75,7 +75,24 @@ export default class basket extends Component {
             }),
             mode: 'cors'
         }).then(response => response.json()).then(data => {
-            this.setState({salesID: data});
+
+            this.setState({salesID: data}, () => {
+
+                fetch(serverScriptsPublic + "Controllers/productsController.php", {
+                    method: 'POST',
+                    headers: {"Content-type": "application/x-www-form-urlencoded; charset=UTF-8"},
+                    body: JSON.stringify({
+                        action: "GET_USERBASKETTOTALPRICE",
+                        User: this.state.salesID,
+                    }),
+                    mode: 'cors'
+                }).then(response => response.json()).then(data => {
+                    this.setState({BasketTotalPrice: data.totalPrice});
+                }).catch((err) => {
+                    console.error(err);
+                });
+
+            });
         }).catch((err) => {
             console.error(err);
         });
@@ -94,19 +111,7 @@ export default class basket extends Component {
         });
         // TODO - currently showing sub price but if user puts product in again doesn't show in basket
 
-        fetch(serverScriptsPublic + "Controllers/productsController.php", {
-            method: 'POST',
-            headers: {"Content-type": "application/x-www-form-urlencoded; charset=UTF-8"},
-            body: JSON.stringify({
-                action: "GET_USERBASKETTOTALPRICE",
-                User: this.state.user.id,
-            }),
-            mode: 'cors'
-        }).then(response => response.json()).then(data => {
-            this.setState({BasketTotalPrice: data});
-        }).catch((err) => {
-            console.error(err);
-        });
+
     }
 
     removeProduct(sdId) {
@@ -142,7 +147,7 @@ export default class basket extends Component {
             mode: 'cors'
         }).then(response => response.json()).then(data => {
             if (data.Message === "Order being processed for collection") {
-                alert('Your order will be ready for collection before 4 on ' + tomorrowDate)
+                alert('Your order will be ready for collection before 4 on ' + tomorrowDate + '. Once you have paid.')
             } else {
                 alert('something went wrong!')
             }
@@ -206,10 +211,10 @@ export default class basket extends Component {
 
                 {/*TODO - get payment complete and turn basket to paid in SQL - sort out return to website to send data to SQL*/}
                 {priceWithDiscount > 0 ? <div>
-                    <form action="https://www.paypal.com/cgi-bin/webscr" method="post">
+                    <form action="https://www.sandbox.paypal.com/cgi-bin/webscr" method="post">
 
                         {/*Identify your business so that you can collect the payments.*/}
-                        <input type="hidden" name="business" value="shukersbutchers@gmail.com"/>
+                        <input type="hidden" name="business" value="carlleatherbarrow82-facilitator@gmail.com"/>
 
                         {/*Specify a Buy Now button.*/}
                         <input type="hidden" name="cmd" value="_xclick"/>
@@ -233,7 +238,25 @@ export default class basket extends Component {
 
                     </form>
 
-                    <Button negative onClick={() => this.collectInStore()}>Collect and Pay in store tomorrow</Button>
+                    <form action="https://www.paypal.com/cgi-bin/webscr" method="post" onSubmit={() => this.collectInStore()}>
+
+                        {/*Identify your business so that you can collect the payments.*/}
+                        <input type="hidden" name="business" value="shukersbutchers@gmail.com"/>
+
+                        {/*Specify a Buy Now button.*/}
+                        <input type="hidden" name="cmd" value="_xclick"/>
+
+                        {/*Specify details about the item that buyers will purchase.*/}
+                        <input type="hidden" name="item_name" value="Shukers Products"/>
+                        <input type="hidden" name="amount" value={priceWithDiscount}/>
+                        <input type="hidden" name="currency_code" value="GBP"/>
+
+                        {/*Display the payment button.*/}
+                        <div>
+                            <Button negative name="submit">Pay now and collect in store tomorrow</Button>
+                        </div>
+
+                    </form>
 
                 </div> : null}
             </div>

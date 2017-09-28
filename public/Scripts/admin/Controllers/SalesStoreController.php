@@ -71,7 +71,7 @@ if(session_status() === PHP_SESSION_ACTIVE) {
 
             $saleDetails = [];
             try{
-                $stmt = $conn->prepare("SELECT p.name, s.qty, p.price FROM salesDetails AS s INNER JOIN products AS p on p.id = s.productId WHERE saleId = ?");
+                $stmt = $conn->prepare("SELECT p.name, s.qty, p.price FROM salesdetails AS s INNER JOIN products AS p on p.id = s.productId WHERE saleId = ?");
                 $stmt->bind_param("i", $_postData['id']);
                 $stmt->execute();
 

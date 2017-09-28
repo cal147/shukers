@@ -1,26 +1,35 @@
 import React, {Component} from "react";
+import {serverScriptsPublic} from "../../../shared/urls";
+import publicUserStore from '../UserStore/PublicUserStore';
 
 export default class confirmation extends Component {
 
+    constructor() {
+        super();
+        this.state = {
+            user: publicUserStore.getUser(),
+        };
+    }
+
     componentWillMount() {
 
-        /*fetch(serverScriptsPublic + "Controllers/productsController.php", {
+        fetch(serverScriptsPublic + "Controllers/productsController.php", {
             method: 'POST',
             headers: {"Content-type": "application/x-www-form-urlencoded; charset=UTF-8"},
             body: JSON.stringify({
-                action: "PAY_INSTORE",
-                saleID: this.state.salesID
+                action: "PAYMENT_COMPLETE",
+                userID: this.state.user.id
             }),
             mode: 'cors'
         }).then(response => response.json()).then(data => {
-            if (data.Message === "Order being processed for collection") {
-                alert('Your order will be ready for collection before 4 on ' + tomorrowDate)
+            if (data.Message === "Order Paid") {
+                console.log('Payment complete')
             } else {
                 alert('something went wrong!')
             }
         }).catch((err) => {
             console.error(err);
-        });*/
+        });
     }
 
     render() {

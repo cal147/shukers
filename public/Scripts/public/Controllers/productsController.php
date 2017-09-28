@@ -47,13 +47,12 @@ if ($_postData['action'] == 'GET_MENUCATEGORY') {
 
     $categoryArray = [];
     try {
-        $stmt = $conn->prepare("SELECT id, cat FROM category");
+        $stmt = $conn->prepare("SELECT cat FROM category");
         $stmt->execute();
 
         if ($result = $stmt->get_result()) {
             while ($row = $result->fetch_assoc()) {
                 array_push($categoryArray, [
-                    'id' => $row['id'],
                     'cat' => $row['cat']
                 ]);
             }
@@ -105,8 +104,8 @@ if ($_postData['action'] == 'SELECT_SPECIFICCATEGORY') {
         $cleanProd = strip_tags($cProd);
         $productArray = [];
         try {
-            $stmt = $conn->prepare("SELECT p.id, p.name, p.description, p.price, p.onOffer, p.3for10, p.imgPath, c.cat, p.units FROM products AS p JOIN category AS c ON p.catId = c.id WHERE c.cat='Ready to Roast'");
-//            $stmt->bind_param("s", $cleanProd);
+            $stmt = $conn->prepare("SELECT p.id, p.name, p.description, p.price, p.onOffer, p.3for10, p.imgPath, c.cat, p.units FROM products AS p JOIN category AS c ON p.catId = c.id WHERE c.cat=?");
+            $stmt->bind_param("s", $cleanProd);
             $stmt->execute();
 
             if ($result = $stmt->get_result()) {
@@ -295,7 +294,7 @@ if ($_postData['action'] == 'GET_USERBASKET') {
         $cleanUserID = strip_tags($cUserID);
 
         try {
-            $stmt = $conn->prepare("SELECT s.id, sd.id AS salesDetailsID, p.name, sd.qty, sd.productPrice, SUM(sd.qty * sd.productPrice) AS subTotal, p.3for10, p.units FROM sales AS s JOIN salesdetails AS sd ON s.id = sd.salesId JOIN products AS p ON sd.productId = p.id WHERE s.userId = ? AND s.paid = 0 AND s.collection = 0 GROUP BY p.id ORDER BY sd.id;");
+            $stmt = $conn->prepare("SELECT s.id, sd.id AS salesDetailsID, p.name, sd.qty, p.price , SUM(sd.qty * p.price) AS subTotal, p.3for10, p.units FROM sales AS s JOIN salesdetails AS sd ON s.id = sd.saleId JOIN products AS p ON sd.productId = p.id WHERE s.userId = ? AND s.paid = 0 AND s.collection = 0 GROUP BY p.id ORDER BY sd.id");
             $stmt->bind_param("i", $cleanUserID);
             $stmt->execute();
             if ($result = $stmt->get_result()) {
@@ -305,7 +304,7 @@ if ($_postData['action'] == 'GET_USERBASKET') {
                         'sdId' => $row['salesDetailsID'],
                         'name' => $row['name'],
                         'qty' => $row['qty'],
-                        'price' => $row['productPrice'],
+                        'price' => $row['price'],
                         'subPrice' => $row['subTotal'],
                         'threeForTen' => boolval($row['3for10']),
                         'units' => $row['units']
@@ -330,14 +329,14 @@ if ($_postData['action'] == 'GET_USERBASKETTOTALPRICE') {
         $cleanUserID = strip_tags($cUserID);
 
         try {
-            $stmt = $conn->prepare("SELECT totalPrice FROM shukers.sales WHERE userId = ? AND paid = 0 AND collection = 0;");
+            $stmt = $conn->prepare("SELECT sum(sd.qty * p.price) as totalPrice from salesdetails as sd join products as p ON sd.productId = p.id join sales as s on sd.saleId = s.id where s.id = ? AND s.paid = 0");
             $stmt->bind_param("i", $cleanUserID);
             $stmt->execute();
             $result = $stmt->get_result();
             $row = $result->fetch_assoc();
             $BasketTotalPrice = $row['totalPrice'];
 
-            echo $BasketTotalPrice;
+            echo json_encode(["totalPrice" => $BasketTotalPrice]);
 
 
         } catch (Exception $e) {
@@ -390,7 +389,7 @@ if ($_postData['action'] == 'REMOVEPRODUCTFROMBASKET') {
 
             if ($stmt->execute()) {
                 echo json_encode(['Message' => 'product deleted', 'success' => true]);
-                $stmt = $conn->prepare("UPDATE sales SET totalPrice = (SELECT SUM(totalPrice) FROM salesdetails WHERE salesID = ?) WHERE `id` = ?;");
+                $stmt = $conn->prepare("UPDATE sales SET totalPrice = (SELECT sum(sd.qty * p.price) from salesdetails as sd join products as p ON sd.productId = p.id WHERE saleId = ?) WHERE `id` = ?;");
                 $stmt->bind_param("ii", $SalesID, $SalesID);
                 if ($stmt->execute()) {
                     echo json_encode(['Message' => 'Price Updated', 'success' => true]);
@@ -488,12 +487,12 @@ if ($_postData['action'] == 'ADD_PRODUCTTOBASKET') {
 
         } else {
             try {
-                $stmt = $conn->prepare("INSERT INTO salesdetails (salesId, productId, productPrice, qty) VALUES (?, ?, (SELECT price FROM products WHERE id = ?), ?);");
-                $stmt->bind_param("iiii", $SalesID, $cleanProductID, $cleanProductID, $cleanQty);
+                $stmt = $conn->prepare("INSERT INTO salesdetails (saleId, productId, qty) VALUES (?, ?, ?)");
+                $stmt->bind_param("iii", $SalesID, $cleanProductID, $cleanQty);
 
                 if ($stmt->execute()) {
                     echo json_encode(['Message' => 'Product Added to Basket', 'success' => true]);
-                    $stmt = $conn->prepare("UPDATE sales SET totalPrice = (SELECT SUM(totalPrice) FROM salesdetails WHERE salesID = ?) WHERE `id` = ?;");
+                    $stmt = $conn->prepare("UPDATE sales SET totalPrice = (SELECT sum(sd.qty * p.price) from salesdetails as sd join products as p ON sd.productId = p.id WHERE saleId = ?) WHERE `id` =?");
                     $stmt->bind_param("ii", $SalesID, $SalesID);
 
                     if ($stmt->execute()) {
@@ -785,4 +784,29 @@ if ($_postData['action'] == 'UPDATE_ADDRESS') {
         return false;
     }
 
+}
+
+if ($_postData['action'] == 'PAYMENT_COMPLETE') {
+    $saleIDArray = null;
+    $dirtyuserID = $_postData['User'];
+
+    if (preg_match('/^[0-9]{1,3}$/', stripcslashes(trim($dirtyuserID)))) {
+
+        $cUserID = $conn->real_escape_string(trim($dirtyuserID));
+
+        $cleanUserID = strip_tags($cUserID);
+
+        try {
+            $stmt = $conn->prepare("UPDATE sales set paid = 1 WHERE userId = ?");
+            $stmt->bind_param("i", $cleanUserID);
+            if ($stmt->execute()) {
+                echo json_encode(['Message' => 'Order Paid', 'success' => true]);
+            } else {
+                echo json_encode(['Message' => 'Order Not Paid', 'success' => false]);
+            }
+
+        } catch (Exception $e) {
+            return false;
+        }
+    }
 }
