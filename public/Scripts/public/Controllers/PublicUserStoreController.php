@@ -41,6 +41,9 @@ if ($_postData['action'] == 'LOGIN_USER_PUBLIC') {
 //logs the user out of the session.
 if ($_postData['action'] == 'LOGOUT_PUBLIC') {
 
+
+    $_SESSION['loggedIn'] == false;
+
     session_destroy();
     echo json_encode(['Logout' => 'User is logged out', 'success' => true]);
 

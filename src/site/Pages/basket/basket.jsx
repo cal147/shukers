@@ -176,7 +176,7 @@ export default class basket extends Component {
                         <Table.Row key={i}>
                             <Table.Cell>{basket.name + ' - ' + basket.units}</Table.Cell>
                             <Table.Cell textAlign="center">£{basket.price}</Table.Cell>
-                            <Table.Cell textAlign="center">{basket.qty}</Table.Cell>
+                            <Table.Cell textAlign="center">{basket.subPrice / basket.price}</Table.Cell>
                             <Table.Cell textAlign="center">£{basket.subPrice}</Table.Cell>
                             <Table.Cell textAlign="center"><Button icon='remove' color="red"
                                                                    onClick={() => this.removeProduct(basket.sdId)}/></Table.Cell>
@@ -189,19 +189,20 @@ export default class basket extends Component {
                     </Table.Row>
                     {/*TODO - sort this so that only values more than £10 show and are discounted from the price*/}
 
-                    {discount > 0 ? <Table.Row>
+                     <Table.Row>
                         <Table.Cell colSpan={2}> </Table.Cell>
                         <Table.Cell textAlign="center" positive><strong>3 for £10 Discount</strong></Table.Cell>
                         <Table.Cell textAlign="center" positive><strong><Money locale="en-UK"
                                                                                currency="GBP">{discount}</Money></strong></Table.Cell>
                         <Table.Cell/>
-                    </Table.Row> : null}
+                    </Table.Row>
                     <Table.Footer>
                         <Table.HeaderCell colSpan="2"> </Table.HeaderCell>
                         <Table.HeaderCell textAlign="center"><strong>Total Price</strong></Table.HeaderCell>
                         <Table.HeaderCell textAlign="center">
                             <strong>
-                                <Money locale="en-UK" currency="GBP">{priceWithDiscount}</Money>
+                                <Money locale="en-UK" currency="GBP">{priceWithDiscount}</Money><br/>
+                                <Money locale="en-UK" currency="GBP">{this.state.BasketTotalPrice}</Money>
                             </strong>
                         </Table.HeaderCell>
                         <Table.HeaderCell textAlign="center"> </Table.HeaderCell>

@@ -68,10 +68,10 @@ export default class product extends Component {
     }
 
     addProductToBasket(productId, qty, name) {
-        /*alert(name + ' has been added to yout basket');
+        alert(name + ' has been added to yout basket');
         {
             this.state.salesID != null ? setTimeout(() => window.location.reload(), 10) : null
-        }*/
+        }
         fetch(serverScriptsPublic + "Controllers/productsController.php", {
             method: 'POST',
             headers: {"Content-type": "application/x-www-form-urlencoded; charset=UTF-8"},

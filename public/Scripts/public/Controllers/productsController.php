@@ -98,7 +98,7 @@ if ($_postData['action'] == 'SELECT_SPECIFICCATEGORY') {
 
     $dirtyProd = $_postData['category'];
 
-    if (preg_match('/^[A-Za-z0-9]{2,15}$/', stripcslashes(trim($dirtyProd)))) {
+    if (preg_match('/^[A-Za-z0-9\s]{2,20}$/', stripcslashes(trim($dirtyProd)))) {
 
         $cProd = $conn->real_escape_string(trim($dirtyProd));
         $cleanProd = strip_tags($cProd);
@@ -125,6 +125,7 @@ if ($_postData['action'] == 'SELECT_SPECIFICCATEGORY') {
             }
             echo json_encode($productArray);
         } catch (Exception $e) {
+            echo ('fail');
             return false;
         }
     }
@@ -469,8 +470,8 @@ if ($_postData['action'] == 'ADD_PRODUCTTOBASKET') {
                 if ($stmt->execute()) {
                     echo json_encode(['Message' => 'New sale created', 'success' => true]);
 
-                    $stmt = $conn->prepare("INSERT INTO salesdetails(salesId,productId,productPrice,qty) VALUES(LAST_INSERT_ID(),?,(SELECT price FROM products WHERE id=?),?);");
-                    $stmt->bind_param("iii", $cleanProductID, $cleanProductID, $cleanQty);
+                    $stmt = $conn->prepare("INSERT INTO salesdetails(saleId,productId,qty) VALUES(LAST_INSERT_ID(),?,?);");
+                    $stmt->bind_param("ii", $cleanProductID, $cleanQty);
 
                     if ($stmt->execute()) {
                         echo json_encode(['Message' => 'product added to new sale', 'success' => true]);
