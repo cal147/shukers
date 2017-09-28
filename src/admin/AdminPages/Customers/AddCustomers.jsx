@@ -95,7 +95,7 @@ export default class AddCustomers extends Component{
                 }).then((response) => response.json()).then((data) => {
 
                     if(data.success){
-                        alert(data.Message);
+
                         this.setState({
                             activeComp: null,
                             user: adminUserStore.getUser(),
@@ -118,11 +118,12 @@ export default class AddCustomers extends Component{
                             homeAddress: null,
                             staffMember: false,
                             showDelivery:false,
-                            contactNumber:""
+                            contactNumber:"",
+                            successMessage:true
                         });
                         this.setState({loading:false});
                     }else{
-                        alert(data.Message);
+
                     }
 
                 }).catch((err) => {
@@ -177,7 +178,7 @@ export default class AddCustomers extends Component{
                         });
                         this.setState({loading:false});
                     }else{
-                        alert(data.Message);
+
                         this.setState({loading:false});
                     }
 

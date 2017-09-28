@@ -53,8 +53,9 @@ if(session_status() === PHP_SESSION_ACTIVE) {
                 $stmt->execute();
 
                 $stmt->close();
+                echo json_encode(['Message' => 'Added', 'success' => true]);
             }catch (Exception $e){
-
+                echo json_encode(['Message' => 'Something went wrong!', 'success' => false]);
             }
 
         }
@@ -98,6 +99,8 @@ if(session_status() === PHP_SESSION_ACTIVE) {
             }catch (Exception $e){
                 echo json_encode(['Message' => 'Something went wrong!', 'success' => false]);
             }
+
+
 
         }
 

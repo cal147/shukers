@@ -136,7 +136,7 @@ export default class OrderHistory extends Component{
 
                             <Table.Body>
                                 {this.state.orderDetails != null ? this.state.orderDetails.map((item, i) =>
-                                    <Table.Row key={i} onClick={()=>this.rowClick(item.id, i)} className="customerTable">
+                                    <Table.Row key={i}>
                                         <Table.Cell textAlign="center">{item.product}</Table.Cell>
                                         <Table.Cell textAlign="center">{item.qty}</Table.Cell>
                                         <Table.Cell textAlign="center">{item.price}</Table.Cell>
