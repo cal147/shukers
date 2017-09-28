@@ -269,6 +269,7 @@ export default class SiteLayout extends Component {
                         <Dropdown item text={'Products'}>
                             <Dropdown.Menu>
                                 {this.state.Productsdata.map((product, i) => <Dropdown.Item
+
                                     key={product.cat} name='products' as={Link} to={"/products/" + product.cat}
                                     onClick={this.handleItemClick}>{product.cat}</Dropdown.Item>)}
                             </Dropdown.Menu>

@@ -47,12 +47,13 @@ if ($_postData['action'] == 'GET_MENUCATEGORY') {
 
     $categoryArray = [];
     try {
-        $stmt = $conn->prepare("SELECT cat FROM category");
+        $stmt = $conn->prepare("SELECT id, cat FROM category");
         $stmt->execute();
 
         if ($result = $stmt->get_result()) {
             while ($row = $result->fetch_assoc()) {
                 array_push($categoryArray, [
+                    'id' => $row['id'],
                     'cat' => $row['cat']
                 ]);
             }
@@ -104,8 +105,8 @@ if ($_postData['action'] == 'SELECT_SPECIFICCATEGORY') {
         $cleanProd = strip_tags($cProd);
         $productArray = [];
         try {
-            $stmt = $conn->prepare("SELECT p.id, p.name, p.description, p.price, p.onOffer, p.3for10, p.imgPath, c.cat, p.units FROM products AS p JOIN category AS c ON p.catId = c.id WHERE c.cat=?");
-            $stmt->bind_param("s", $cleanProd);
+            $stmt = $conn->prepare("SELECT p.id, p.name, p.description, p.price, p.onOffer, p.3for10, p.imgPath, c.cat, p.units FROM products AS p JOIN category AS c ON p.catId = c.id WHERE c.cat='Ready to Roast'");
+//            $stmt->bind_param("s", $cleanProd);
             $stmt->execute();
 
             if ($result = $stmt->get_result()) {
