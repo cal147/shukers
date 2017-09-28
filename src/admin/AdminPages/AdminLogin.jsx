@@ -45,8 +45,7 @@ export default class AdminLogin extends Component{
     //This handles the submit from the form. sends the users imput of for validation.
     handleSubmit (e){
         e.preventDefault();
-        this.setState({loading:true});
-        AdminUserAction.userLogin(this.refs.userName.value, this.refs.password.value, ()=>{this.setState({loading:false});});
+        AdminUserAction.userLogin(this.refs.userName.value, this.refs.password.value);
         salesStore.getSales();
     };
 
