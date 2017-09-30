@@ -160,6 +160,7 @@ export default class basket extends Component {
 
         let priceWithDiscount = this.calculatePrice(this.state.BasketData);
         let discount = this.state.BasketTotalPrice - priceWithDiscount;
+        let price = this.state.BasketTotalPrice;
 
         return (
             <div>
@@ -201,7 +202,7 @@ export default class basket extends Component {
                         <Table.HeaderCell textAlign="center"><strong>Total Price</strong></Table.HeaderCell>
                         <Table.HeaderCell textAlign="center">
                             <strong>
-                                <Money locale="en-UK" currency="GBP">{priceWithDiscount}</Money><br/>
+                                <Money locale="en-UK" currency="GBP">{price}</Money><br/>
                                 <Money locale="en-UK" currency="GBP">{this.state.BasketTotalPrice}</Money>
                             </strong>
                         </Table.HeaderCell>
@@ -216,15 +217,22 @@ export default class basket extends Component {
 
                         {/*Identify your business so that you can collect the payments.*/}
                         <input type="hidden" name="business" value="carlleatherbarrow82-facilitator@gmail.com"/>
-
                         {/*Specify a Buy Now button.*/}
                         <input type="hidden" name="cmd" value="_xclick"/>
 
                         {/*Specify details about the item that buyers will purchase.*/}
-                        <input type="hidden" name="item_name" value="Shukers Products"/>
-                        <input type="hidden" name="amount" value={priceWithDiscount}/>
+
+                        {this.state.BasketData != null ? this.state.BasketData.map((item, i)=>
+                            <input key={i} type="hidden" name="item_name" value={item.name + " x " + item.qty + " £" + item.subPricenpm }/>
+                        ):null}
+
+                        <input type="hidden" name="custom" value={this.state.salesID} />
+                        <input type="hidden" name="discount_amount" value={discount} />
+                        <input type="hidden" name="amount" value={price}/>
                         <input type="hidden" name="currency_code" value="GBP"/>
 
+                        <input type="hidden" name="notify_url" value="https://webserver.clps.uk/paypal/paypalVerify.php"/>
+                        <input type="hidden" name="return" value="https://webserver.clps.uk/#/confirmation"/>
                         {/*Display the payment button.*/}
                         <div className="PayPal_Button">
                             <input type="image" name="submit"
@@ -239,18 +247,26 @@ export default class basket extends Component {
 
                     </form>
 
-                    <form action="https://www.paypal.com/cgi-bin/webscr" method="post" onSubmit={() => this.collectInStore()}>
+                    <form action="https://www.sandbox.paypal.com/cgi-bin/webscr" method="post" onSubmit={() => this.collectInStore()}>
 
                         {/*Identify your business so that you can collect the payments.*/}
                         <input type="hidden" name="business" value="shukersbutchers@gmail.com"/>
-
                         {/*Specify a Buy Now button.*/}
                         <input type="hidden" name="cmd" value="_xclick"/>
 
                         {/*Specify details about the item that buyers will purchase.*/}
-                        <input type="hidden" name="item_name" value="Shukers Products"/>
-                        <input type="hidden" name="amount" value={priceWithDiscount}/>
+
+                        {this.state.BasketData != null ? this.state.BasketData.map((item, i)=>
+                            <input key={i} type="hidden" name="item_name" value={item.name + " x " + item.qty + "  £" + item.subPrice }/>
+                        ) :null}
+
+                        <input type="hidden" name="custom" value={this.state.salesID} />
+
+                        <input type="hidden" name="discount_amount" value={discount} />
+                        <input type="hidden" name="amount" value={price}/>
                         <input type="hidden" name="currency_code" value="GBP"/>
+                        <input type="hidden" name="notify_url" value="https://webserver.clps.uk/paypal/paypalVerify.php"/>
+                        <input type="hidden" name="return" value="https://webserver.clps.uk/#/confirmation"/>
 
                         {/*Display the payment button.*/}
                         <div>
