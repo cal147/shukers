@@ -197,7 +197,7 @@ if ($_postData['action'] == 'GET_PRODUCTMODALDETAILS') {
 
 
     try {
-        $stmt = $conn->prepare("SELECT id, name, description, price, imgPath FROM products WHERE name = ? LIMIT 1");
+        $stmt = $conn->prepare("SELECT id, name, description, price, imgPath, units FROM products WHERE name = ? LIMIT 1");
         $stmt->bind_param('s', $cleanProdName);
         $stmt->execute();
         if ($result = $stmt->get_result()) {
@@ -208,6 +208,7 @@ if ($_postData['action'] == 'GET_PRODUCTMODALDETAILS') {
                     'description' => $row['description'],
                     'price' => $row['price'],
                     'image' => $row['imgPath'],
+                    'units' => $row['units']
                 ]);
             }
             echo json_encode($prodArray);
