@@ -295,7 +295,7 @@ if ($_postData['action'] == 'GET_USERBASKET') {
         $cleanUserID = strip_tags($cUserID);
 
         try {
-            $stmt = $conn->prepare("SELECT s.id, sd.id AS salesDetailsID, p.name, sd.qty, p.price , SUM(sd.qty * p.price) AS subTotal, p.3for10, p.units FROM sales AS s JOIN salesdetails AS sd ON s.id = sd.saleId JOIN products AS p ON sd.productId = p.id WHERE s.userId = ? AND s.paid = 0 AND s.collection = 0 GROUP BY p.id ORDER BY sd.id");
+            $stmt = $conn->prepare("SELECT s.id, sd.id AS salesDetailsID, p.name, sd.qty, p.price , SUM(sd.qty * p.price) AS subTotal, p.3for10, p.units FROM sales AS s JOIN salesdetails AS sd ON s.id = sd.saleId JOIN products AS p ON sd.productId = p.id WHERE s.userId = ? AND s.paid = 0 AND s.collection = 0 GROUP BY s.id, sd.id, p.id ORDER BY sd.id");
             $stmt->bind_param("i", $cleanUserID);
             $stmt->execute();
             if ($result = $stmt->get_result()) {
@@ -416,19 +416,12 @@ if ($_postData['action'] == 'USEREXIST') {
         $cleanUser = strip_tags($cUser);
 
         try {
-            $stmt = $conn->prepare("SELECT id, count(loginId) AS user FROM users WHERE loginId = ?");
+            $stmt = $conn->prepare("SELECT id FROM users WHERE loginId = ?  ");
             $stmt->bind_param("s", $cleanUser);
             $stmt->execute();
             $result = $stmt->get_result();
             $row = $result->fetch_assoc();
-            $loginCount = (int)$row['user'];
-            if ($loginCount === 1) {
-                $loginexist = true;
-                $userID = (int)$row['id'];
-            } else {
-                $loginexist = 0;
-                $userID = 0;
-            }
+            $userID = (int)$row['id'];
             echo($userID);
 
         } catch (Exception $e) {
@@ -444,9 +437,6 @@ if ($_postData['action'] == 'ADD_PRODUCTTOBASKET') {
     $SalesID = $_postData['saleID'];
     $dirtyuserID = $_postData['User'];
 
-    if ($SalesID == null) {
-        $SalesID = null;
-    }
 
     if (preg_match('/^[0-9]{1,3}$/', stripcslashes(trim($dirtyprodID))) &&
         preg_match('/^[0-9]{1,3}$/', stripcslashes(trim($dirtyuserID))) &&
@@ -461,7 +451,7 @@ if ($_postData['action'] == 'ADD_PRODUCTTOBASKET') {
         $cleanUserID = strip_tags($cUserID);
 
 
-        if ($SalesID == null) {
+        if ($SalesID == 0) {
 
             try {
                 $stmt = $conn->prepare("INSERT INTO sales(userId,saleDate,paid) VALUES(?,CURDATE(),0);");
@@ -470,6 +460,8 @@ if ($_postData['action'] == 'ADD_PRODUCTTOBASKET') {
                 if ($stmt->execute()) {
                     echo json_encode(['Message' => 'New sale created', 'success' => true]);
 
+                    $salesID = $conn->insert_id;
+
                     $stmt = $conn->prepare("INSERT INTO salesdetails(saleId,productId,qty) VALUES(LAST_INSERT_ID(),?,?);");
                     $stmt->bind_param("ii", $cleanProductID, $cleanQty);
 
@@ -477,7 +469,7 @@ if ($_postData['action'] == 'ADD_PRODUCTTOBASKET') {
                         echo json_encode(['Message' => 'product added to new sale', 'success' => true]);
 
                         $stmt = $conn->prepare("UPDATE sales SET totalPrice = (SELECT sum(sd.qty * p.price) FROM salesdetails AS sd JOIN products AS p ON sd.productId = p.id WHERE saleId = ?) WHERE `id` = ?");
-                        $stmt->bind_param("ii", $cleanProductID, $cleanQty);
+                        $stmt->bind_param("ii", $salesID, $salesID);
 
                         if ($stmt->execute()) {
                             echo json_encode(['Message' => 'Sales Table Price updated', 'success' => true]);

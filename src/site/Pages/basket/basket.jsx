@@ -203,7 +203,7 @@ export default class basket extends Component {
                         <Table.HeaderCell textAlign="center">
                             <strong>
                                 <Money locale="en-UK" currency="GBP">{price}</Money><br/>
-                                <Money locale="en-UK" currency="GBP">{this.state.BasketTotalPrice}</Money>
+                                <Money locale="en-UK" currency="GBP">{priceWithDiscount}</Money>
                             </strong>
                         </Table.HeaderCell>
                         <Table.HeaderCell textAlign="center"> </Table.HeaderCell>
