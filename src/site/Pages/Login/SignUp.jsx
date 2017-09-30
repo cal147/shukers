@@ -90,6 +90,12 @@ export default class SignUp extends Component {
                 mode: 'cors'
             }).then(response => response.json()).then(data => {
                 this.setState({passwordChangeConfirmation: data, Loader: null});
+                if (data.Message === "ok") {
+                    this.setState({
+                        message: <Message success><Message.Header>User successfully signed up</Message.Header>Please
+                            go to the login page to purchase our products</Message>
+                    });
+                }
             }).catch((err) => {
                 console.error(err);
             });
@@ -260,6 +266,14 @@ export default class SignUp extends Component {
                         <Form.Group>
                             <Checkbox defaultChecked label="Delivery Address"
                                       onChange={() => this.setState({deliveryAddressChecked: !this.state.deliveryAddressChecked})}/>
+                        </Form.Group>
+                        <Form.Group>
+                            {/*TODO - make checkbox a requirement*/}
+                            <Form.Field required>
+                                <Checkbox defaultChecked={false}
+                                          label="We are only able to deliver in the local region of the shop. Covering Liverpool, St. Helens and Warrington*"
+                                          required/>
+                            </Form.Field>
                         </Form.Group>
                         {deliveryAddress}
                         {this.state.message}

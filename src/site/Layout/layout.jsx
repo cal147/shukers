@@ -48,7 +48,7 @@ export default class SiteLayout extends Component {
         PublicUserAction.logoutUserPublic();
 
         this.setState({loggedin: false});
-        window.location.reload()
+        // window.location.reload()
     };
 
     constructor() {
@@ -191,7 +191,7 @@ export default class SiteLayout extends Component {
                         dimmer='blurring'
                         onClose={this.handleClose}
                         open={this.state.modalOpen}
-                    >
+                        closeIcon>
                         <Modal.Header>{product.name + ' - £' + product.price + ' - ' + product.units}
                             {product.onOffer ? <div style={{color: 'red'}}>on offer</div> : null}
                             {product.threeForTen ? <div style={{color: 'blue'}}>3 For £10</div> : null}
@@ -235,7 +235,7 @@ export default class SiteLayout extends Component {
                         dimmer='blurring'
                         onClose={this.handleClose}
                         open={this.state.modalOpen}
-                    >
+                        closeIcon>
                         <Modal.Header>{product.name + ' - £' + product.price + ' - ' + product.units}
                             {product.onOffer ? <div style={{color: 'red'}}>on offer</div> : null}
                             {product.threeForTen ? <div style={{color: 'blue'}}>3 For £10</div> : null}

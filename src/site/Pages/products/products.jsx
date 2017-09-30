@@ -182,7 +182,8 @@ export default class product extends Component {
                                          alt={product.name}/>
                                     {product.onOffer == 1 ?
                                         <img className="offerimage" src={prodImgResourcePublic + 'offer.png'}
-                                             alt='offer'/> : null}</Button>}>
+                                             alt='offer'/> : null}</Button>}
+                                closeIcon>
                                 <Modal.Header>{product.name + ' - £' + product.price + ' - ' + product.units}
                                     {product.onOffer ? <div style={{color: 'red'}}>on offer</div> : null}
                                     {product.threeForTen ? <div style={{color: 'blue'}}>3 For £10</div> : null}

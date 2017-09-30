@@ -475,6 +475,16 @@ if ($_postData['action'] == 'ADD_PRODUCTTOBASKET') {
 
                     if ($stmt->execute()) {
                         echo json_encode(['Message' => 'product added to new sale', 'success' => true]);
+
+                        $stmt = $conn->prepare("UPDATE sales SET totalPrice = (SELECT sum(sd.qty * p.price) FROM salesdetails AS sd JOIN products AS p ON sd.productId = p.id WHERE saleId = ?) WHERE `id` = ?");
+                        $stmt->bind_param("ii", $cleanProductID, $cleanQty);
+
+                        if ($stmt->execute()) {
+                            echo json_encode(['Message' => 'Sales Table Price updated', 'success' => true]);
+                        } else {
+                            echo json_encode(['Message' => 'Sales table unable to update', 'success' => false]);
+                        }
+
                     } else {
                         echo json_encode(['Message' => 'unable to add product to new sale', 'success' => false]);
                     }
@@ -493,7 +503,7 @@ if ($_postData['action'] == 'ADD_PRODUCTTOBASKET') {
 
                 if ($stmt->execute()) {
                     echo json_encode(['Message' => 'Product Added to Basket', 'success' => true]);
-                    $stmt = $conn->prepare("UPDATE sales SET totalPrice = (SELECT sum(sd.qty * p.price) from salesdetails as sd join products as p ON sd.productId = p.id WHERE saleId = ?) WHERE `id` =?");
+                    $stmt = $conn->prepare("UPDATE sales SET totalPrice = (SELECT sum(sd.qty * p.price) from salesdetails as sd join products as p ON sd.productId = p.id WHERE saleId = ?) WHERE `id` = ?");
                     $stmt->bind_param("ii", $SalesID, $SalesID);
 
                     if ($stmt->execute()) {
@@ -632,7 +642,7 @@ if ($_postData['action'] == 'NEW_USER') {
             $stmt = $conn->prepare("INSERT INTO address (userId, houseNum, firstLine, secondline, postcode, home, delivery ) VALUES(?,?,?,?,?,?,?)");
             $stmt->bind_param("iisssii", $userID, $houseNum, $address1, $address2, $postCode, $homeAddressChecked, $deliveryAddressChecked);
             $stmt->execute();
-            echo('home and delivery address assigned');
+            echo json_encode(['Message' => 'ok', 'success' => true]);
 
         } elseif ($deliveryAddressChecked == false) {
             $deliveryAddressChecked = 0;
@@ -648,7 +658,7 @@ if ($_postData['action'] == 'NEW_USER') {
             $stmt = $conn->prepare("INSERT INTO address (userId, houseNum, firstLine, secondline, postcode, home, delivery ) VALUES(?,?,?,?,?,?,?)");
             $stmt->bind_param("iisssii", $userID, $DelhouseNum, $Deladdress1, $Deladdress2, $DelpostCode, $homeAddressChecked, $deliveryAddressChecked);
             $stmt->execute();
-            echo('home and delivery address different');
+            echo json_encode(['Message' => 'ok', 'success' => true]);
         }
 
     } catch (Exception $e) {

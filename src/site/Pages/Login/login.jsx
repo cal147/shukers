@@ -19,18 +19,23 @@ export default class login extends Component {
         }
     }
 
+    componentDidMount() {
+        this.setState({Loader: null});
+    }
+
+    componentWillMount() {
+        this.setState({Loader: <Dimmer active><Loader>Checking Login Details</Loader></Dimmer>});
+    }
+
     handleSubmit(e) {
         e.preventDefault();
         PublicUserAction.userLoginPublic(this.state.userName, this.state.password);
-        console.log(this.state.userName);
-        console.log(this.state.password);
-        this.setState({user: publicUserStore.getUser()});
+        publicUserStore.getUser();
+        this.setState({count: this.state.count + 1});
 
-        console.log('user logged in ' + this.state.user.isLoggedIn);
+        setTimeout(() => this.loggedInTrueFalse(), 500);
 
-        this.setState({Loader: <Dimmer active><Loader>Checking Login Details</Loader></Dimmer>});
-
-        setTimeout(() => this.loadingState(), 5000, setTimeout(() => this.loggedInTrueFalse(), 4500));
+        this.loggedInTrueFalse()
     };
 
     loadingState() {
@@ -39,8 +44,10 @@ export default class login extends Component {
 
     loggedInTrueFalse() {
         if (this.state.user.isLoggedIn === true) {
+            this.setState({count: 0});
             window.location.reload();
-        } else if (this.state.user.isLoggedIn === false) {
+
+        } else if (this.state.user.isLoggedIn === false && this.state.count === 2) {
             this.setState({
                 FormMessage: <Message error header="Login failed" content="Please check login details"/>
             });
@@ -53,10 +60,6 @@ export default class login extends Component {
 
     handelChangePWord(e) {
         this.setState({password: e.target.value})
-    }
-
-    componentWillMount() {
-
     }
 
     render() {
