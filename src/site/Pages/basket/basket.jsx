@@ -257,7 +257,6 @@ export default class basket extends Component {
                         <input type="hidden" name="upload" value="1" />
                         <input type="hidden" name="currency_code" value="GBP"/>
                         <input type="hidden" name="custom" value={this.state.salesID} />
-                        <input type="hidden" name="discount_amount" value={discount} />
 
                         {this.state.BasketData != null ? this.state.BasketData.map((item, i)=>
                             <p>
@@ -266,6 +265,8 @@ export default class basket extends Component {
                             </p>
                         ) :null}
 
+                        {/*TODO The discount has to be generated for each product*/}
+                        <input type="hidden" name="discount_amount" value={discount} />
                         <input type="hidden" name="notify_url" value="https://webserver.clps.uk/paypal/paypalVerify.php"/>
                         <input type="hidden" name="return" value="https://webserver.clps.uk/#/confirmation"/>
                         {/*Display the payment button.*/}
