@@ -218,19 +218,20 @@ export default class basket extends Component {
                         {/*Identify your business so that you can collect the payments.*/}
                         <input type="hidden" name="business" value="carlleatherbarrow82-facilitator@gmail.com"/>
                         {/*Specify a Buy Now button.*/}
-                        <input type="hidden" name="cmd" value="_xclick"/>
+                        <input type="hidden" name="cmd" value="_cart"/>
+                        <input type="hidden" name="upload" value="1" />
+                        <input type="hidden" name="currency_code" value="GBP"/>
+                        <input type="hidden" name="custom" value={this.state.salesID} />
 
-                        {/*Specify details about the item that buyers will purchase.*/}
 
                         {this.state.BasketData != null ? this.state.BasketData.map((item, i)=>
-                            <input key={i} type="hidden" name="item_name" value={item.name + " x " + item.qty + " £" + item.subPricenpm }/>
-                        ):null}
-
-                        <input type="hidden" name="custom" value={this.state.salesID} />
+                            <p>
+                                <input key={i} type="hidden" name={"item_name_" + (i+1)} value={item.name + " x " + item.qty}/>
+                                <input type="hidden" name={"amount_" + (i+1)} value={item.subPrice} />
+                            </p>
+                        ) :null}
+                        {/*TODO The discount has to be generated for each product*/}
                         <input type="hidden" name="discount_amount" value={discount} />
-                        <input type="hidden" name="amount" value={price}/>
-                        <input type="hidden" name="currency_code" value="GBP"/>
-
                         <input type="hidden" name="notify_url" value="https://webserver.clps.uk/paypal/paypalVerify.php"/>
                         <input type="hidden" name="return" value="https://webserver.clps.uk/#/confirmation"/>
                         {/*Display the payment button.*/}
@@ -250,27 +251,33 @@ export default class basket extends Component {
                     <form action="https://www.sandbox.paypal.com/cgi-bin/webscr" method="post" onSubmit={() => this.collectInStore()}>
 
                         {/*Identify your business so that you can collect the payments.*/}
-                        <input type="hidden" name="business" value="shukersbutchers@gmail.com"/>
+                        <input type="hidden" name="business" value="carlleatherbarrow82-facilitator@gmail.com"/>
                         {/*Specify a Buy Now button.*/}
-                        <input type="hidden" name="cmd" value="_xclick"/>
-
-                        {/*Specify details about the item that buyers will purchase.*/}
+                        <input type="hidden" name="cmd" value="_cart"/>
+                        <input type="hidden" name="upload" value="1" />
+                        <input type="hidden" name="currency_code" value="GBP"/>
+                        <input type="hidden" name="custom" value={this.state.salesID} />
+                        <input type="hidden" name="discount_amount" value={discount} />
 
                         {this.state.BasketData != null ? this.state.BasketData.map((item, i)=>
-                            <input key={i} type="hidden" name="item_name" value={item.name + " x " + item.qty + "  £" + item.subPrice }/>
+                            <p>
+                                <input key={i} type="hidden" name={"item_name_" + (i+1)} value={item.name + " x " + item.qty}/>
+                                <input type="hidden" name={"amount_" + (i+1)} value={item.subPrice} />
+                            </p>
                         ) :null}
 
-                        <input type="hidden" name="custom" value={this.state.salesID} />
-
-                        <input type="hidden" name="discount_amount" value={discount} />
-                        <input type="hidden" name="amount" value={price}/>
-                        <input type="hidden" name="currency_code" value="GBP"/>
                         <input type="hidden" name="notify_url" value="https://webserver.clps.uk/paypal/paypalVerify.php"/>
                         <input type="hidden" name="return" value="https://webserver.clps.uk/#/confirmation"/>
-
                         {/*Display the payment button.*/}
-                        <div>
-                            <Button negative name="submit">Pay now and collect in store tomorrow</Button>
+                        <div className="PayPal_Button">
+                            <input type="image" name="submit"
+                                   src="https://www.paypalobjects.com/webstatic/en_US/i/btn/png/btn_buynow_107x26.png"
+                                   alt="Buy Now"/>
+                            <input type="image" name="submit"
+                                   src="https://www.paypalobjects.com/webstatic/en_US/i/buttons/cc-badges-ppmcvdam.png"
+                                   alt="Credit Card Badges"/>
+                            <img alt="" border="0" width="1" height="1"
+                                 src="https://www.paypalobjects.com/en_GB/i/scr/pixel.gif"/>
                         </div>
 
                     </form>
