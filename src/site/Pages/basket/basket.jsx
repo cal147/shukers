@@ -109,7 +109,7 @@ export default class basket extends Component {
         }).catch((err) => {
             console.error(err);
         });
-        // TODO - currently showing sub price but if user puts product in again doesn't show in basket
+
 
 
     }
@@ -188,7 +188,6 @@ export default class basket extends Component {
                         <Table.Cell textAlign="center"><strong>£0.20</strong></Table.Cell>
                         <Table.Cell textAlign="center"> </Table.Cell>
                     </Table.Row>
-                    {/*TODO - sort this so that only values more than £10 show and are discounted from the price*/}
 
                      <Table.Row>
                         <Table.Cell colSpan={2}> </Table.Cell>
@@ -211,27 +210,21 @@ export default class basket extends Component {
                     </Table.Footer>
                 </Table>
 
-                {/*TODO - get payment complete and turn basket to paid in SQL - sort out return to website to send data to SQL*/}
+
                 {priceWithDiscount > 0 ? <div>
+                    {/*TODO Cheange paypal locations to match live server*/}
                     <form action="https://www.sandbox.paypal.com/cgi-bin/webscr" method="post">
 
-                        {/*Identify your business so that you can collect the payments.*/}
+                        {/*TODO Cheange paypal locations to match live server*/}
                         <input type="hidden" name="business" value="carlleatherbarrow82-facilitator@gmail.com"/>
                         {/*Specify a Buy Now button.*/}
                         <input type="hidden" name="cmd" value="_cart"/>
                         <input type="hidden" name="upload" value="1" />
                         <input type="hidden" name="currency_code" value="GBP"/>
                         <input type="hidden" name="custom" value={this.state.salesID} />
-
-
-                        {this.state.BasketData != null ? this.state.BasketData.map((item, i)=>
-                            <p>
-                                <input key={i} type="hidden" name={"item_name_" + (i+1)} value={item.name + " x " + item.qty}/>
-                                <input type="hidden" name={"amount_" + (i+1)} value={item.subPrice} />
-                            </p>
-                        ) :null}
-                        {/*TODO The discount has to be generated for each product*/}
+                        <input key={i} type="hidden" name="item_name" value="Quality Produce by Shukers Butchers"/>
                         <input type="hidden" name="discount_amount" value={discount} />
+                        {/*TODO Cheange paypal locations to match live server*/}
                         <input type="hidden" name="notify_url" value="https://webserver.clps.uk/paypal/paypalVerify.php"/>
                         <input type="hidden" name="return" value="https://webserver.clps.uk/#/confirmation"/>
                         {/*Display the payment button.*/}
@@ -247,26 +240,19 @@ export default class basket extends Component {
                         </div>
 
                     </form>
-
+                    {/*TODO Cheange paypal locations to match live server*/}
                     <form action="https://www.sandbox.paypal.com/cgi-bin/webscr" method="post" onSubmit={() => this.collectInStore()}>
 
-                        {/*Identify your business so that you can collect the payments.*/}
+                        {/*TODO Cheange paypal locations to match live server*/}
                         <input type="hidden" name="business" value="carlleatherbarrow82-facilitator@gmail.com"/>
                         {/*Specify a Buy Now button.*/}
                         <input type="hidden" name="cmd" value="_cart"/>
                         <input type="hidden" name="upload" value="1" />
                         <input type="hidden" name="currency_code" value="GBP"/>
                         <input type="hidden" name="custom" value={this.state.salesID} />
-
-                        {this.state.BasketData != null ? this.state.BasketData.map((item, i)=>
-                            <p>
-                                <input key={i} type="hidden" name={"item_name_" + (i+1)} value={item.name + " x " + item.qty}/>
-                                <input type="hidden" name={"amount_" + (i+1)} value={item.subPrice} />
-                            </p>
-                        ) :null}
-
-                        {/*TODO The discount has to be generated for each product*/}
+                        <input key={i} type="hidden" name="item_name" value="Quality Produce by Shukers Butchers"/>
                         <input type="hidden" name="discount_amount" value={discount} />
+                        {/*TODO Cheange paypal locations to match live server*/}
                         <input type="hidden" name="notify_url" value="https://webserver.clps.uk/paypal/paypalVerify.php"/>
                         <input type="hidden" name="return" value="https://webserver.clps.uk/#/confirmation"/>
                         {/*Display the payment button.*/}

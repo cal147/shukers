@@ -250,7 +250,7 @@ export default class AddCustomers extends Component{
                                 <Label basic pointing='right'>Login Name </Label>
                             </Grid.Column>
                             <Grid.Column width={8}>
-                                <Input fluid id="loginName" value={this.state.loginName} onChange={this.takeInput.bind(this)}/>
+                                <Input fluid id="loginName" value={this.state.loginName} maxlength="5" onChange={this.takeInput.bind(this)}/>
                             </Grid.Column>
                             <Grid.Column width={4}><span><h3 style={{color:this.state.userTakenColour}}> {this.state.userTaken} </h3></span></Grid.Column>
                         </Grid.Row>
