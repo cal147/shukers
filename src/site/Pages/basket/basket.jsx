@@ -222,7 +222,7 @@ export default class basket extends Component {
                         <input type="hidden" name="upload" value="1" />
                         <input type="hidden" name="currency_code" value="GBP"/>
                         <input type="hidden" name="custom" value={this.state.salesID} />
-                        <input key={i} type="hidden" name="item_name" value="Quality Produce by Shukers Butchers"/>
+                        <input type="hidden" name="item_name" value="Quality Produce by Shukers Butchers"/>
                         <input type="hidden" name="discount_amount" value={discount} />
                         {/*TODO Cheange paypal locations to match live server*/}
                         <input type="hidden" name="notify_url" value="https://webserver.clps.uk/paypal/paypalVerify.php"/>
@@ -250,7 +250,7 @@ export default class basket extends Component {
                         <input type="hidden" name="upload" value="1" />
                         <input type="hidden" name="currency_code" value="GBP"/>
                         <input type="hidden" name="custom" value={this.state.salesID} />
-                        <input key={i} type="hidden" name="item_name" value="Quality Produce by Shukers Butchers"/>
+                        <input type="hidden" name="item_name" value="Quality Produce by Shukers Butchers"/>
                         <input type="hidden" name="discount_amount" value={discount} />
                         {/*TODO Cheange paypal locations to match live server*/}
                         <input type="hidden" name="notify_url" value="https://webserver.clps.uk/paypal/paypalVerify.php"/>

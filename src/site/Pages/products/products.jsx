@@ -113,7 +113,7 @@ export default class product extends Component {
                 {this.state.Productsdata != null ? this.state.Productsdata.map((product, i) =>
                     <Grid key={i} className="prodGrid" divided>
                         <div className="prodDiv"><Grid.Row stretched
-                                                           as="h3">{product.name + ' - ' + product.units}</Grid.Row>
+                                                           as="h3">{product.name}</Grid.Row>
                             <br/>
 
                             {/*Modal shows the product page as pop up*/}
@@ -161,14 +161,14 @@ export default class product extends Component {
                                     {addedToBasket}
                                 </Modal.Actions>
                             </Modal>
-                            <br/><h4>Price: £{product.price}</h4><br/></div>
+                            <br/><h4>Price: £{product.price +"-"+ product.units}</h4><br/></div>
                     </Grid>) : null}
             </Grid>
         } else {
             loggedIn = <Grid columns={3} textAlign="center" className="prodOverGrid">
                 {this.state.Productsdata != null ? this.state.Productsdata.map((product, i) =>
                     <Grid key={i} className="prodGrid" divided>
-                        <div className="prodDiv"><Grid.Row stretched as="h3">{product.name + ' - ' + product.units}
+                        <div className="prodDiv"><Grid.Row stretched as="h3">{product.name}
                         </Grid.Row>
                             <br/>
                             {/*Modal shows the product page as pop up*/}
@@ -199,7 +199,7 @@ export default class product extends Component {
                                     <h3>Please sign in to order this product</h3>
                                 </Modal.Actions>
                             </Modal>
-                            <br/><h4>Price: £{product.price}</h4><br/></div>
+                            <br/><h4>Price: £{product.price+"-"+product.units}</h4><br/></div>
                     </Grid>) : null}
             </Grid>
         }
