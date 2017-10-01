@@ -218,12 +218,14 @@ export default class basket extends Component {
                         {/*TODO Cheange paypal locations to match live server*/}
                         <input type="hidden" name="business" value="carlleatherbarrow82-facilitator@gmail.com"/>
                         {/*Specify a Buy Now button.*/}
-                        <input type="hidden" name="cmd" value="_cart"/>
-                        <input type="hidden" name="upload" value="1" />
+                        <input type="hidden" name="cmd" value="_xclick"/>
                         <input type="hidden" name="currency_code" value="GBP"/>
                         <input type="hidden" name="custom" value={this.state.salesID} />
                         <input type="hidden" name="item_name" value="Quality Produce by Shukers Butchers"/>
+
                         <input type="hidden" name="discount_amount" value={discount} />
+                        <input type="hidden" name="amount" value={price} />
+
                         {/*TODO Cheange paypal locations to match live server*/}
                         <input type="hidden" name="notify_url" value="https://webserver.clps.uk/paypal/paypalVerify.php"/>
                         <input type="hidden" name="return" value="https://webserver.clps.uk/#/confirmation"/>
@@ -246,12 +248,14 @@ export default class basket extends Component {
                         {/*TODO Cheange paypal locations to match live server*/}
                         <input type="hidden" name="business" value="carlleatherbarrow82-facilitator@gmail.com"/>
                         {/*Specify a Buy Now button.*/}
-                        <input type="hidden" name="cmd" value="_cart"/>
-                        <input type="hidden" name="upload" value="1" />
+                        <input type="hidden" name="cmd" value="_xclick"/>
                         <input type="hidden" name="currency_code" value="GBP"/>
                         <input type="hidden" name="custom" value={this.state.salesID} />
                         <input type="hidden" name="item_name" value="Quality Produce by Shukers Butchers"/>
+
                         <input type="hidden" name="discount_amount" value={discount} />
+                        <input type="hidden" name="amount" value={price} />
+
                         {/*TODO Cheange paypal locations to match live server*/}
                         <input type="hidden" name="notify_url" value="https://webserver.clps.uk/paypal/paypalVerify.php"/>
                         <input type="hidden" name="return" value="https://webserver.clps.uk/#/confirmation"/>
