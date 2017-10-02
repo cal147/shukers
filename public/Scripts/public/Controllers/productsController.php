@@ -715,14 +715,12 @@ if ($_postData['action'] == 'CHECK_DELIVERYADDRESS') {
         $cleanUserID = strip_tags($cUserID);
 
         try {
-            $stmt = $conn->prepare("SELECT houseNum, firstLine, secondLine, postcode FROM address WHERE userId = ? AND delivery = 0 AND home = 1;");
+            $stmt = $conn->prepare("SELECT houseNum, firstLine, secondLine, postcode FROM address WHERE userId = ? AND delivery = 1 AND home = 0;");
             $stmt->bind_param("i", $cleanUserID);
             $stmt->execute();
 
             $result = $stmt->get_result();
             $row = $result->fetch_assoc();
-            $rowcount = (int)$row['houseNum'];
-            if ($rowcount === 1) {
                 array_push($delAddress, [
                     'delAddress' => true,
                     'houseNum' => $row['houseNum'],
@@ -731,8 +729,9 @@ if ($_postData['action'] == 'CHECK_DELIVERYADDRESS') {
                     'postCode' => $row['postcode']
                 ]);
 
+
                 echo json_encode($delAddress);
-            } else return null;
+
 
         } catch (Exception $e) {
             return null;
@@ -751,10 +750,6 @@ if ($_postData['action'] == 'UPDATE_ADDRESS') {
     $address1 = $conn->real_escape_string(strip_tags(trim($_postData['address1'])));
     $address2 = $conn->real_escape_string(strip_tags(trim($_postData['address2'])));
     $postCode = $conn->real_escape_string(strip_tags(trim($_postData['postCode'])));
-    $DelhouseNum = $conn->real_escape_string(strip_tags(trim($_postData['DelhouseNum'])));
-    $Deladdress1 = $conn->real_escape_string(strip_tags(trim($_postData['Deladdress1'])));
-    $Deladdress2 = $conn->real_escape_string(strip_tags(trim($_postData['Deladdress2'])));
-    $DelpostCode = $conn->real_escape_string(strip_tags(trim($_postData['DelpostCode'])));
     $deliveryAddressChecked = $conn->real_escape_string(strip_tags(trim($_postData['deliveryAddressChecked'])));
 
     try {
@@ -771,7 +766,11 @@ if ($_postData['action'] == 'UPDATE_ADDRESS') {
             $stmt->execute();
             echo json_encode(['Message' => 'Address Updated', 'success' => true]);
 
-        } elseif ($deliveryAddressChecked == false) {
+        } else {
+            $DelhouseNum = $conn->real_escape_string(strip_tags(trim($_postData['DelhouseNum'])));
+            $Deladdress1 = $conn->real_escape_string(strip_tags(trim($_postData['Deladdress1'])));
+            $Deladdress2 = $conn->real_escape_string(strip_tags(trim($_postData['Deladdress2'])));
+            $DelpostCode = $conn->real_escape_string(strip_tags(trim($_postData['DelpostCode'])));
             $deliveryAddressChecked = 0;
             $homeAddressChecked = 1;
 

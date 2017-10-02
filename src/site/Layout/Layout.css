@@ -162,6 +162,10 @@
     margin: 0 20vw;
 }
 
+.signUpCheckbox {
+    font-size: large;
+}
+
 .collectButton {
     color: black !important;
 }

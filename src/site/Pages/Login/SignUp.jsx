@@ -1,6 +1,6 @@
 import React, {Component} from "react";
 import {Button, Checkbox, Dimmer, Form, Loader, Message, Segment} from 'semantic-ui-react';
-import {Link} from "react-router-dom";
+import {Link, Redirect} from "react-router-dom";
 import {serverScriptsPublic} from "../../../shared/urls";
 
 export default class SignUp extends Component {
@@ -62,7 +62,7 @@ export default class SignUp extends Component {
                 })
             }
         } else {
-            this.setState({Loader: <Dimmer active><Loader>Checking Login Details</Loader></Dimmer>});
+            this.setState({Loader: <Dimmer active><Loader>Checking Sign Up Details</Loader></Dimmer>});
             this.setState({message: null});
 
             fetch(serverScriptsPublic + "Controllers/productsController.php", {
@@ -96,6 +96,9 @@ export default class SignUp extends Component {
                             go to the login page to purchase our products</Message>
                     });
                 }
+                this.setState({
+                    redirect: <Redirect to={"/login"}/>
+                })
             }).catch((err) => {
                 console.error(err);
             });
@@ -269,11 +272,9 @@ export default class SignUp extends Component {
                         </Form.Group>
                         <Form.Group>
                             {/*TODO - make checkbox a requirement*/}
-                            <Form.Field required>
-                                <Checkbox defaultChecked={false}
-                                          label="We are only able to deliver in the local region of the shop. Covering Liverpool, St. Helens and Warrington*"
-                                          required/>
-                            </Form.Field>
+                            <Checkbox defaultChecked={false} className="signUpCheckbox"
+                                      label="I understand that Shukers Butchers can only deliver in the local region of the shop. Covering Liverpool, St. Helens and Warrington. If you purchase our products from out of the delivering area YOU WILL NEED TO COLLECT!"
+                            />
                         </Form.Group>
                         {deliveryAddress}
                         {this.state.message}
@@ -281,6 +282,7 @@ export default class SignUp extends Component {
                     </Form>
                 </Segment>
                 <Button as={Link} to="/login" negative>Already have an account login here</Button>
+                {this.state.redirect}
             </div>
         )
     }
