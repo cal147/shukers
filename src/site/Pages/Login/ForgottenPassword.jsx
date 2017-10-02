@@ -39,10 +39,6 @@ export default class login extends Component {
             console.error(err);
         });
 
-        setTimeout(() => this.loadingState(), 3000);
-        setTimeout(() => console.log(this.state.usernameExist), 3000);
-
-
     };
 
     handlePasswordChange(e) {
@@ -69,10 +65,6 @@ export default class login extends Component {
 
     };
 
-    loadingState() {
-        this.setState({Loader: null})
-    }
-
     handelChangeUName(e) {
         this.setState({userName: e.target.value})
     }
@@ -83,10 +75,6 @@ export default class login extends Component {
 
     handelChangeCPWord(e) {
         this.setState({confirmPassword: e.target.value})
-    }
-
-    componentWillMount() {
-
     }
 
     render() {
