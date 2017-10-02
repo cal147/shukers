@@ -1,9 +1,4 @@
 
-/*
-    this css file is included in index.jsx file so all child components of this file will have access to it.
- */
-
-
 .pagePosition{
     padding-top: 80px;
     margin-left: 250px;
@@ -12,9 +7,7 @@
 
 .menu-spacing{
     margin: 30px 0px;
-
 }
-
 .add_items_positioning{
     margin-left: 25px;
     margin-right: 25px;
@@ -42,7 +35,6 @@
     -o-transition: all 0.5s;
     transition: all 0.5s;
 }
-
 
 .dropPreview{
     width:100%;

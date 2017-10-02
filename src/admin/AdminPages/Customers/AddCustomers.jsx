@@ -66,7 +66,6 @@ export default class AddCustomers extends Component{
        this.state.userTakenColour != "green"?this.setState({errorState: true, errorMessage:"Check all field are Correct"}):this.setState({errorState: false, errorMessage:""});
 
         if(!this.state.errorState){
-            console.log(this.state);
             if(this.state.showDelivery){
                 this.setState({loading:true});
                 fetch(serverScripts + "admin/Controllers/customersController.php", {
@@ -127,7 +126,7 @@ export default class AddCustomers extends Component{
                     }
 
                 }).catch((err) => {
-                    console.error(err);
+
                 });
             }else{
                 this.setState({loading:true});
@@ -184,7 +183,7 @@ export default class AddCustomers extends Component{
 
 
                 }).catch((err) => {
-                    console.error(err);
+
                 });
             }
 
@@ -225,7 +224,7 @@ export default class AddCustomers extends Component{
                 }
                 this.setState({loading:false});
             }).catch((err) => {
-                console.error(err);
+
             });
         }
 

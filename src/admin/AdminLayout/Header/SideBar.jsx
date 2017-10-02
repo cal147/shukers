@@ -5,7 +5,6 @@ import salesStore from '../../AdminStores/SalesStore'
 
 export default class SideBar extends Component{
 
-
     constructor(){
         super();
         this.state = {

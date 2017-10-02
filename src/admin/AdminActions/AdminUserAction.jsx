@@ -1,5 +1,3 @@
-//Classes can call these methods and a event will be dispatched. its down to the
-// data store to listen and handle the dispatch type.
 
 import Dispatcher from '../../dispatcher';
 

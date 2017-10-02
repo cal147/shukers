@@ -6,9 +6,6 @@ $_postData = json_decode(file_get_contents("php://input"), true);
 if(isset($_postData['sessionId'])) session_id($_postData['sessionId']);
 session_start();
 
-//echo password_hash('Pa$$w0rd', PASSWORD_DEFAULT)."\n";
-
-
 include '../../Shared/dataBaseConn.php';
 $db = new Database();
 $conn = $db->getConn();

@@ -45,7 +45,7 @@ export default class ProdEdit extends Component {
             this.setState({products: data, productsFilter: data, loading:false});
 
         }).catch((err) => {
-            console.error(err);
+
         });
     }
 
@@ -71,7 +71,7 @@ export default class ProdEdit extends Component {
                 this.getProductList();
             }
         }).catch((err) => {
-            console.error(err);
+
         });
 
     }
@@ -100,7 +100,7 @@ export default class ProdEdit extends Component {
                 this.getProductList();
             }
         }).catch((err) => {
-            console.error(err);
+
         });
 
     }
@@ -131,7 +131,6 @@ export default class ProdEdit extends Component {
             if(this.state.showOffersOnly){
                 this.setState({productsFilter: null}, ()=>{
                     this.state.products.map((item, i)=>{
-                            console.log(item.onOffer)
                             if(item.onOffer){
                                 tempArr.push(item);
                             }

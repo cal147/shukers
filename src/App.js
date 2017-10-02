@@ -14,12 +14,7 @@ import SiteLayout from './site/Layout/layout'
 import MainPage from './admin/index';
 import "./site/Layout/Layout.css"
 
-
-//This component will do the routing for the public side of the app.
 const Site = () => {
-    //******************************************************
-    //          Chris put your routes in here              *
-    //******************************************************
 
     return (
         <HashRouter>
@@ -67,5 +62,3 @@ export default class App extends Component {
     }
 
 }
-
-

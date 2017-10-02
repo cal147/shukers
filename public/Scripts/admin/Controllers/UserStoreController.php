@@ -1,17 +1,11 @@
 <?php
 
-
 $_postData = json_decode(file_get_contents("php://input"), true);
 
 if(isset($_postData['sessionId'])) session_id($_postData['sessionId']);
 session_start();
 
- //echo password_hash('Pa$$w0rd', PASSWORD_DEFAULT)."\n";
-
-
 include '../../Shared/loginControl.php';
-
-
 
 //Checks that the user has entered correct user name and password
 if($_postData['action'] == 'LOGIN_USER'){

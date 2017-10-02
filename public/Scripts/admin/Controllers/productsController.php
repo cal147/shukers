@@ -1,16 +1,10 @@
 <?php
 
-/**
- * This class controls the the product data between the database and the view.
- */
 
 $_postData = json_decode(file_get_contents("php://input"), true);
 
 if(isset($_postData['sessionId'])) session_id($_postData['sessionId']);
 session_start();
-
-//echo password_hash('Pa$$w0rd', PASSWORD_DEFAULT)."\n";
-
 
 include '../../Shared/dataBaseConn.php';
 $db = new Database();
@@ -229,9 +223,6 @@ if(session_status() === PHP_SESSION_ACTIVE) {
             }catch (Exception $e){
                 echo json_encode(['Message' => 'Something went wrong!', 'success' => false]);
             }
-
         }
-
-
     }
 }

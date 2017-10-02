@@ -7,7 +7,6 @@ import '../../AdminMaster.css';
 
 export default class Products extends Component {
 
-
     constructor() {
         super();
         //Add more panes in the pane array.
@@ -18,8 +17,6 @@ export default class Products extends Component {
 
 
     }
-
-
 
     render(){
 

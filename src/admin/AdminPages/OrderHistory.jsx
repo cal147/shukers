@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import '../AdminMaster.css';
 import * as AdminUserAction from '../AdminActions/AdminUserAction';
-import salesStore from '../AdminStores/SalesStore'
+import salesStore from '../AdminStores/SalesStore';
 import adminUserStore from '../AdminStores/AdminUserStore';
 import {serverScripts} from '../../shared/urls';
 
@@ -44,7 +44,7 @@ export default class OrderHistory extends Component{
             }
             this.setState({loading:false});
         }).catch((err)=>{
-            console.error(err);
+
         });
     }
 
@@ -67,7 +67,7 @@ export default class OrderHistory extends Component{
             }
             this.setState({loading:false});
         }).catch((err)=>{
-            console.error(err);
+
         });
 
 

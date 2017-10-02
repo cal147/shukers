@@ -164,7 +164,4 @@ class AdminUserStore extends EventEmitter{
 
 const adminUserStore = new AdminUserStore();
 Dispatcher.register(adminUserStore.handleActions.bind(adminUserStore));
-
-window.adminUserStore = adminUserStore; //Temp can access the user store from the console.
-
 export default adminUserStore;

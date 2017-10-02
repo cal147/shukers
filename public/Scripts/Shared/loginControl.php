@@ -1,14 +1,11 @@
 <?php
 
-
 include 'dataBaseConn.php';
-
 
 class loginControl{
 
     private $conn = null;
     private $loginId = null;
-
 
     public function __construct(){
         $db = new Database();
@@ -91,5 +88,4 @@ class loginControl{
         return $userArray;
 
     }//EOF
-
 }

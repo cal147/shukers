@@ -68,7 +68,7 @@ export default class Orders extends Component{
             }
             this.setState({loading:false});
         }).catch((err)=>{
-            console.error(err);
+
         });
 
 
