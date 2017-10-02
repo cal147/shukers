@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import {Button, Table} from "semantic-ui-react";
+import {Button, Popup, Table} from "semantic-ui-react";
 import {serverScriptsPublic} from "../../../shared/urls";
 import publicUserStore from '../UserStore/PublicUserStore';
 import {Money} from "react-format";
@@ -111,7 +111,6 @@ export default class basket extends Component {
         });
 
 
-
     }
 
     removeProduct(sdId) {
@@ -133,7 +132,7 @@ export default class basket extends Component {
         window.location.reload()
     }
 
-    collectInStore() {
+    collectInStore(price) {
         let fulldate = new Date(new Date().getTime() + 24 * 60 * 60 * 1000);
         let tomorrowDate = fulldate.toDateString();
 
@@ -142,7 +141,8 @@ export default class basket extends Component {
             headers: {"Content-type": "application/x-www-form-urlencoded; charset=UTF-8"},
             body: JSON.stringify({
                 action: "PAY_INSTORE",
-                saleID: this.state.salesID
+                saleID: this.state.salesID,
+                price: price
             }),
             mode: 'cors'
         }).then(response => response.json()).then(data => {
@@ -156,11 +156,35 @@ export default class basket extends Component {
         });
     }
 
+    sendDiscountPrice(price) {
+        fetch(serverScriptsPublic + "Controllers/productsController.php", {
+            method: 'POST',
+            headers: {"Content-type": "application/x-www-form-urlencoded; charset=UTF-8"},
+            body: JSON.stringify({
+                action: "DISCOUNT_PRICE",
+                saleID: this.state.salesID,
+                price: price
+            }),
+            mode: 'cors'
+        }).then(response => response.json()).then(data => {
+            if (data.Message === "price updated") {
+                console.log(data)
+            } else {
+                alert('something went wrong!')
+            }
+        }).catch((err) => {
+            console.error(err);
+        });
+
+    }
+
     render() {
 
         let priceWithDiscount = this.calculatePrice(this.state.BasketData);
         let discount = this.state.BasketTotalPrice - priceWithDiscount;
         let price = this.state.BasketTotalPrice;
+
+        console.log(this.state.priceWithDiscount);
 
         return (
             <div>
@@ -183,25 +207,26 @@ export default class basket extends Component {
                                                                    onClick={() => this.removeProduct(basket.sdId)}/></Table.Cell>
                         </Table.Row>
                     ) : null}
-                    <Table.Row>
-                        <Table.Cell colSpan={3}><strong>Online Payment Fee</strong></Table.Cell>
-                        <Table.Cell textAlign="center"><strong>£0.20</strong></Table.Cell>
-                        <Table.Cell textAlign="center"> </Table.Cell>
-                    </Table.Row>
+                    {discount > 0 ? <Table.Row>
+                        <Table.Cell colSpan={2}> </Table.Cell>
+                        <Table.Cell textAlign="center"><strong>Sub-Total</strong></Table.Cell>
+                        <Table.Cell textAlign="center"><strong><Money locale="en-UK"
+                                                                      currency="GBP">{price}</Money></strong></Table.Cell>
+                        <Table.Cell></Table.Cell>
+                    </Table.Row> : null }
 
-                     <Table.Row>
+                    {discount > 0 ? <Table.Row>
                         <Table.Cell colSpan={2}> </Table.Cell>
                         <Table.Cell textAlign="center" positive><strong>3 for £10 Discount</strong></Table.Cell>
                         <Table.Cell textAlign="center" positive><strong><Money locale="en-UK"
                                                                                currency="GBP">{discount}</Money></strong></Table.Cell>
                         <Table.Cell/>
-                    </Table.Row>
+                    </Table.Row> : null}
                     <Table.Footer>
                         <Table.HeaderCell colSpan="2"> </Table.HeaderCell>
-                        <Table.HeaderCell textAlign="center"><strong>Total Price</strong></Table.HeaderCell>
+                        <Table.HeaderCell textAlign="center"><strong>Total</strong></Table.HeaderCell>
                         <Table.HeaderCell textAlign="center">
                             <strong>
-                                <Money locale="en-UK" currency="GBP">{price}</Money><br/>
                                 <Money locale="en-UK" currency="GBP">{priceWithDiscount}</Money>
                             </strong>
                         </Table.HeaderCell>
@@ -213,21 +238,23 @@ export default class basket extends Component {
 
                 {priceWithDiscount > 0 ? <div>
                     {/*TODO Cheange paypal locations to match live server*/}
-                    <form action="https://www.sandbox.paypal.com/cgi-bin/webscr" method="post">
+                    <form action="https://www.sandbox.paypal.com/cgi-bin/webscr" method="post"
+                          onSubmit={() => this.sendDiscountPrice(priceWithDiscount)}>
 
                         {/*TODO Cheange paypal locations to match live server*/}
                         <input type="hidden" name="business" value="carlleatherbarrow82-facilitator@gmail.com"/>
                         {/*Specify a Buy Now button.*/}
                         <input type="hidden" name="cmd" value="_xclick"/>
                         <input type="hidden" name="currency_code" value="GBP"/>
-                        <input type="hidden" name="custom" value={this.state.salesID} />
+                        <input type="hidden" name="custom" value={this.state.salesID}/>
                         <input type="hidden" name="item_name" value="Quality Produce by Shukers Butchers"/>
 
-                        <input type="hidden" name="discount_amount" value={discount} />
-                        <input type="hidden" name="amount" value={price} />
+                        <input type="hidden" name="discount_amount" value={discount}/>
+                        <input type="hidden" name="amount" value={price}/>
 
                         {/*TODO Cheange paypal locations to match live server*/}
-                        <input type="hidden" name="notify_url" value="https://webserver.clps.uk/paypal/paypalVerify.php"/>
+                        <input type="hidden" name="notify_url"
+                               value="https://webserver.clps.uk/paypal/paypalVerify.php"/>
                         <input type="hidden" name="return" value="https://webserver.clps.uk/#/confirmation"/>
                         {/*Display the payment button.*/}
                         <div className="PayPal_Button">
@@ -243,27 +270,31 @@ export default class basket extends Component {
 
                     </form>
                     {/*TODO Cheange paypal locations to match live server*/}
-                    <form action="https://www.sandbox.paypal.com/cgi-bin/webscr" method="post" onSubmit={() => this.collectInStore()}>
+                    <form action="https://www.sandbox.paypal.com/cgi-bin/webscr" method="post"
+                          onSubmit={() => this.collectInStore(priceWithDiscount)}>
 
                         {/*TODO Cheange paypal locations to match live server*/}
                         <input type="hidden" name="business" value="carlleatherbarrow82-facilitator@gmail.com"/>
                         {/*Specify a Buy Now button.*/}
                         <input type="hidden" name="cmd" value="_xclick"/>
                         <input type="hidden" name="currency_code" value="GBP"/>
-                        <input type="hidden" name="custom" value={this.state.salesID} />
+                        <input type="hidden" name="custom" value={this.state.salesID}/>
                         <input type="hidden" name="item_name" value="Quality Produce by Shukers Butchers"/>
 
-                        <input type="hidden" name="discount_amount" value={discount} />
-                        <input type="hidden" name="amount" value={price} />
+                        <input type="hidden" name="discount_amount" value={discount}/>
+                        <input type="hidden" name="amount" value={price}/>
 
                         {/*TODO Cheange paypal locations to match live server*/}
-                        <input type="hidden" name="notify_url" value="https://webserver.clps.uk/paypal/paypalVerify.php"/>
+                        <input type="hidden" name="notify_url"
+                               value="https://webserver.clps.uk/paypal/paypalVerify.php"/>
                         <input type="hidden" name="return" value="https://webserver.clps.uk/#/confirmation"/>
                         {/*Display the payment button.*/}
                         <div className="PayPal_Button">
-                            <input type="image" name="submit"
-                                   src="https://www.paypalobjects.com/webstatic/en_US/i/btn/png/btn_buynow_107x26.png"
-                                   alt="Buy Now"/>
+                            <Popup
+                                trigger={<Button color='yellow' className='collectButton' name="submit">Pay And Collect</Button>}
+                                content='Pay now and collect in store tomorrow'
+                            />
+
                             <input type="image" name="submit"
                                    src="https://www.paypalobjects.com/webstatic/en_US/i/buttons/cc-badges-ppmcvdam.png"
                                    alt="Credit Card Badges"/>

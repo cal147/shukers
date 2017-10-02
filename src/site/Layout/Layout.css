@@ -161,3 +161,7 @@
     text-align: center;
     margin: 0 20vw;
 }
+
+.collectButton {
+    color: black !important;
+}
