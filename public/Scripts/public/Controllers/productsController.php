@@ -16,7 +16,7 @@ if ($_postData['action'] == 'GET_HOMEPRODUCTS') {
 
     $prodArray = [];
     try {
-        $stmt = $conn->prepare("SELECT p.id, p.name, p.description, p.price, p.onOffer, p.imgPath, c.cat FROM products AS p JOIN category AS c ON p.catId = c.id ORDER BY rand() LIMIT 3");
+        $stmt = $conn->prepare("SELECT p.id, p.name, p.description, p.price, p.onOffer, p.imgPath, c.cat FROM products AS p JOIN category AS c ON p.catId = c.id WHERE p.forSale = 1 ORDER BY rand() LIMIT 3");
         $stmt->execute();
 
         if ($result = $stmt->get_result()) {
@@ -104,7 +104,7 @@ if ($_postData['action'] == 'SELECT_SPECIFICCATEGORY') {
         $cleanProd = strip_tags($cProd);
         $productArray = [];
         try {
-            $stmt = $conn->prepare("SELECT p.id, p.name, p.description, p.price, p.onOffer, p.3for10, p.imgPath, c.cat, p.units FROM products AS p JOIN category AS c ON p.catId = c.id WHERE c.cat=?");
+            $stmt = $conn->prepare("SELECT p.id, p.name, p.description, p.price, p.onOffer, p.3for10, p.imgPath, c.cat, p.units FROM products AS p JOIN category AS c ON p.catId = c.id WHERE c.cat=? AND p.forSale = 1");
             $stmt->bind_param("s", $cleanProd);
             $stmt->execute();
 
@@ -134,7 +134,7 @@ if ($_postData['action'] == 'SELECT_SPECIFICCATEGORY') {
 if ($_postData['action'] == 'GET_PRODUCTS') {
     $prodArray = [];
     try {
-        $stmt = $conn->prepare("SELECT p.id, p.name, p.description, p.price, p.onOffer, p.imgPath, c.cat FROM products AS p JOIN category AS c ON p.catId = c.id");
+        $stmt = $conn->prepare("SELECT p.id, p.name, p.description, p.price, p.onOffer, p.imgPath, c.cat FROM products AS p JOIN category AS c ON p.catId = c.id WHERE p.forSale = 1");
         $stmt->execute();
         if ($result = $stmt->get_result()) {
             while ($row = $result->fetch_assoc()) {
@@ -166,7 +166,7 @@ if ($_postData['action'] == 'SEARCH_PRODUCTS') {
         $ProdName = '%' . $cleanProdName . '%';
 
         try {
-            $stmt = $conn->prepare("SELECT name, price, imgPath FROM products WHERE name LIKE ?");
+            $stmt = $conn->prepare("SELECT name, price, imgPath FROM products WHERE name LIKE ? AND p.forSale = 1");
             $stmt->bind_param('s', $ProdName);
             $stmt->execute();
             if ($result = $stmt->get_result()) {
