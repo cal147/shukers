@@ -125,7 +125,7 @@ if ($_postData['action'] == 'SELECT_SPECIFICCATEGORY') {
             }
             echo json_encode($productArray);
         } catch (Exception $e) {
-            echo ('fail');
+            echo('fail');
             return false;
         }
     }
@@ -331,7 +331,7 @@ if ($_postData['action'] == 'GET_USERBASKETTOTALPRICE') {
         $cleanUserID = strip_tags($cUserID);
 
         try {
-            $stmt = $conn->prepare("SELECT sum(sd.qty * p.price) as totalPrice from salesdetails as sd join products as p ON sd.productId = p.id join sales as s on sd.saleId = s.id where s.id = ? AND s.paid = 0");
+            $stmt = $conn->prepare("SELECT sum(sd.qty * p.price) AS totalPrice FROM salesdetails AS sd JOIN products AS p ON sd.productId = p.id JOIN sales AS s ON sd.saleId = s.id WHERE s.id = ? AND s.paid = 0");
             $stmt->bind_param("i", $cleanUserID);
             $stmt->execute();
             $result = $stmt->get_result();
@@ -391,9 +391,13 @@ if ($_postData['action'] == 'REMOVEPRODUCTFROMBASKET') {
 
             if ($stmt->execute()) {
                 echo json_encode(['Message' => 'product deleted', 'success' => true]);
-                $stmt = $conn->prepare("UPDATE sales SET totalPrice = (SELECT sum(sd.qty * p.price) from salesdetails as sd join products as p ON sd.productId = p.id WHERE saleId = ?) WHERE `id` = ?;");
+                $stmt = $conn->prepare("UPDATE sales SET totalPrice = (SELECT sum(sd.qty * p.price) FROM salesdetails AS sd JOIN products AS p ON sd.productId = p.id WHERE saleId = ?) WHERE `id` = ?;");
                 $stmt->bind_param("ii", $SalesID, $SalesID);
                 if ($stmt->execute()) {
+                    $stmt = $conn->prepare("DELETE FROM sales WHERE totalPrice IS NULL;");
+                    if($stmt->execute()){
+                        echo json_encode(['Message' => 'sale removed due to having not products in sale', 'success' => true]);
+                    } else { echo json_encode(['Message' => 'sale unable to be removed', 'success' => false]);}
                     echo json_encode(['Message' => 'Price Updated', 'success' => true]);
                 } else {
                     echo json_encode(['Message' => 'Sales table unable to update', 'success' => false]);
@@ -496,7 +500,7 @@ if ($_postData['action'] == 'ADD_PRODUCTTOBASKET') {
 
                 if ($stmt->execute()) {
                     echo json_encode(['Message' => 'Product Added to Basket', 'success' => true]);
-                    $stmt = $conn->prepare("UPDATE sales SET totalPrice = (SELECT sum(sd.qty * p.price) from salesdetails as sd join products as p ON sd.productId = p.id WHERE saleId = ?) WHERE `id` = ?");
+                    $stmt = $conn->prepare("UPDATE sales SET totalPrice = (SELECT sum(sd.qty * p.price) FROM salesdetails AS sd JOIN products AS p ON sd.productId = p.id WHERE saleId = ?) WHERE `id` = ?");
                     $stmt->bind_param("ii", $SalesID, $SalesID);
 
                     if ($stmt->execute()) {
@@ -685,10 +689,11 @@ if ($_postData['action'] == 'CHECK_USER_NAME') {
 if ($_postData['action'] == 'PAY_INSTORE') {
 
     $SaleID = $conn->real_escape_string(strip_tags(trim($_postData['saleID'])));
+    $price = $conn->real_escape_string(strip_tags(trim($_postData['price'])));
 
     try {
-        $stmt = $conn->prepare("UPDATE sales SET collection = 1 WHERE id = ?");
-        $stmt->bind_param("s", $SaleID);
+        $stmt = $conn->prepare("UPDATE sales SET collection = 1, totalPrice = ? WHERE id = ?");
+        $stmt->bind_param("ds", $price, $SaleID);
         if ($stmt->execute()) {
             echo json_encode(['Message' => 'Order being processed for collection', 'success' => true]);
         } else {
@@ -801,7 +806,7 @@ if ($_postData['action'] == 'PAYMENT_COMPLETE') {
         $cleanUserID = strip_tags($cUserID);
 
         try {
-            $stmt = $conn->prepare("UPDATE sales set paid = 1 WHERE userId = ?");
+            $stmt = $conn->prepare("UPDATE sales SET paid = 1 WHERE userId = ?");
             $stmt->bind_param("i", $cleanUserID);
             if ($stmt->execute()) {
                 echo json_encode(['Message' => 'Order Paid', 'success' => true]);
@@ -813,4 +818,26 @@ if ($_postData['action'] == 'PAYMENT_COMPLETE') {
             return false;
         }
     }
+}
+
+if ($_postData['action'] == 'DISCOUNT_PRICE') {
+
+    $price = $conn->real_escape_string(strip_tags(trim($_postData['price'])));
+    $saleID = $conn->real_escape_string(strip_tags(trim($_postData['saleID'])));
+
+    echo $price;
+
+    try {
+        $stmt = $conn->prepare("update sales SET totalPrice = ? WHERE id = ?");
+        $stmt->bind_param("di", $price, $saleID);
+        if ($stmt->execute()) {
+            echo json_encode(['Message' => 'price updated', 'success' => true]);
+        } else {
+            echo json_encode(['Message' => 'price Not updated Paid', 'success' => false]);
+        }
+
+    } catch (Exception $e) {
+        return false;
+    }
+
 }
