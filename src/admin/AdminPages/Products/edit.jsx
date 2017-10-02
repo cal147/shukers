@@ -76,7 +76,7 @@ export default class ProdEdit extends Component {
 
     }
 
-    updateProduct(id, name, desc, price, onOffer, threeForTen, units){
+    updateProduct(id, name, desc, price, onOffer, threeForTen, units, forSale){
         this.setState({loading:true});
         fetch(serverScripts + "admin/Controllers/productsController.php", {
             method: 'POST',
@@ -91,6 +91,7 @@ export default class ProdEdit extends Component {
                 onOffer:onOffer,
                 threeForTen : threeForTen,
                 units: units,
+                sale: forSale,
             }),
             mode: 'cors'
         }).then((response) => response.json()).then((data) => {
@@ -153,6 +154,7 @@ export default class ProdEdit extends Component {
         let threeForTen;
         let imgPath;
         let units;
+        let forSale;
 
 
         if(this.state.productsFilter!=null && this.state.arrayIndex !=null){
@@ -164,6 +166,7 @@ export default class ProdEdit extends Component {
             threeForTen = this.state.productsFilter[this.state.arrayIndex].threeForTen;
             imgPath = this.state.productsFilter[this.state.arrayIndex].imgName;
             units = this.state.productsFilter[this.state.arrayIndex].units;
+            forSale = this.state.productsFilter[this.state.arrayIndex].sale;
         }
 
         return(
@@ -198,6 +201,7 @@ export default class ProdEdit extends Component {
                                     <Table.HeaderCell width={1} textAlign="center">Units</Table.HeaderCell>
                                     <Table.HeaderCell width={1} textAlign="center">Offer</Table.HeaderCell>
                                     <Table.HeaderCell width={1} textAlign="center">Three For Ten</Table.HeaderCell>
+                                    <Table.HeaderCell width={1} textAlign="center">Item For Sale</Table.HeaderCell>
                                 </Table.Row>
                             </Table.Header>
 
@@ -211,7 +215,8 @@ export default class ProdEdit extends Component {
                                             <Table.Cell textAlign="center">{item.units}</Table.Cell>
                                             <Table.Cell textAlign="center">{item.onOffer?<span style={{color:"green", fontSize:"30px"}}>&#x2714;</span>:<span style={{color:"red", fontSize:"30px"}}>&#x2718;</span>}</Table.Cell>
                                             <Table.Cell textAlign="center">{item.threeForTen?<span style={{color:"green", fontSize:"30px"}}>&#x2714;</span>:<span style={{color:"red", fontSize:"30px"}}>&#x2718;</span>}</Table.Cell>
-                                            </Table.Row>
+                                            <Table.Cell textAlign="center">{item.sale?<span style={{color:"green", fontSize:"30px"}}>&#x2714;</span>:<span style={{color:"red", fontSize:"30px"}}>&#x2718;</span>}</Table.Cell>
+                                        </Table.Row>
                                     )
                                     :null}
                             </Table.Body>
@@ -295,6 +300,14 @@ export default class ProdEdit extends Component {
                                             <Checkbox id="threeForTen" defaultChecked={threeForTen} onChange={(e, data)=> threeForTen=data.checked}/>
                                         </Table.Cell>
                                     </Table.Row>
+                                    <Table.Row>
+                                        <Table.Cell>
+                                            <Header as='h4' image>Item for Sale</Header>
+                                        </Table.Cell>
+                                        <Table.Cell >
+                                            <Checkbox id="threeForTen" defaultChecked={forSale} onChange={(e, data)=> forSale=data.checked}/>
+                                        </Table.Cell>
+                                    </Table.Row>
 
                                 </Table.Body>
                             </Table>
@@ -306,7 +319,7 @@ export default class ProdEdit extends Component {
                             <Button color='red' onClick={()=>this.deleteProduct(id, imgPath)}>
                                 <Icon name='remove' /> Delete Product
                             </Button>
-                            <Button color='green' style={{float:"right"}} onClick={()=>this.updateProduct(id, name, description, price, onOffer, threeForTen, units)}>
+                            <Button color='green' style={{float:"right"}} onClick={()=>this.updateProduct(id, name, description, price, onOffer, threeForTen, units, forSale)}>
                                 <Icon name='checkmark' /> Update
                             </Button>
                         </div>

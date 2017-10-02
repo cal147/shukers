@@ -116,12 +116,13 @@ if(session_status() === PHP_SESSION_ACTIVE) {
             $threeForTen= strip_tags($conn->real_escape_string(trim($_postData['threeForTen'])));
             $cat = strip_tags($conn->real_escape_string(trim($_postData['category'])));
             $imgName= strip_tags($conn->real_escape_string(trim($_postData['name'])));
+            $sale = strip_tags($conn->real_escape_string(trim($_postData['sale'])));
             $image= $_postData['blob'];
 
 
             try {
-                $stmt = $conn->prepare("INSERT INTO products(name, description, price, onOffer, catId, imgPath, 3for10, units) VALUES(?,?,?,?,?,?,?,?)");
-                $stmt->bind_param("ssdiisis", $prodName, $desc, $price, $onOffer, $cat, $imgName, $threeForTen, $units);
+                $stmt = $conn->prepare("INSERT INTO products(name, description, price, onOffer, catId, imgPath, 3for10, units, forSale) VALUES(?,?,?,?,?,?,?,?,?)");
+                $stmt->bind_param("ssdiisisi", $prodName, $desc, $price, $onOffer, $cat, $imgName, $threeForTen, $units, $sale);
                 if ($stmt->execute()) {
                     echo json_encode(['product' => 'product received', 'success' => true] );
 
@@ -164,6 +165,7 @@ if(session_status() === PHP_SESSION_ACTIVE) {
                             'imgName' => $row['imgPath'],
                             'threeForTen' => boolval($row['3for10']),
                             'units'=> $row['units'],
+                            'sale'=> boolval($row['forSale']),
                         ]);
                     }
                     echo json_encode($products);
@@ -209,14 +211,15 @@ if(session_status() === PHP_SESSION_ACTIVE) {
             $name = $conn->real_escape_string(strip_tags(trim($_postData['name'])));
             $desc = $conn->real_escape_string(strip_tags(trim($_postData['desc'])));
             $price = $conn->real_escape_string(strip_tags(trim($_postData['price'])));
-            $onOffer = $conn->real_escape_string(strip_tags(trim($_postData['onOffer'])));
-            $threeForTen = $conn->real_escape_string(strip_tags(trim($_postData['threeForTen'])));
+            $onOffer = (int) $conn->real_escape_string(strip_tags(trim($_postData['onOffer'])));
+            $threeForTen = (int) $conn->real_escape_string(strip_tags(trim($_postData['threeForTen'])));
             $units = $conn->real_escape_string(strip_tags(trim($_postData['units'])));
+            $sale = (int) $conn->real_escape_string(strip_tags(trim($_postData['sale'])));
 
 
             try{
-                $stmt = $conn->prepare("UPDATE products SET  name = ?, description = ?, price = ?, onOffer = ?, 3for10 = ?, units = ? WHERE id=?");
-                $stmt->bind_param("ssdiisi", $name, $desc, $price, $onOffer, $threeForTen, $units, $id);
+                $stmt = $conn->prepare("UPDATE products SET  name = ?, description = ?, price = ?, onOffer = ?, 3for10 = ?, units = ?, forSale = ? WHERE id=?");
+                $stmt->bind_param("ssdiisii", $name, $desc, $price, $onOffer, $threeForTen, $units, $sale, $id);
 
                 $stmt->execute();
                 $stmt->close();

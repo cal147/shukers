@@ -281,6 +281,7 @@ class Prod extends Component {
             errorMessage:"",
             errorState:true,
             success:false,
+            forSale: true,
         };
     }
 
@@ -332,6 +333,10 @@ class Prod extends Component {
 
     threeForTen(e, data) {
         this.setState({threeForTen: data.checked});
+    }
+
+    forSale(e, data) {
+        this.setState({forSale: data.checked});
     }
 
     price(e, data) {
@@ -386,6 +391,7 @@ class Prod extends Component {
                     sessionId: this.props.session,
                     threeForTen: this.state.threeForTen,
                     units: this.state.units,
+                    sale: this.state.forSale
                 }),
                 mode: 'cors'
             }).then((response) => response.json()).then((data) => {
@@ -454,10 +460,12 @@ class Prod extends Component {
                     </Grid.Row>
 
                     <Grid.Row>
-                        <Grid.Column><Checkbox toggle label={<label>On Offer</label>} checked={this.state.onOffer}
+                        <Grid.Column width={2}><Checkbox toggle label={<label>On Offer</label>} checked={this.state.onOffer}
                                                onChange={this.onOffer.bind(this)}/></Grid.Column>
-                        <Grid.Column><Checkbox toggle label={<label>Three For Ten</label>} checked={this.state.threeForTen}
+                        <Grid.Column width={3}><Checkbox toggle label={<label>Three For Ten</label>} checked={this.state.threeForTen}
                                                onChange={this.threeForTen.bind(this)}/></Grid.Column>
+                        <Grid.Column width={3}><Checkbox toggle label={<label>For Sale</label>} checked={this.state.forSale}
+                                               onChange={this.forSale.bind(this)}/></Grid.Column>
 
                     </Grid.Row>
                     <Grid.Row>
