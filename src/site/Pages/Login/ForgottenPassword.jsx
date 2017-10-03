@@ -9,7 +9,7 @@ export default class login extends Component {
         return (
             <div>
                 <Segment inverted color="red">
-                    <form action={"https://shukersbutchers.co.uk/Scrips/public/ResetPassword.php?email="}>
+                    <form action="/resetpass.php" method="GET">
                         Email associated with the account<br/>
                         <input type="email" name="email"/><br/>
                         <input type="submit" value="submit" />
