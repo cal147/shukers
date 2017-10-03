@@ -213,7 +213,7 @@ export default class basket extends Component {
                         <Table.Cell textAlign="center"><strong><Money locale="en-UK"
                                                                       currency="GBP">{price}</Money></strong></Table.Cell>
                         <Table.Cell></Table.Cell>
-                    </Table.Row> : null }
+                    </Table.Row> : null}
 
                     {discount > 0 ? <Table.Row>
                         <Table.Cell colSpan={2}> </Table.Cell>
@@ -236,75 +236,77 @@ export default class basket extends Component {
                 </Table>
 
 
-                {priceWithDiscount > 0 ? <div>
-                    {/*TODO Cheange paypal locations to match live server*/}
-                    <form action="https://www.sandbox.paypal.com/cgi-bin/webscr" method="post"
-                          onSubmit={() => this.sendDiscountPrice(priceWithDiscount)}>
-
+                {priceWithDiscount > 0 ?
+                    <div>
                         {/*TODO Cheange paypal locations to match live server*/}
-                        <input type="hidden" name="business" value="carlleatherbarrow82-facilitator@gmail.com"/>
-                        {/*Specify a Buy Now button.*/}
-                        <input type="hidden" name="cmd" value="_xclick"/>
-                        <input type="hidden" name="currency_code" value="GBP"/>
-                        <input type="hidden" name="custom" value={this.state.salesID}/>
-                        <input type="hidden" name="item_name" value="Quality Produce by Shukers Butchers"/>
+                        <form action="https://www.paypal.com/cgi-bin/webscr" method="post"
+                              onSubmit={() => this.sendDiscountPrice(priceWithDiscount)}>
 
-                        <input type="hidden" name="discount_amount" value={discount}/>
-                        <input type="hidden" name="amount" value={price}/>
+                            {/*TODO Cheange paypal locations to match live server*/}
+                            <input type="hidden" name="business" value="shukersbutchers@gmail.com"/>
+                            {/*Specify a Buy Now button.*/}
+                            <input type="hidden" name="cmd" value="_xclick"/>
+                            <input type="hidden" name="currency_code" value="GBP"/>
+                            <input type="hidden" name="custom" value={this.state.salesID}/>
+                            <input type="hidden" name="item_name" value="Quality Produce by Shukers Butchers"/>
 
+                            <input type="hidden" name="discount_amount" value={discount}/>
+                            <input type="hidden" name="amount" value={price}/>
+
+                            {/*TODO Cheange paypal locations to match live server*/}
+                            <input type="hidden" name="notify_url"
+                                   value="https://shukersbutchers.co.uk/paypal/paypalVerify.php"/>
+                            <input type="hidden" name="return" value="https://webserver.clps.uk/#/confirmation"/>
+                            {/*Display the payment button.*/}
+                            <div className="PayPal_Button">
+                                <input type="image" name="submit"
+                                       src="https://www.paypalobjects.com/webstatic/en_US/i/btn/png/btn_buynow_107x26.png"
+                                       alt="Buy Now"/>
+                                <input type="image" name="submit"
+                                       src="https://www.paypalobjects.com/webstatic/en_US/i/buttons/cc-badges-ppmcvdam.png"
+                                       alt="Credit Card Badges"/>
+                                <img alt="" border="0" width="1" height="1"
+                                     src="https://www.paypalobjects.com/en_GB/i/scr/pixel.gif"/>
+                            </div>
+
+                        </form>
                         {/*TODO Cheange paypal locations to match live server*/}
-                        <input type="hidden" name="notify_url"
-                               value="https://webserver.clps.uk/paypal/paypalVerify.php"/>
-                        <input type="hidden" name="return" value="https://webserver.clps.uk/#/confirmation"/>
-                        {/*Display the payment button.*/}
-                        <div className="PayPal_Button">
-                            <input type="image" name="submit"
-                                   src="https://www.paypalobjects.com/webstatic/en_US/i/btn/png/btn_buynow_107x26.png"
-                                   alt="Buy Now"/>
-                            <input type="image" name="submit"
-                                   src="https://www.paypalobjects.com/webstatic/en_US/i/buttons/cc-badges-ppmcvdam.png"
-                                   alt="Credit Card Badges"/>
-                            <img alt="" border="0" width="1" height="1"
-                                 src="https://www.paypalobjects.com/en_GB/i/scr/pixel.gif"/>
-                        </div>
+                        <form action="https://www.paypal.com/cgi-bin/webscr" method="post"
+                              onSubmit={() => this.collectInStore(priceWithDiscount)}>
 
-                    </form>
-                    {/*TODO Cheange paypal locations to match live server*/}
-                    <form action="https://www.sandbox.paypal.com/cgi-bin/webscr" method="post"
-                          onSubmit={() => this.collectInStore(priceWithDiscount)}>
+                            {/*TODO Cheange paypal locations to match live server*/}
+                            <input type="hidden" name="business" value="shukersbutchers@gmail.com"/>
+                            {/*Specify a Buy Now button.*/}
+                            <input type="hidden" name="cmd" value="_xclick"/>
+                            <input type="hidden" name="currency_code" value="GBP"/>
+                            <input type="hidden" name="custom" value={this.state.salesID}/>
+                            <input type="hidden" name="item_name" value="Quality Produce by Shukers Butchers"/>
 
-                        {/*TODO Cheange paypal locations to match live server*/}
-                        <input type="hidden" name="business" value="carlleatherbarrow82-facilitator@gmail.com"/>
-                        {/*Specify a Buy Now button.*/}
-                        <input type="hidden" name="cmd" value="_xclick"/>
-                        <input type="hidden" name="currency_code" value="GBP"/>
-                        <input type="hidden" name="custom" value={this.state.salesID}/>
-                        <input type="hidden" name="item_name" value="Quality Produce by Shukers Butchers"/>
+                            <input type="hidden" name="discount_amount" value={discount}/>
+                            <input type="hidden" name="amount" value={price}/>
 
-                        <input type="hidden" name="discount_amount" value={discount}/>
-                        <input type="hidden" name="amount" value={price}/>
+                            {/*TODO Cheange paypal locations to match live server*/}
+                            <input type="hidden" name="notify_url"
+                                   value="https://shukersbutchers.co.uk/paypal/paypalVerify.php"/>
+                            <input type="hidden" name="return" value="https://webserver.clps.uk/#/confirmation"/>
+                            {/*Display the payment button.*/}
+                            <div>
+                                <Popup
+                                    trigger={<Button color='yellow' className='collectButton' name="submit">Pay And
+                                        Collect</Button>}
+                                    content='Pay now and collect in store tomorrow'
+                                />
 
-                        {/*TODO Cheange paypal locations to match live server*/}
-                        <input type="hidden" name="notify_url"
-                               value="https://webserver.clps.uk/paypal/paypalVerify.php"/>
-                        <input type="hidden" name="return" value="https://webserver.clps.uk/#/confirmation"/>
-                        {/*Display the payment button.*/}
-                        <div className="PayPal_Button">
-                            <Popup
-                                trigger={<Button color='yellow' className='collectButton' name="submit">Pay And Collect</Button>}
-                                content='Pay now and collect in store tomorrow'
-                            />
+                                <input type="image" name="submit"
+                                       src="https://www.paypalobjects.com/webstatic/en_US/i/buttons/cc-badges-ppmcvdam.png"
+                                       alt="Credit Card Badges"/>
+                                <img alt="" border="0" width="1" height="1"
+                                     src="https://www.paypalobjects.com/en_GB/i/scr/pixel.gif"/>
+                            </div>
 
-                            <input type="image" name="submit"
-                                   src="https://www.paypalobjects.com/webstatic/en_US/i/buttons/cc-badges-ppmcvdam.png"
-                                   alt="Credit Card Badges"/>
-                            <img alt="" border="0" width="1" height="1"
-                                 src="https://www.paypalobjects.com/en_GB/i/scr/pixel.gif"/>
-                        </div>
+                        </form>
 
-                    </form>
-
-                </div> : null}
+                    </div> : null}
             </div>
         )
     }

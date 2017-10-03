@@ -28,6 +28,7 @@ export default class login extends Component {
     }
 
     handleSubmit(e) {
+        this.setState({count:1})
         e.preventDefault();
         PublicUserAction.userLoginPublic(this.state.userName, this.state.password);
         publicUserStore.getUser();
@@ -42,7 +43,7 @@ export default class login extends Component {
             this.setState({count: 0});
             window.location.reload();
 
-        } else if (this.state.user.isLoggedIn === false && this.state.count === 2) {
+        } else if (this.state.user.isLoggedIn === false && this.state.count === 1) {
             this.setState({
                 FormMessage: <Message error header="Login failed" content="Please check login details"/>
             });
