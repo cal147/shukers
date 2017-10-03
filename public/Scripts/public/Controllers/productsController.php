@@ -166,14 +166,13 @@ if ($_postData['action'] == 'SEARCH_PRODUCTS') {
         $ProdName = '%' . $cleanProdName . '%';
 
         try {
-            $stmt = $conn->prepare("SELECT name, price, imgPath FROM products WHERE name LIKE ? AND p.forSale = 1");
+            $stmt = $conn->prepare("SELECT name, price, imgPath FROM products WHERE name LIKE ? AND forSale = 1");
             $stmt->bind_param('s', $ProdName);
             $stmt->execute();
             if ($result = $stmt->get_result()) {
                 while ($row = $result->fetch_assoc()) {
                     array_push($prodArray, [
                         'title' => $row['name'],
-//                        'description' => $row['description'],
                         'price' => $row['price'],
                         'image' => 'http://localhost/shukers/public/Images/Products/' . $row['imgPath'],
                     ]);
