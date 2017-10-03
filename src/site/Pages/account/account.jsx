@@ -276,7 +276,7 @@ export default class myAccount extends Component {
     }
 
     checkForAddress() {
-        this.setState({Loader: <Dimmer active><Loader>Changing Password</Loader></Dimmer>});
+        this.setState({Loader: <Dimmer active><Loader>Searching for your address</Loader></Dimmer>});
         fetch(serverScriptsPublic + "Controllers/productsController.php", {
             method: 'POST',
             headers: {"Content-type": "application/x-www-form-urlencoded; charset=UTF-8"},
