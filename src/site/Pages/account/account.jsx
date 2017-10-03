@@ -3,8 +3,6 @@ import {Button, Checkbox, Dimmer, Form, Loader, Message, Segment, Tab} from "sem
 
 import publicUserStore from '../UserStore/PublicUserStore';
 import {serverScriptsPublic} from "../../../shared/urls";
-import * as PublicUserAction from '../../Pages/publicActions/publicUserActions';
-import {Redirect} from "react-router-dom";
 
 export default class myAccount extends Component {
 
@@ -18,13 +16,7 @@ export default class myAccount extends Component {
         counter: 0,
         deliveryAddress: []
     };
-    handleLogOutClick = () => {
-        PublicUserAction.logoutUserPublic();
 
-        setTimeout(() => this.setState({
-            redirect: <Redirect to={"/login"}/>
-        }), 0, setTimeout(() => window.location.reload(), 100));
-    };
     formChangeUserDetails = e => {
         this.setState({Loader: <Dimmer active><Loader>Changing your address</Loader></Dimmer>});
 
@@ -43,41 +35,39 @@ export default class myAccount extends Component {
         console.log('DelpostCode - ' + this.state.DelpostCode);
         console.log('IS deliveryAddressChecked - ' + !this.state.deliveryAddressChecked);
 
-        setTimeout(() =>
-                fetch(serverScriptsPublic + "Controllers/productsController.php", {
-                    method: 'POST',
-                    headers: {"Content-type": "application/x-www-form-urlencoded; charset=UTF-8"},
-                    body: JSON.stringify({
-                        action: "UPDATE_ADDRESS",
-                        userID: this.state.user.id,
-                        firstName: this.state.fName,
-                        lastName: this.state.lName,
-                        contactNumber: this.state.contactNumber,
-                        email: this.state.email,
-                        houseNum: this.state.houseNum,
-                        address1: this.state.address1,
-                        address2: this.state.address2,
-                        postCode: this.state.postCode,
-                        DelhouseNum: this.state.DelhouseNum,
-                        Deladdress1: this.state.Deladdress1,
-                        Deladdress2: this.state.Deladdress2,
-                        DelpostCode: this.state.DelpostCode,
-                        deliveryAddressChecked: !this.state.deliveryAddressChecked,
-                    }),
-                    mode: 'cors'
-                }).then(response => response.json()).then(data => {
-                    if (data.Message === "Address Updated") {
-                        alert('Your address have been changed')
-                    } else {
-                        alert('something went wrong!')
-                    }
-                    this.setState({Loader: null});
-                }).then(
+        fetch(serverScriptsPublic + "Controllers/productsController.php", {
+            method: 'POST',
+            headers: {"Content-type": "application/x-www-form-urlencoded; charset=UTF-8"},
+            body: JSON.stringify({
+                action: "UPDATE_ADDRESS",
+                userID: this.state.user.id,
+                firstName: this.state.fName,
+                lastName: this.state.lName,
+                contactNumber: this.state.contactNumber,
+                email: this.state.email,
+                houseNum: this.state.houseNum,
+                address1: this.state.address1,
+                address2: this.state.address2,
+                postCode: this.state.postCode,
+                DelhouseNum: this.state.DelhouseNum,
+                Deladdress1: this.state.Deladdress1,
+                Deladdress2: this.state.Deladdress2,
+                DelpostCode: this.state.DelpostCode,
+                deliveryAddressChecked: !this.state.deliveryAddressChecked,
+            }),
+            mode: 'cors'
+        }).then(response => response.json()).then(data => {
+            if (data.Message === "Address Updated") {
+                alert('Your address have been changed')
+            } else {
+                alert('something went wrong!')
+            }
+            this.setState({Loader: null});
+        }).then(
 
-                ).catch((err) => {
-                    console.error(err);
-                })
-            , 3000, setTimeout(() => this.handleLogOutClick(), 4000));
+        ).catch((err) => {
+            console.error(err);
+        })
 
     };
     formChangePassword = e => {
@@ -96,18 +86,16 @@ export default class myAccount extends Component {
             }),
             mode: 'cors'
         }).then(response => response.json()).then(data => {
-            this.setState({passwordChangeConfirmation: data});
-            this.setState({Loader: null})
+            this.setState({passwordChangeConfirmation: data}, () => this.setState({Loader: null}));
         }).catch((err) => {
             console.error(err);
         });
-
-        setTimeout(() => this.loadingState(), 3000);
 
     };
 
     constructor() {
         super();
+
         this.state = {
             user: publicUserStore.getUser(),
         };
@@ -228,88 +216,38 @@ export default class myAccount extends Component {
                         <Segment inverted color="red">
                             {this.state.Loader}
                             <Form onSubmit={this.formChangeUserDetails}>
+
                                 <Form.Group>
                                     <Form.Input label='First Name'
-                                        // placeholder={this.state.user.firstName}
+                                                placeholder={this.state.user.firstName}
                                                 value={this.state.fName}
                                                 width={4}
                                                 onChange={this.handelChangeFName.bind(this)}/>
                                     <Form.Input label='Last Name'
-                                        // placeholder={this.state.user.surName}
+                                                placeholder={this.state.user.surName}
                                                 value={this.state.lName} width={4}
                                                 onChange={this.handelChangeLName.bind(this)}/>
                                 </Form.Group>
                                 <Form.Group>
                                     <Form.Input label='Contact Number'
-                                        // placeholder={this.state.user.contactNum}
+                                                placeholder={this.state.user.contactNum}
                                                 value={this.state.contactNumber} width={3}
                                                 onChange={this.handelChangeCNum.bind(this)}/>
                                     <Form.Input label='Email Address'
-                                        // placeholder={this.state.user.email}
+                                                placeholder={this.state.user.email}
                                                 value={this.state.email} width={5} type="email"
                                                 onChange={this.handleChangeEmail.bind(this)}/>
                                 </Form.Group>
+                                {this.state.changeAddress}
                                 <Form.Group>
-                                    <Form.Input label='House Number'
-                                        // placeholder={this.state.deliveryAddress != undefined && this.state.homeAddress != undefined ? this.state.user.isHome ? this.state.user.houseNum : this.state.homeAddress[0].houseNum : ''}
-                                                value={this.state.houseNum}
-                                                width={2} type='number'
-                                                onChange={this.handleChangeHNum.bind(this)}/>
-                                    <Form.Input label='Address 1'
-                                        // placeholder={this.state.deliveryAddress != undefined && this.state.homeAddress != undefined ? this.state.user.isHome ? this.state.user.addressL1 : this.state.homeAddress[0].firstLine : ''}
-                                                value={this.state.address1}
-                                                width={6}
-                                                onChange={this.handleChangeAdd1.bind(this)}/>
+
+                                    {this.state.DelCheck}
 
                                 </Form.Group>
-                                <Form.Group>
-                                    <Form.Input label='Address 2'
-                                        // placeholder={this.state.deliveryAddress != undefined && this.state.homeAddress != undefined ? this.state.user.isHome ? this.state.user.addressL2 : this.state.homeAddress[0].secondLine : ''}
-                                                value={this.state.address2}
-                                                width={6}
-                                                onChange={this.handleChangeAdd2.bind(this)}/>
-                                    <Form.Input label='Post Code'
-                                        // placeholder={this.state.deliveryAddress != undefined && this.state.homeAddress != undefined ? this.state.user.isHome ? this.state.user.postcode : this.state.homeAddress[0].postCode : ''}
-                                                value={this.state.postCode}
-                                                width={2} type="postcode"
-                                                onChange={this.handleChangePCode.bind(this)}/>
-                                </Form.Group>
-                                <Form.Group>
-                                    {this.state.deliveryAddressChecked === undefined ? null :
-
-                                        <Checkbox label="Delivery address same as home address"
-                                                  defaultChecked={this.state.user.isHome && this.state.user.isDelivery ? true : false}
-                                                  onChange={() => this.setState({deliveryAddressChecked: !this.state.deliveryAddressChecked})}/>
-                                    }
-                                </Form.Group>
-                                {this.state.deliveryAddressChecked === false ? null :
+                                {this.state.deliveryAddressChecked === true ? null :
                                     <Segment inverted tertiary>
                                         <h4>Delivery Address</h4>
-                                        <Form.Group>
-                                            <Form.Input label='House Number'
-                                                // placeholder={this.state.deliveryAddress != undefined && this.state.homeAddress != undefined ? this.state.user.isDelivery ? this.state.user.houseNum : this.state.deliveryAddress[0].houseNum : ''}
-                                                        value={this.state.DelhouseNum}
-                                                        width={2}
-                                                        onChange={this.handleChangeDelHNum.bind(this)} type='number'/>
-                                            <Form.Input label='Address 1'
-                                                // placeholder={this.state.deliveryAddress != undefined && this.state.homeAddress != undefined ? this.state.user.isDelivery ? this.state.user.addressL1 : this.state.deliveryAddress[0].firstLine : ''}
-                                                        value={this.state.Deladdress1}
-                                                        width={6}
-                                                        onChange={this.handleChangeDelAdd1.bind(this)}/>
-                                        </Form.Group>
-                                        <Form.Group>
-                                            <Form.Input label='Address 2'
-                                                // placeholder={this.state.deliveryAddress != undefined && this.state.homeAddress != undefined ? this.state.user.isDelivery ? this.state.user.addressL2 : this.state.deliveryAddress[0].secondLine : ''}
-                                                        value={this.state.Deladdress2}
-                                                        width={6}
-                                                        onChange={this.handleChangeDelAdd2.bind(this)}/>
-                                            <Form.Input label='Post Code'
-                                                // placeholder={this.state.deliveryAddress != undefined && this.state.homeAddress != undefined ? this.state.user.isDelivery ? this.state.user.postcode : this.state.deliveryAddress[0].postCode : ''}
-                                                        value={this.state.DelpostCode}
-                                                        width={2}
-                                                        onChange={this.handleChangeDelPCode.bind(this)}
-                                                        type="postcode"/>
-                                        </Form.Group>
+                                        {this.state.changeDeliveryAddress}
                                     </Segment>}
 
                                 <Button type='submit' color="black">Change Details</Button>
@@ -331,30 +269,7 @@ export default class myAccount extends Component {
                         </Segment>
                     </div>
                 </Tab.Pane>
-            },
-            /*{
-                menuItem: 'Previous Purchases', render: () =>
-                <Tab.Pane>
-                    <Grid celled verticalAlign='middle'>
-                        <Grid.Row>
-                            <Grid.Column width={6}>
-                                Name
-                            </Grid.Column>
-                        </Grid.Row>
-                        {this.state.PurchaseHistory != null ? this.state.PurchaseHistory.map((product, i) =>
-                                <Grid.Row key={i}>
-                                    <Grid.Column width={6}>
-                                        {product.name}
-                                    </Grid.Column>
-                                </Grid.Row>
-                            ) :
-                            <Grid.Column width={6} as='h3' textAlign="center">
-                                You do not have any recent purchases
-                            </Grid.Column>}
-                    </Grid>
-                </Tab.Pane>
-            },*/
-            // this will be to show the customer what products they have bought in the past
+            }
         ]
     }
 
@@ -365,38 +280,143 @@ export default class myAccount extends Component {
     }
 
     checkForAddress() {
+        this.setState({Loader: <Dimmer active><Loader>Changing Password</Loader></Dimmer>});
         fetch(serverScriptsPublic + "Controllers/productsController.php", {
             method: 'POST',
             headers: {"Content-type": "application/x-www-form-urlencoded; charset=UTF-8"},
             body: JSON.stringify({
-                action: "GET_DELIVERYADDRESS",
+                action: "GET_ADDRESS",
                 User: this.state.user.id,
             }),
             mode: 'cors'
         }).then(response => response.json()).then(data => {
-            this.setState({deliveryAddress: data}, () => {
-                this.setState({deliveryAddressChecked: true})
+            this.setState({Address: data}, () => {
+                data[0].deliveryAddress === false ?
+                    this.setState({
+                        Loader: null, deliveryAddressChecked: data[0].deliveryAddress,
+                        DelCheck:
+                            <Checkbox label="Delivery address same as home address"
+                                      defaultChecked={data[0].deliveryAddress}
+                                      onChange={() => this.setState({deliveryAddressChecked: !this.state.deliveryAddressChecked})}/>,
+                        changeAddress:
+                            <div>
+                                <Form.Group>
+                                    <Form.Input label='House Number'
+                                                placeholder={data[0].houseNum}
+                                                value={this.state.houseNum}
+                                                width={2} type='number'
+                                                onChange={this.handleChangeHNum.bind(this)}/>
+                                    <Form.Input label='Address 1'
+                                                placeholder={data[0].firstLine}
+                                                value={this.state.address1}
+                                                width={6}
+                                                onChange={this.handleChangeAdd1.bind(this)}/>
+
+                                </Form.Group>
+                                <Form.Group>
+                                    <Form.Input label='Address 2'
+                                                placeholder={data[0].secondLine}
+                                                value={this.state.address2}
+                                                width={6}
+                                                onChange={this.handleChangeAdd2.bind(this)}/>
+                                    <Form.Input label='Post Code'
+                                                placeholder={data[0].postCode}
+                                                value={this.state.postCode}
+                                                width={2} type="postcode"
+                                                onChange={this.handleChangePCode.bind(this)}/>
+                                </Form.Group>
+                            </div>,
+                        changeDeliveryAddress:
+                            <div>
+                                <Form.Group>
+                                    <Form.Input label='House Number'
+                                                placeholder={data[1].delhouseNum}
+                                                value={this.state.DelhouseNum}
+                                                width={2}
+                                                onChange={this.handleChangeDelHNum.bind(this)} type='number'/>
+                                    <Form.Input label='Address 1'
+                                                placeholder={data[1].delfirstLine}
+                                                value={this.state.Deladdress1}
+                                                width={6}
+                                                onChange={this.handleChangeDelAdd1.bind(this)}/>
+                                </Form.Group>
+                                <Form.Group>
+                                    <Form.Input label='Address 2'
+                                                placeholder={data[1].delsecondLine}
+                                                value={this.state.Deladdress2}
+                                                width={6}
+                                                onChange={this.handleChangeDelAdd2.bind(this)}/>
+                                    <Form.Input label='Post Code'
+                                                placeholder={data[1].delpostCode}
+                                                value={this.state.DelpostCode}
+                                                width={2}
+                                                onChange={this.handleChangeDelPCode.bind(this)}
+                                                type="postcode"/>
+                                </Form.Group>
+                            </div>
+                    }) : this.setState({
+                        Loader: null, deliveryAddressChecked: data[0].deliveryAddress,
+                        DelCheck:
+                            <Checkbox label="Delivery address same as home address"
+                                      defaultChecked={data[0].deliveryAddress}
+                                      onChange={() => this.setState({deliveryAddressChecked: !this.state.deliveryAddressChecked})}/>,
+                        changeAddress:
+                            <div>
+                                <Form.Group>
+                                    <Form.Input label='House Number'
+                                                placeholder={data[0].houseNum}
+                                                value={this.state.houseNum}
+                                                width={2} type='number'
+                                                onChange={this.handleChangeHNum.bind(this)}/>
+                                    <Form.Input label='Address 1'
+                                                placeholder={data[0].firstLine}
+                                                value={this.state.address1}
+                                                width={6}
+                                                onChange={this.handleChangeAdd1.bind(this)}/>
+
+                                </Form.Group>
+                                <Form.Group>
+                                    <Form.Input label='Address 2'
+                                                placeholder={data[0].secondLine}
+                                                value={this.state.address2}
+                                                width={6}
+                                                onChange={this.handleChangeAdd2.bind(this)}/>
+                                    <Form.Input label='Post Code'
+                                                placeholder={data[0].postCode}
+                                                value={this.state.postCode}
+                                                width={2} type="postcode"
+                                                onChange={this.handleChangePCode.bind(this)}/>
+                                </Form.Group>
+                            </div>,
+                        changeDeliveryAddress:
+                            <div>
+                                <Form.Group>
+                                    <Form.Input label='House Number'
+                                                value={this.state.DelhouseNum}
+                                                width={2}
+                                                onChange={this.handleChangeDelHNum.bind(this)} type='number'/>
+                                    <Form.Input label='Address 1'
+                                                value={this.state.Deladdress1}
+                                                width={6}
+                                                onChange={this.handleChangeDelAdd1.bind(this)}/>
+                                </Form.Group>
+                                <Form.Group>
+                                    <Form.Input label='Address 2'
+                                                value={this.state.Deladdress2}
+                                                width={6}
+                                                onChange={this.handleChangeDelAdd2.bind(this)}/>
+                                    <Form.Input label='Post Code'
+                                                value={this.state.DelpostCode}
+                                                width={2}
+                                                onChange={this.handleChangeDelPCode.bind(this)}
+                                                type="postcode"/>
+                                </Form.Group>
+                            </div>
+                    })
             });
         }).catch((err) => {
             console.error(err);
         });
-        fetch(serverScriptsPublic + "Controllers/productsController.php", {
-            method: 'POST',
-            headers: {"Content-type": "application/x-www-form-urlencoded; charset=UTF-8"},
-            body: JSON.stringify({
-                action: "GET_HOMEADDRESS",
-                User: this.state.user.id,
-            }),
-            mode: 'cors'
-        }).then(response => response.json()).then(data => {
-            this.setState({homeAddress: data});
-        }).catch((err) => {
-            console.error(err);
-        });
-    }
-
-    loadingState() {
-        this.setState({Loader: null})
     }
 
     handelChangeFName(e) {
@@ -500,6 +520,7 @@ export default class myAccount extends Component {
             <div>
                 <Tab panes={this.panes}/>
                 {this.state.redirect}
+                {console.log(this.state.deliveryAddressChecked)}
             </div>
         )
     }

@@ -704,8 +704,9 @@ if ($_postData['action'] == 'PAY_INSTORE') {
     }
 }
 
-if ($_postData['action'] == 'CHECK_DELIVERYADDRESS') {
-    $delAddress = [];
+if ($_postData['action'] == 'GET_ADDRESS') {
+    $Address = [];
+    $HomeAddress = [];
     $dirtyuserID = $_postData['User'];
 
     if (preg_match('/^[0-9]{1,3}$/', stripcslashes(trim($dirtyuserID)))) {
@@ -715,22 +716,49 @@ if ($_postData['action'] == 'CHECK_DELIVERYADDRESS') {
         $cleanUserID = strip_tags($cUserID);
 
         try {
-            $stmt = $conn->prepare("SELECT houseNum, firstLine, secondLine, postcode FROM address WHERE userId = ? AND delivery = 1 AND home = 0;");
+            $stmt = $conn->prepare("SELECT houseNum, firstLine, secondLine, postcode FROM address WHERE userId = ? AND delivery = 1 AND home = 1;");
             $stmt->bind_param("i", $cleanUserID);
             $stmt->execute();
-
             $result = $stmt->get_result();
-            $row = $result->fetch_assoc();
-                array_push($delAddress, [
-                    'delAddress' => true,
+            if (mysqli_num_rows($result) == 1) {
+                $row = $result->fetch_assoc();
+                array_push($Address, [
                     'houseNum' => $row['houseNum'],
                     'firstLine' => $row['firstLine'],
                     'secondLine' => $row['secondLine'],
-                    'postCode' => $row['postcode']
+                    'postCode' => $row['postcode'],
+                    'deliveryAddress' => true
                 ]);
-
-
-                echo json_encode($delAddress);
+                echo json_encode($Address);
+            }
+            $stmt = $conn->prepare("SELECT houseNum, firstLine, secondLine, postcode FROM address WHERE userId = ? AND delivery = 0 AND home = 1;");
+            $stmt->bind_param("i", $cleanUserID);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            if (mysqli_num_rows($result) == 1) {
+                $row = $result->fetch_assoc();
+                array_push($HomeAddress, [
+                    'houseNum' => $row['houseNum'],
+                    'firstLine' => $row['firstLine'],
+                    'secondLine' => $row['secondLine'],
+                    'postCode' => $row['postcode'],
+                    'deliveryAddress' => false
+                ]);
+            }
+            $stmt = $conn->prepare("SELECT houseNum, firstLine, secondLine, postcode FROM address WHERE userId = ? AND delivery = 1 AND home = 0;");
+            $stmt->bind_param("i", $cleanUserID);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            if (mysqli_num_rows($result) == 1) {
+                $row = $result->fetch_assoc();
+                array_push($HomeAddress, [
+                    'delhouseNum' => $row['houseNum'],
+                    'delfirstLine' => $row['firstLine'],
+                    'delsecondLine' => $row['secondLine'],
+                    'delpostCode' => $row['postcode']
+                ]);
+                echo json_encode($HomeAddress);
+            }
 
 
         } catch (Exception $e) {
