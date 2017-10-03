@@ -395,9 +395,11 @@ if ($_postData['action'] == 'REMOVEPRODUCTFROMBASKET') {
                 $stmt->bind_param("ii", $SalesID, $SalesID);
                 if ($stmt->execute()) {
                     $stmt = $conn->prepare("DELETE FROM sales WHERE totalPrice IS NULL;");
-                    if($stmt->execute()){
+                    if ($stmt->execute()) {
                         echo json_encode(['Message' => 'sale removed due to having not products in sale', 'success' => true]);
-                    } else { echo json_encode(['Message' => 'sale unable to be removed', 'success' => false]);}
+                    } else {
+                        echo json_encode(['Message' => 'sale unable to be removed', 'success' => false]);
+                    }
                     echo json_encode(['Message' => 'Price Updated', 'success' => true]);
                 } else {
                     echo json_encode(['Message' => 'Sales table unable to update', 'success' => false]);
@@ -563,45 +565,43 @@ if ($_postData['action'] == 'CHANGE_PASSWORD') {
 
     if (preg_match('/^[0-9]{1,3}$/', stripcslashes(trim($dirtyuser))) &&
         preg_match('/^[A-Za-z0-9\-!"£$%\^&*()]{5,15}$/',
-            stripcslashes(trim($dirtypass))) &&
-        preg_match('/^[A-Za-z0-9\-!"£$%\^&*()]{5,15}$/',
-            stripcslashes(trim($dirtycurPass)))) {
+            stripcslashes(trim($dirtypass))))
 
         $cName = $conn->real_escape_string(trim($dirtyuser));
-        $cleanName = strip_tags($cName);
-        $curPass = $conn->real_escape_string(trim($dirtycurPass));
-        $cleancurPass = strip_tags($curPass);
-        $cPass = $conn->real_escape_string(trim($dirtypass));
-        $cleanPass = strip_tags($cPass);
-        $cCPass = $conn->real_escape_string(trim($dirtyconpass));
-        $cleanConPass = strip_tags($cCPass);
+    $cleanName = strip_tags($cName);
+    $curPass = $conn->real_escape_string(trim($dirtycurPass));
+    $cleancurPass = strip_tags($curPass);
+    $cPass = $conn->real_escape_string(trim($dirtypass));
+    $cleanPass = strip_tags($cPass);
+    $cCPass = $conn->real_escape_string(trim($dirtyconpass));
+    $cleanConPass = strip_tags($cCPass);
 
-        try {
-            $stmt = $this->conn->prepare("SELECT password FROM users WHERE id = ?");
-            $stmt->bind_param("i", $cleanName);
-            $stmt->execute();
-            $res = $stmt->get_result();
-            $row = $res->fetch_assoc();
-            $hashPass = $row['password'];
-            if (password_verify($cleancurPass, $hashPass) == 1 && $cleanPass === $cleanConPass) {
+    try {
+        $stmt = $conn->prepare("SELECT password FROM users WHERE id = ?");
+        $stmt->bind_param("i", $cleanName);
+        $stmt->execute();
+        $res = $stmt->get_result();
+        $row = $res->fetch_assoc();
+        $hashPass = $row['password'];
+        if (password_verify($cleancurPass, $hashPass) == 1) {
+            if ($cleanPass === $cleanConPass) {
                 try {
                     $passHash = password_hash($cleanPass, 1);
-                    $curPassHash = password_hash($cleancurPass, 1);
                     $stmt = $conn->prepare("UPDATE users SET password = ? WHERE id = ?");
                     $stmt->bind_param("si", $passHash, $cleanName);
                     if ($stmt->execute()) {
-                        echo $cleanName;
+                        echo json_encode(['Message' => 'ok', 'success' => true]);
                     } else {
-                        echo 0;
+                        echo json_encode(['Message' => 'not changed', 'success' => false]);
                     }
                 } catch (Exception $e) {
                     return false;
                 }
-            }
-        } catch (Exception $e) {
-            return false;
-        }
-    } else echo 0;
+            } else echo json_encode(['Message' => 'password not the same', 'success' => false]);
+        } else echo json_encode(['Message' => 'current password wrong', 'success' => false]);
+    } catch (Exception $e) {
+        return false;
+    }
 }
 
 if ($_postData['action'] == 'NEW_USER') {
@@ -855,7 +855,7 @@ if ($_postData['action'] == 'DISCOUNT_PRICE') {
     echo $price;
 
     try {
-        $stmt = $conn->prepare("update sales SET totalPrice = ? WHERE id = ?");
+        $stmt = $conn->prepare("UPDATE sales SET totalPrice = ? WHERE id = ?");
         $stmt->bind_param("di", $price, $saleID);
         if ($stmt->execute()) {
             echo json_encode(['Message' => 'price updated', 'success' => true]);

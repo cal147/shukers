@@ -31,16 +31,11 @@ export default class login extends Component {
         e.preventDefault();
         PublicUserAction.userLoginPublic(this.state.userName, this.state.password);
         publicUserStore.getUser();
-        this.setState({count: this.state.count + 1});
 
         setTimeout(() => this.loggedInTrueFalse(), 500);
 
         this.loggedInTrueFalse()
     };
-
-    loadingState() {
-        this.setState({Loader: null})
-    }
 
     loggedInTrueFalse() {
         if (this.state.user.isLoggedIn === true) {

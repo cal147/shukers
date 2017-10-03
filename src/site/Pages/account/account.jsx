@@ -25,14 +25,14 @@ export default class myAccount extends Component {
         console.log('lastName - ' + this.state.lName);
         console.log('contactNumber - ' + this.state.contactNumber);
         console.log('email - ' + this.state.email);
-        console.log('houseNum - ' + this.state.houseNum);
-        console.log('address1 - ' + this.state.address1);
-        console.log('address2 - ' + this.state.address2);
-        console.log('postCode - ' + this.state.postCode);
-        console.log('DelhouseNum - ' + this.state.DelhouseNum);
-        console.log('Deladdress1 - ' + this.state.Deladdress1);
-        console.log('Deladdress2 - ' + this.state.Deladdress2);
-        console.log('DelpostCode - ' + this.state.DelpostCode);
+        console.log('houseNum - ' + this.state.HouseNum);
+        console.log('address1 - ' + this.state.FirstLine);
+        console.log('address2 - ' + this.state.SecondLine);
+        console.log('postCode - ' + this.state.Postcode);
+        console.log('DelhouseNum - ' + this.state.delHouseNum);
+        console.log('Deladdress1 - ' + this.state.delFirstLine);
+        console.log('Deladdress2 - ' + this.state.delSecondLine);
+        console.log('DelpostCode - ' + this.state.delpPostcode);
         console.log('IS deliveryAddressChecked - ' + !this.state.deliveryAddressChecked);
 
         fetch(serverScriptsPublic + "Controllers/productsController.php", {
@@ -45,22 +45,23 @@ export default class myAccount extends Component {
                 lastName: this.state.lName,
                 contactNumber: this.state.contactNumber,
                 email: this.state.email,
-                houseNum: this.state.houseNum,
-                address1: this.state.address1,
-                address2: this.state.address2,
-                postCode: this.state.postCode,
-                DelhouseNum: this.state.DelhouseNum,
-                Deladdress1: this.state.Deladdress1,
-                Deladdress2: this.state.Deladdress2,
-                DelpostCode: this.state.DelpostCode,
-                deliveryAddressChecked: !this.state.deliveryAddressChecked,
+                houseNum: this.state.HouseNum,
+                address1: this.state.FirstLine,
+                address2: this.state.SecondLine,
+                postCode: this.state.Postcode,
+                DelhouseNum: this.state.delHouseNum,
+                Deladdress1: this.state.delFirstLine,
+                Deladdress2: this.state.delSecondLine,
+                DelpostCode: this.state.delpPostcode,
+                deliveryAddressChecked: this.state.deliveryAddressChecked,
             }),
             mode: 'cors'
         }).then(response => response.json()).then(data => {
             if (data.Message === "Address Updated") {
-                alert('Your address have been changed')
-            } else {
-                alert('something went wrong!')
+                this.setState({
+                    addressChangeMessage: <Message success><Message.Header>Your address has been
+                        changed</Message.Header></Message>, Loader: null
+                })
             }
             this.setState({Loader: null});
         }).then(
@@ -82,11 +83,29 @@ export default class myAccount extends Component {
                 userID: this.state.user.id,
                 currPass: this.state.currentPassword,
                 pass: this.state.newPassword,
-                conPass: this.state.confirmPassword
+                conPass: this.state.confPassword
             }),
             mode: 'cors'
         }).then(response => response.json()).then(data => {
-            this.setState({passwordChangeConfirmation: data}, () => this.setState({Loader: null}));
+            if (data.Message === "ok") {
+                this.setState({
+                    passwordChangeConfirmation: <Message success>
+                        <Message.Header>Password Changed!</Message.Header>
+                        Please log in to your account now!</Message>
+                }, () => this.setState({Loader: null}))
+            } else if (data.Message === "password not the same") {
+                this.setState({
+                    passwordChangeConfirmation: <Message error>
+                        <Message.Header>Passwords do not match</Message.Header>
+                        Please check that you have entered both new passwords in the same</Message>
+                }, () => this.setState({Loader: null}))
+            } else if (data.Message === "current password wrong") {
+                this.setState({
+                    passwordChangeConfirmation: <Message error>
+                        <Message.Header>Current Password Wrong</Message.Header>
+                        Please check that you have entered the current password in correctly</Message>
+                }, () => this.setState({Loader: null}))
+            }
         }).catch((err) => {
             console.error(err);
         });
@@ -114,31 +133,6 @@ export default class myAccount extends Component {
                             required onChange={this.handelChangeCNPass.bind(this)}/>
                 <Button type='submit' color="black">Change Password</Button>
             </Form>;
-        if (this.state.passwordChangeConfirmation === 0) {
-            confirmPasswordChange = <Message error>
-                <Message.Header>Passwords do not match</Message.Header>
-                Please check that you have entered both new passwords in the same</Message>
-        }
-        form =
-            <Form onSubmit={this.formChangePassword}>
-                <Form.Input label='Current Password*' placeholder='Current Password'
-                            value={this.state.currentPassword} width={8} type="password"
-                            required onChange={this.handelChangeCPass.bind(this)}/>
-                <Form.Input label='New Password*' placeholder='New Password'
-                            value={this.state.newPassword} type="password"
-                            width={8} required onChange={this.handelChangeNPass.bind(this)}/>
-                <Form.Input label='Confirm New Password*' placeholder='Confirm Password'
-                            value={this.state.confPassword} width={8} type="password"
-                            required onChange={this.handelChangeCNPass.bind(this)}/>
-                {confirmPasswordChange}
-                <Button type='submit' color="black">Change Password</Button>
-
-            </Form>;
-        if (this.state.passwordChangeConfirmation >= 1) {
-            form = <Message success>
-                <Message.Header>Password Changed!</Message.Header>
-                Please log in to your account now!</Message>
-        }
 
 
         this.panes = [
@@ -219,23 +213,23 @@ export default class myAccount extends Component {
 
                                 <Form.Group>
                                     <Form.Input label='First Name'
-                                                placeholder={this.state.user.firstName}
-                                                value={this.state.fName}
+                                                defaultValue={this.state.user.firstName}
                                                 width={4}
-                                                onChange={this.handelChangeFName.bind(this)}/>
+                                                onChange={this.handelChangeFName.bind(this)}
+                                    />
                                     <Form.Input label='Last Name'
-                                                placeholder={this.state.user.surName}
-                                                value={this.state.lName} width={4}
+                                                defaultValue={this.state.user.surName}
+                                                width={4}
                                                 onChange={this.handelChangeLName.bind(this)}/>
                                 </Form.Group>
                                 <Form.Group>
                                     <Form.Input label='Contact Number'
-                                                placeholder={this.state.user.contactNum}
-                                                value={this.state.contactNumber} width={3}
+                                                defaultValue={this.state.user.contactNum}
+                                                width={3}
                                                 onChange={this.handelChangeCNum.bind(this)}/>
                                     <Form.Input label='Email Address'
-                                                placeholder={this.state.user.email}
-                                                value={this.state.email} width={5} type="email"
+                                                defaultValue={this.state.user.email}
+                                                width={5} type="email"
                                                 onChange={this.handleChangeEmail.bind(this)}/>
                                 </Form.Group>
                                 {this.state.changeAddress}
@@ -252,6 +246,7 @@ export default class myAccount extends Component {
 
                                 <Button type='submit' color="black">Change Details</Button>
                             </Form>
+                            {this.state.addressChangeMessage}
                         </Segment>
                     </div>
 
@@ -266,6 +261,7 @@ export default class myAccount extends Component {
                         <Segment inverted color="red">
                             {this.state.Loader}
                             {form}
+                            {this.state.passwordChangeConfirmation}
                         </Segment>
                     </div>
                 </Tab.Pane>
@@ -302,26 +298,22 @@ export default class myAccount extends Component {
                             <div>
                                 <Form.Group>
                                     <Form.Input label='House Number'
-                                                placeholder={data[0].houseNum}
-                                                value={this.state.houseNum}
+                                                defaultValue={data[0].houseNum}
                                                 width={2} type='number'
                                                 onChange={this.handleChangeHNum.bind(this)}/>
                                     <Form.Input label='Address 1'
-                                                placeholder={data[0].firstLine}
-                                                value={this.state.address1}
+                                                defaultValue={data[0].firstLine}
                                                 width={6}
                                                 onChange={this.handleChangeAdd1.bind(this)}/>
 
                                 </Form.Group>
                                 <Form.Group>
                                     <Form.Input label='Address 2'
-                                                placeholder={data[0].secondLine}
-                                                value={this.state.address2}
+                                                defaultValue={data[0].secondLine}
                                                 width={6}
                                                 onChange={this.handleChangeAdd2.bind(this)}/>
                                     <Form.Input label='Post Code'
-                                                placeholder={data[0].postCode}
-                                                value={this.state.postCode}
+                                                defaultValue={data[0].postCode}
                                                 width={2} type="postcode"
                                                 onChange={this.handleChangePCode.bind(this)}/>
                                 </Form.Group>
@@ -330,30 +322,39 @@ export default class myAccount extends Component {
                             <div>
                                 <Form.Group>
                                     <Form.Input label='House Number'
-                                                placeholder={data[1].delhouseNum}
-                                                value={this.state.DelhouseNum}
+                                                defaultValue={data[1].delhouseNum}
                                                 width={2}
                                                 onChange={this.handleChangeDelHNum.bind(this)} type='number'/>
                                     <Form.Input label='Address 1'
-                                                placeholder={data[1].delfirstLine}
-                                                value={this.state.Deladdress1}
+                                                defaultValue={data[1].delfirstLine}
                                                 width={6}
                                                 onChange={this.handleChangeDelAdd1.bind(this)}/>
                                 </Form.Group>
                                 <Form.Group>
                                     <Form.Input label='Address 2'
-                                                placeholder={data[1].delsecondLine}
-                                                value={this.state.Deladdress2}
+                                                defaultValue={data[1].delsecondLine}
                                                 width={6}
                                                 onChange={this.handleChangeDelAdd2.bind(this)}/>
                                     <Form.Input label='Post Code'
-                                                placeholder={data[1].delpostCode}
-                                                value={this.state.DelpostCode}
+                                                defaultValue={data[1].delpostCode}
                                                 width={2}
                                                 onChange={this.handleChangeDelPCode.bind(this)}
                                                 type="postcode"/>
                                 </Form.Group>
-                            </div>
+                            </div>,
+                        HouseNum: data[0].houseNum,
+                        FirstLine: data[0].firstLine,
+                        SecondLine: data[0].secondLine,
+                        Postcode: data[0].postCode,
+                        delHouseNum: data[1].delhouseNum,
+                        delFirstLine: data[1].delfirstLine,
+                        delSecondLine: data[1].delsecondLine,
+                        delpPostcode: data[1].delpostCode,
+                        fName: this.state.user.firstName,
+                        lName: this.state.user.surName,
+                        contactNumber: this.state.user.contactNum,
+                        email: this.state.user.email
+
                     }) : this.setState({
                         Loader: null, deliveryAddressChecked: data[0].deliveryAddress,
                         DelCheck:
@@ -364,12 +365,12 @@ export default class myAccount extends Component {
                             <div>
                                 <Form.Group>
                                     <Form.Input label='House Number'
-                                                placeholder={data[0].houseNum}
+                                                defaultValue={data[0].houseNum}
                                                 value={this.state.houseNum}
                                                 width={2} type='number'
                                                 onChange={this.handleChangeHNum.bind(this)}/>
                                     <Form.Input label='Address 1'
-                                                placeholder={data[0].firstLine}
+                                                defaultValue={data[0].firstLine}
                                                 value={this.state.address1}
                                                 width={6}
                                                 onChange={this.handleChangeAdd1.bind(this)}/>
@@ -377,12 +378,12 @@ export default class myAccount extends Component {
                                 </Form.Group>
                                 <Form.Group>
                                     <Form.Input label='Address 2'
-                                                placeholder={data[0].secondLine}
+                                                defaultValue={data[0].secondLine}
                                                 value={this.state.address2}
                                                 width={6}
                                                 onChange={this.handleChangeAdd2.bind(this)}/>
                                     <Form.Input label='Post Code'
-                                                placeholder={data[0].postCode}
+                                                defaultValue={data[0].postCode}
                                                 value={this.state.postCode}
                                                 width={2} type="postcode"
                                                 onChange={this.handleChangePCode.bind(this)}/>
@@ -411,7 +412,20 @@ export default class myAccount extends Component {
                                                 onChange={this.handleChangeDelPCode.bind(this)}
                                                 type="postcode"/>
                                 </Form.Group>
-                            </div>
+                            </div>,
+                        HouseNum: data[0].houseNum,
+                        FirstLine: data[0].firstLine,
+                        SecondLine: data[0].secondLine,
+                        Postcode: data[0].postCode,
+                        delHouseNum: data[0].houseNum,
+                        delFirstLine: data[0].firstLine,
+                        delSecondLine: data[0].secondLine,
+                        delpPostcode: data[0].postCode,
+                        fName: this.state.user.firstName,
+                        lName: this.state.user.surName,
+                        contactNumber: this.state.user.contactNum,
+                        email: this.state.user.email
+
                     })
             });
         }).catch((err) => {
@@ -448,35 +462,35 @@ export default class myAccount extends Component {
     }
 
     handleChangeHNum(e) {
-        this.setState({houseNum: e.target.value})
+        this.setState({HouseNum: e.target.value})
     }
 
     handleChangeAdd1(e) {
-        this.setState({address1: e.target.value})
+        this.setState({FirstLine: e.target.value})
     }
 
     handleChangeAdd2(e) {
-        this.setState({address2: e.target.value})
+        this.setState({SecondLine: e.target.value})
     }
 
     handleChangePCode(e) {
-        this.setState({postCode: e.target.value})
+        this.setState({Postcode: e.target.value})
     }
 
     handleChangeDelHNum(e) {
-        this.setState({DelhouseNum: e.target.value})
+        this.setState({delHouseNum: e.target.value})
     }
 
     handleChangeDelAdd1(e) {
-        this.setState({Deladdress1: e.target.value})
+        this.setState({delFirstLine: e.target.value})
     }
 
     handleChangeDelAdd2(e) {
-        this.setState({Deladdress2: e.target.value})
+        this.setState({delSecondLine: e.target.value})
     }
 
     handleChangeDelPCode(e) {
-        this.setState({DelpostCode: e.target.value})
+        this.setState({delpPostcode: e.target.value})
     }
 
 

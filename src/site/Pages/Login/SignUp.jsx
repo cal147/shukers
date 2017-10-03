@@ -272,8 +272,9 @@ export default class SignUp extends Component {
                         </Form.Group>
                         <Form.Group>
                             {/*TODO - make checkbox a requirement*/}
-                            <Checkbox defaultChecked={false} className="signUpCheckbox"
-                                      label="I understand that Shukers Butchers can only deliver in the local region of the shop. Covering Liverpool, St. Helens and Warrington. If you purchase our products from out of the delivering area YOU WILL NEED TO COLLECT!"
+                            <Form.Checkbox defaultChecked={false} className="signUpCheckbox" required
+                                      label="I understand that Shukers Butchers can only deliver in the local region of the shop. Covering Liverpool,
+                                      St. Helens and Warrington. If you purchase our products from out of the delivering area YOU WILL NEED TO COLLECT!"
                             />
                         </Form.Group>
                         {deliveryAddress}
