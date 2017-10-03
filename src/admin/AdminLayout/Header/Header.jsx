@@ -14,7 +14,6 @@ export default class HeaDer extends Component{
             user: adminUserStore.getUser(),
             color:'red'
         }
-
     }
 
 
@@ -36,6 +35,5 @@ export default class HeaDer extends Component{
             </Menu>
         );
     }//End of render
-
 
 }//End of class

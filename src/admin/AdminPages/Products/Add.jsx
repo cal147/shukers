@@ -117,12 +117,8 @@ class Cat extends Component {
             this.setState({currentCats: data});
             this.setState({loading: false});
         }).catch((err) => {
-            console.error(err);
+
         });
-    }
-
-    componentDidMount() {
-
     }
 
     removeCat(id) {
@@ -151,7 +147,6 @@ class Cat extends Component {
             }
             this.setState({loading: false});
         }).catch((err) => {
-            console.error(err);
             this.setState({loading: false});
         });
     }
@@ -180,7 +175,6 @@ class Cat extends Component {
             }
             this.setState({loading: false});
         }).catch((err) => {
-            console.error(err);
             this.setState({loading: false});
         });
 
@@ -289,10 +283,6 @@ class Prod extends Component {
         this.getCategories();
     }
 
-    componentDidMount() {
-
-    }
-
     getCategories() {
         this.setState({loading: true});
         fetch(serverScripts + "admin/Controllers/productsController.php", {
@@ -307,7 +297,7 @@ class Prod extends Component {
             this.setState({categoryOptions: data});
             this.setState({loading: false});
         }).catch((err) => {
-            console.error(err);
+
         });
     }
 
@@ -354,8 +344,6 @@ class Prod extends Component {
                 const fileAsBinaryString = reader.result;
                 this.setState({imageBin: fileAsBinaryString});
             };
-            reader.onabort = () => console.log('file reading was aborted');
-            reader.onerror = () => console.log('file reading has failed');
 
             //reader.readAsBinaryString(file);
             reader.readAsDataURL(file);
@@ -412,7 +400,7 @@ class Prod extends Component {
                    }
                 });
             }).catch((err) => {
-                console.error(err);
+
             });
 
         }

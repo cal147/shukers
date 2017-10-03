@@ -1,6 +1,5 @@
 <?php
 
-
  class Database{
      //Constant mysql details ensures they cant be changed later in the program.
     const SERVER = 'localhost';
@@ -22,4 +21,3 @@
         return $this->conn;
     }
 }
-

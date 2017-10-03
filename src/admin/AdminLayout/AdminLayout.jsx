@@ -10,12 +10,6 @@ import SideBar from './Header/SideBar';
 
 export default class AdminLayout extends Component{
 
-
-    componentDidMount(){
-
-    }
-
-
     render(){
 
         return(

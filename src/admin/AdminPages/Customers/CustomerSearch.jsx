@@ -50,7 +50,7 @@ export default class CustomerSearch extends Component {
             this.setState({customers: data, customerFilter: data, loading:false});
 
         }).catch((err) => {
-            console.error(err);
+
         });
     }
 
@@ -75,14 +75,13 @@ export default class CustomerSearch extends Component {
                 this.getCustomerList();
             }
         }).catch((err) => {
-            console.error(err);
+
         });
 
     }
 
     updateUser(id, loginId, forname, surname, houseNum, street, postcode, contactNumber, email, delivery, home, isStaff, addressId){
         this.setState({loading:true});
-        console.log("Home ", home , " delivery ", delivery);
         fetch(serverScripts + "admin/Controllers/customersController.php", {
             method: 'POST',
             headers: {"Content-type": "application/x-www-form-urlencoded; charset=UTF-8"},
@@ -110,7 +109,7 @@ export default class CustomerSearch extends Component {
                 this.getCustomerList();
             }
         }).catch((err) => {
-            console.error(err);
+
         });
 
     }

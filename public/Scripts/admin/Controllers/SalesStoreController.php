@@ -5,7 +5,6 @@ $_postData = json_decode(file_get_contents("php://input"), true);
 if(isset($_postData['sessionId'])) session_id($_postData['sessionId']);
 session_start();
 
-
 include '../../Shared/loginControl.php';
 
 $db = new Database();
@@ -127,8 +126,6 @@ if(session_status() === PHP_SESSION_ACTIVE) {
             }catch (Exception $e){
                 echo json_encode(['Message' => 'Something went wrong!', 'success' => false]);
             }
-
         }
-
     }
 }

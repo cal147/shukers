@@ -99,10 +99,6 @@ class SalesStore extends EventEmitter{
     }//End of handle actions
 
 }
-
 const salesStore = new SalesStore();
 Dispatcher.register(salesStore.handleActions.bind(salesStore));
-
-window.salesStore = salesStore; //Temp can access the user store from the console.
-
 export default salesStore;

@@ -1,9 +1,3 @@
-/*
- This class is the access point to the admin application. This will be responsible for rendering either the page requested.
- This listens to the user action data store for changes to the user details. A user needs to be a staff member and logged
- in to pass the login screen.
- There is error checking in this page which stops users just entering the a url and bypassing the login system.
- */
 
 import React, {Component} from 'react';
 import {HashRouter, Route, Switch} from "react-router-dom";
@@ -16,9 +10,6 @@ import Products from './AdminPages/Products/Products';
 import Customers from './AdminPages/Customers/Customers';
 import Orders from './AdminPages/Orders';
 
-
-//This will be the component that will be displayed when the user is loggged in.
-//It routes the the user to the pages they request.
 const Routes = ()=>{
     this.state = adminUserStore.getUser();
 

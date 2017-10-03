@@ -1,6 +1,3 @@
-/*
-    This is the display for the login window.
- */
 
 import React, {Component} from 'react';
 import * as AdminUserAction from '../AdminActions/AdminUserAction';
