@@ -118,8 +118,6 @@ export default class myAccount extends Component {
         this.state = {
             user: publicUserStore.getUser(),
         };
-
-        let confirmPasswordChange = null;
         let form =
             <Form onSubmit={this.formChangePassword}>
                 <Form.Input label='Current Password*' placeholder='Current Password'
@@ -534,7 +532,6 @@ export default class myAccount extends Component {
             <div>
                 <Tab panes={this.panes}/>
                 {this.state.redirect}
-                {console.log(this.state.deliveryAddressChecked)}
             </div>
         )
     }
