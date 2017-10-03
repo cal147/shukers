@@ -28,7 +28,7 @@ export default class login extends Component {
     }
 
     handleSubmit(e) {
-        this.setState({count:1})
+        this.setState({count: 1});
         e.preventDefault();
         PublicUserAction.userLoginPublic(this.state.userName, this.state.password);
         publicUserStore.getUser();

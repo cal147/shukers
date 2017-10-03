@@ -20,21 +20,6 @@ export default class myAccount extends Component {
     formChangeUserDetails = e => {
         this.setState({Loader: <Dimmer active><Loader>Changing your address</Loader></Dimmer>});
 
-
-        console.log('firstName - ' + this.state.fName);
-        console.log('lastName - ' + this.state.lName);
-        console.log('contactNumber - ' + this.state.contactNumber);
-        console.log('email - ' + this.state.email);
-        console.log('houseNum - ' + this.state.HouseNum);
-        console.log('address1 - ' + this.state.FirstLine);
-        console.log('address2 - ' + this.state.SecondLine);
-        console.log('postCode - ' + this.state.Postcode);
-        console.log('DelhouseNum - ' + this.state.delHouseNum);
-        console.log('Deladdress1 - ' + this.state.delFirstLine);
-        console.log('Deladdress2 - ' + this.state.delSecondLine);
-        console.log('DelpostCode - ' + this.state.delpPostcode);
-        console.log('IS deliveryAddressChecked - ' + !this.state.deliveryAddressChecked);
-
         fetch(serverScriptsPublic + "Controllers/productsController.php", {
             method: 'POST',
             headers: {"Content-type": "application/x-www-form-urlencoded; charset=UTF-8"},
@@ -64,11 +49,7 @@ export default class myAccount extends Component {
                 })
             }
             this.setState({Loader: null});
-        }).then(
-
-        ).catch((err) => {
-            console.error(err);
-        })
+        });
 
     };
     formChangePassword = e => {
@@ -106,8 +87,6 @@ export default class myAccount extends Component {
                         Please check that you have entered the current password in correctly</Message>
                 }, () => this.setState({Loader: null}))
             }
-        }).catch((err) => {
-            console.error(err);
         });
 
     };
@@ -135,7 +114,7 @@ export default class myAccount extends Component {
 
         this.panes = [
 
-            /*{// TODO - check other orders work well  //// TODO - maybe use segment instead of GRID ///// think about remove
+            /*{
 
                 menuItem: 'Order History', render: () =>
                 <Tab.Pane>
@@ -208,7 +187,6 @@ export default class myAccount extends Component {
                         <Segment inverted color="red">
                             {this.state.Loader}
                             <Form onSubmit={this.formChangeUserDetails}>
-
                                 <Form.Group>
                                     <Form.Input label='First Name'
                                                 defaultValue={this.state.user.firstName}
@@ -232,27 +210,22 @@ export default class myAccount extends Component {
                                 </Form.Group>
                                 {this.state.changeAddress}
                                 <Form.Group>
-
                                     {this.state.DelCheck}
-
                                 </Form.Group>
                                 {this.state.deliveryAddressChecked === true ? null :
                                     <Segment inverted tertiary>
                                         <h4>Delivery Address</h4>
                                         {this.state.changeDeliveryAddress}
                                     </Segment>}
-
                                 <Button type='submit' color="black">Change Details</Button>
                             </Form>
                             {this.state.addressChangeMessage}
                         </Segment>
                     </div>
-
                 </Tab.Pane>
             },
             {
                 menuItem: 'Change Password', render: () =>
-
                 <Tab.Pane>
                     <div>
                         <h2>Please enter all the information required</h2>
@@ -270,7 +243,6 @@ export default class myAccount extends Component {
     componentWillMount() {
         // this.purchaseSalesHistory();
         this.checkForAddress();
-
     }
 
     checkForAddress() {
@@ -426,8 +398,6 @@ export default class myAccount extends Component {
 
                     })
             });
-        }).catch((err) => {
-            console.error(err);
         });
     }
 
@@ -493,20 +463,17 @@ export default class myAccount extends Component {
 
 
     /*salesDetails(saleId) {
-        console.log(saleId)
-        // fetch(serverScriptsPublic + "Controllers/productsController.php", {
-        //     method: 'POST',
-        //     headers: {"Content-type": "application/x-www-form-urlencoded; charset=UTF-8"},
-        //     body: JSON.stringify({
-        //         action: "GET_USERORDERHISTORY",
-        //         User: saleId
-        //     }),
-        //     mode: 'cors'
-        // }).then(response => response.json()).then(data => {
-        //     this.setState({SalesDetails: data});
-        // }).catch((err) => {
-        //     console.error(err);
-        // });
+        fetch(serverScriptsPublic + "Controllers/productsController.php", {
+            method: 'POST',
+            headers: {"Content-type": "application/x-www-form-urlencoded; charset=UTF-8"},
+             body: JSON.stringify({
+                 action: "GET_USERORDERHISTORY",
+                 User: saleId
+             }),
+             mode: 'cors'
+         }).then(response => response.json()).then(data => {
+             this.setState({SalesDetails: data});
+         });
     }*/
 
     /*purchaseSalesHistory() {
@@ -520,8 +487,6 @@ export default class myAccount extends Component {
             mode: 'cors'
         }).then(response => response.json()).then(data => {
             this.setState({PurchaseSalesHistory: data});
-        }).catch((err) => {
-            console.error(err);
         });
     }*/
 

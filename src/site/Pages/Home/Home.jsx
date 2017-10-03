@@ -1,7 +1,6 @@
 import React, {Component} from "react";
 import {prodImgResourcePublic, serverScriptsPublic} from '../../../shared/urls'
 import {Divider, Grid} from 'semantic-ui-react'
-import './publicHomePage.css'
 import Slider from './slider'
 
 
@@ -27,10 +26,6 @@ export default class home extends Component {
                 action: "GET_HOMEPRODUCTS"
             }),
             mode: 'cors'
-        }).then(response => response.json()).then(data => {
-            this.setState({Productsdata: data});
-        }).catch((err) => {
-            console.error(err);
         });
     }
 
@@ -63,19 +58,17 @@ export default class home extends Component {
                         </Grid.Column>
                     </Grid.Row>
                 </Grid>
-
-
                 <div>
                     <Grid stackable>
                         <div>
                             <Grid.Row>
                                 <Divider/>
-                                <Divider horizontal >A selection of our finest products</Divider>
+                                <Divider horizontal>A selection of our finest products</Divider>
                                 <Divider/>
                             </Grid.Row>
                         </div>
                         <Grid.Row columns={3} textAlign="center">
-                            {this.state.Productsdata !=null?this.state.Productsdata.map((product, i) =>
+                            {this.state.Productsdata != null ? this.state.Productsdata.map((product, i) =>
                                 <Grid.Column key={i}><h3>{product.name}</h3>
                                     <br/>
                                     <img className="homeImg" src={prodImgResourcePublic + product.imgPath}
@@ -83,7 +76,7 @@ export default class home extends Component {
                                     <br/>
                                     <h4>Price: £{product.price}</h4>
                                     <br/>
-                                </Grid.Column>):null}
+                                </Grid.Column>) : null}
                         </Grid.Row>
                     </Grid>
                 </div>

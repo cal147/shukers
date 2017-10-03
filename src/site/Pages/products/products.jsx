@@ -30,8 +30,6 @@ export default class product extends Component {
                 mode: 'cors'
             }).then(response => response.json()).then(data => {
                 this.setState({salesID: data});
-            }).catch((err) => {
-                console.error(err);
             });
         if (this.state.counter === 0) {
             this.urlchange();
@@ -62,8 +60,6 @@ export default class product extends Component {
             mode: 'cors'
         }).then(response => response.json()).then(data => {
             this.setState({Productsdata: data});
-        }).catch((err) => {
-            console.error(err);
         });
     }
 
@@ -85,8 +81,6 @@ export default class product extends Component {
             mode: 'cors'
         }).then(response => response.json()).then(data => {
             this.setState({Productsdata1: data});
-        }).catch((err) => {
-            console.error(err);
         });
     }
 
@@ -115,7 +109,6 @@ export default class product extends Component {
                         <div className="prodDiv"><Grid.Row stretched
                                                            as="h3">{product.name}</Grid.Row>
                             <br/>
-
                             {/*Modal shows the product page as pop up*/}
                             <Modal
                                 dimmer='blurring'

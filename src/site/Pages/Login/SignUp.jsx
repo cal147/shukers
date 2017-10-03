@@ -30,7 +30,6 @@ export default class SignUp extends Component {
             !this.state.password.match(/^[A-Za-z0-9\-!"£$%^&*()]{6,20}$/) ||
             !this.state.postCode.match(/^[A-Z]{1,2}[0-9]{1,2} ?[0-9][A-Z]{2}$/)) {
             if (this.state.password.length < 6) {
-                console.log('Not Valid - Not enough characters');
                 this.setState({
                     message: <Message error><Message.Header>Password not long enough</Message.Header>Password must be 6
                         letters or longer</Message>
@@ -38,7 +37,6 @@ export default class SignUp extends Component {
             }
 
             if (this.state.password !== this.state.confirmPassword) {
-                console.log('Not Valid - passwords do not match');
                 this.setState({
                     message: <Message error><Message.Header>Passwords do not match</Message.Header>Check both passwords
                         match</Message>
@@ -46,7 +44,6 @@ export default class SignUp extends Component {
             }
 
             if (!this.state.password.match(/^[A-Za-z0-9\-!"£$%^&*()]{6,20}$/)) {
-                console.log('password not valid');
                 this.setState({
                     message: <Message error><Message.Header>Password does not meet complexity
                         requirements</Message.Header>Password must have at least 1 capital letter,
@@ -55,7 +52,6 @@ export default class SignUp extends Component {
             }
 
             if (!this.state.postCode.match(/^[A-Z]{1,2}[0-9]{1,2} ?[0-9][A-Z]{2}$/)) {
-                console.log('postcode not valid');
                 this.setState({
                     message: <Message error><Message.Header>Post Code is incorrect</Message.Header>Please check you have
                         entered your postcode and address in correctly</Message>
@@ -89,18 +85,17 @@ export default class SignUp extends Component {
                 }),
                 mode: 'cors'
             }).then(response => response.json()).then(data => {
-                this.setState({passwordChangeConfirmation: data, Loader: null});
                 if (data.Message === "ok") {
                     this.setState({
                         message: <Message success><Message.Header>User successfully signed up</Message.Header>Please
                             go to the login page to purchase our products</Message>
                     });
+                    this.setState({
+                        passwordChangeConfirmation: data,
+                        Loader: null,
+                        redirect: <Redirect to={"/login"}/>
+                    });
                 }
-                this.setState({
-                    redirect: <Redirect to={"/login"}/>
-                })
-            }).catch((err) => {
-                console.error(err);
             });
 
         }
@@ -135,8 +130,6 @@ export default class SignUp extends Component {
             } else {
                 this.setState({userTaken: data.Message, userTakenColour: "blue"});
             }
-        }).catch((err) => {
-            console.error(err);
         });
 
     }

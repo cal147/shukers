@@ -48,7 +48,6 @@ export default class SiteLayout extends Component {
         PublicUserAction.logoutUserPublic();
 
         this.setState({loggedin: false});
-        // window.location.reload()
     };
 
     constructor() {
@@ -78,8 +77,6 @@ export default class SiteLayout extends Component {
             mode: 'cors'
         }).then(response => response.json()).then(data => {
             this.setState({Productsdata: data});
-        }).catch((err) => {
-            console.error(err);
         });
     }
 
@@ -94,8 +91,6 @@ export default class SiteLayout extends Component {
             mode: 'cors'
         }).then(response => response.json()).then(data => {
             this.setState({ProductSearch: data});
-        }).catch((err) => {
-            console.error(err);
         });
     }
 
@@ -111,13 +106,9 @@ export default class SiteLayout extends Component {
         }).then(response => response.json()).then(data => {
             this.setState({productModal: data});
 
-        }).catch((err) => {
-            console.error(err);
         });
     }
     addProductToBasket(productId, qty) {
-
-        console.log(this.state.salesID);
         fetch(serverScriptsPublic + "Controllers/productsController.php", {
             method: 'POST',
             headers: {"Content-type": "application/x-www-form-urlencoded; charset=UTF-8"},
@@ -131,8 +122,6 @@ export default class SiteLayout extends Component {
             mode: 'cors'
         }).then(response => response.json()).then(data => {
             this.setState({Productsdata1: data});
-        }).catch((err) => {
-            console.error(err);
         });
     }
 
@@ -270,7 +259,6 @@ export default class SiteLayout extends Component {
                         <Dropdown item text={'Products'}>
                             <Dropdown.Menu>
                                 {this.state.Productsdata.map((product, i) => <Dropdown.Item
-
                                     key={product.cat} name='products' as={Link} to={"/products/" + product.cat}
                                     onClick={this.handleItemClick}>{product.cat}</Dropdown.Item>)}
                             </Dropdown.Menu>
@@ -302,11 +290,8 @@ export default class SiteLayout extends Component {
             return (
                 <div>
                     <Button onClick={this.toggleVisibility} icon="content" content="Menu" labelPosition="left"/>
-
-
                     <Sidebar.Pushable className="sidebarPushable">
                         <Header/>
-
                         <Sidebar as={Menu} animation='scale down' width='wide' visible={visible} icon='labeled'
                                  stackable inverted color={"red"}>
                             <h3><Icon name='browser'/><br/>For a better experience please visit us on a computer</h3>

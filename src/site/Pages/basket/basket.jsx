@@ -35,11 +35,8 @@ export default class basket extends Component {
             totalPrice += parseFloat(products[i].subPrice);
         }
 
-        // console.log("three for 10 prod arr ", threeForTenCost, " three for 10 count ", threeForTenProdCount, " all three for 10 ", allThreeForTenProdsPrice, " total cost " , totalPrice)
         threeForTenQualify = Math.floor(threeForTenProdCount / 3);
         threeForTenRemainingCost = this.getRemainingCost(threeForTenCost, threeForTenQualify);
-
-        // console.log("three for 10 quali prod ", threeForTenQualify, " three for 10 rem ", threeForTenRemainingCost,);
 
         if (allThreeForTenProdsPrice == threeForTenRemainingCost) {
             threeForTenQualify = 0
@@ -50,7 +47,6 @@ export default class basket extends Component {
     getRemainingCost(totalCostArr, qualProds) {
 
         let qualProd = qualProds * 3;
-        // console.log('qualProd - ',qualProd, ' qualProdS - ', qualProds)
         let threeTenCost = 0;
         let totalCost = 0;
 
@@ -88,14 +84,11 @@ export default class basket extends Component {
                     mode: 'cors'
                 }).then(response => response.json()).then(data => {
                     this.setState({BasketTotalPrice: data.totalPrice});
-                }).catch((err) => {
-                    console.error(err);
                 });
 
             });
-        }).catch((err) => {
-            console.error(err);
         });
+
         fetch(serverScriptsPublic + "Controllers/productsController.php", {
             method: 'POST',
             headers: {"Content-type": "application/x-www-form-urlencoded; charset=UTF-8"},
@@ -106,8 +99,6 @@ export default class basket extends Component {
             mode: 'cors'
         }).then(response => response.json()).then(data => {
             this.setState({BasketData: data});
-        }).catch((err) => {
-            console.error(err);
         });
 
 
@@ -125,11 +116,8 @@ export default class basket extends Component {
             }),
             mode: 'cors'
         }).then(response => response.json()).then(data => {
-            this.setState({BasketData: data});
-        }).catch((err) => {
-            console.error(err);
+            this.setState({BasketData: data}, () => window.location.reload());
         });
-        window.location.reload()
     }
 
     collectInStore(price) {
@@ -151,8 +139,6 @@ export default class basket extends Component {
             } else {
                 alert('something went wrong!')
             }
-        }).catch((err) => {
-            console.error(err);
         });
     }
 
@@ -167,13 +153,7 @@ export default class basket extends Component {
             }),
             mode: 'cors'
         }).then(response => response.json()).then(data => {
-            if (data.Message === "price updated") {
-                console.log(data)
-            } else {
-                alert('something went wrong!')
-            }
-        }).catch((err) => {
-            console.error(err);
+
         });
 
     }
@@ -183,8 +163,6 @@ export default class basket extends Component {
         let priceWithDiscount = this.calculatePrice(this.state.BasketData);
         let discount = this.state.BasketTotalPrice - priceWithDiscount;
         let price = this.state.BasketTotalPrice;
-
-        console.log(this.state.priceWithDiscount);
 
         return (
             <div>
@@ -238,11 +216,9 @@ export default class basket extends Component {
 
                 {priceWithDiscount > 0 ?
                     <div>
-                        {/*TODO Cheange paypal locations to match live server*/}
                         <form action="https://www.paypal.com/cgi-bin/webscr" method="post"
                               onSubmit={() => this.sendDiscountPrice(priceWithDiscount)}>
 
-                            {/*TODO Cheange paypal locations to match live server*/}
                             <input type="hidden" name="business" value="shukersbutchers@gmail.com"/>
                             {/*Specify a Buy Now button.*/}
                             <input type="hidden" name="cmd" value="_xclick"/>
@@ -253,7 +229,6 @@ export default class basket extends Component {
                             <input type="hidden" name="discount_amount" value={discount}/>
                             <input type="hidden" name="amount" value={price}/>
 
-                            {/*TODO Cheange paypal locations to match live server*/}
                             <input type="hidden" name="notify_url"
                                    value="https://shukersbutchers.co.uk/paypal/paypalVerify.php"/>
                             <input type="hidden" name="return" value="https://webserver.clps.uk/#/confirmation"/>
@@ -270,11 +245,9 @@ export default class basket extends Component {
                             </div>
 
                         </form>
-                        {/*TODO Cheange paypal locations to match live server*/}
                         <form action="https://www.paypal.com/cgi-bin/webscr" method="post"
                               onSubmit={() => this.collectInStore(priceWithDiscount)}>
 
-                            {/*TODO Cheange paypal locations to match live server*/}
                             <input type="hidden" name="business" value="shukersbutchers@gmail.com"/>
                             {/*Specify a Buy Now button.*/}
                             <input type="hidden" name="cmd" value="_xclick"/>
@@ -285,7 +258,6 @@ export default class basket extends Component {
                             <input type="hidden" name="discount_amount" value={discount}/>
                             <input type="hidden" name="amount" value={price}/>
 
-                            {/*TODO Cheange paypal locations to match live server*/}
                             <input type="hidden" name="notify_url"
                                    value="https://shukersbutchers.co.uk/paypal/paypalVerify.php"/>
                             <input type="hidden" name="return" value="https://webserver.clps.uk/#/confirmation"/>
@@ -296,7 +268,6 @@ export default class basket extends Component {
                                         Collect</Button>}
                                     content='Pay now and collect in store tomorrow'
                                 />
-
                                 <input type="image" name="submit"
                                        src="https://www.paypalobjects.com/webstatic/en_US/i/buttons/cc-badges-ppmcvdam.png"
                                        alt="Credit Card Badges"/>
