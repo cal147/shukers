@@ -84,9 +84,11 @@ export default class basket extends Component {
                     mode: 'cors'
                 }).then(response => response.json()).then(data => {
                     this.setState({BasketTotalPrice: data.totalPrice});
+                }).catch((err) => {
                 });
 
             });
+        }).catch((err) => {
         });
 
         fetch(serverScriptsPublic + "Controllers/productsController.php", {
@@ -99,6 +101,7 @@ export default class basket extends Component {
             mode: 'cors'
         }).then(response => response.json()).then(data => {
             this.setState({BasketData: data});
+        }).catch((err) => {
         });
 
 
@@ -117,6 +120,7 @@ export default class basket extends Component {
             mode: 'cors'
         }).then(response => response.json()).then(data => {
             this.setState({BasketData: data}, () => window.location.reload());
+        }).catch((err) => {
         });
     }
 
@@ -139,6 +143,7 @@ export default class basket extends Component {
             } else {
                 alert('something went wrong!')
             }
+        }).catch((err) => {
         });
     }
 
@@ -154,6 +159,7 @@ export default class basket extends Component {
             mode: 'cors'
         }).then(response => response.json()).then(data => {
 
+        }).catch((err) => {
         });
 
     }

@@ -92,6 +92,7 @@ class PublicUserStore extends EventEmitter {
 
             if (data['loginId'] != null) sessionStorage.setItem("userData", JSON.stringify(data));
             this.emit("change");
+        }).catch((err) => {
         });
 
 
@@ -140,6 +141,7 @@ class PublicUserStore extends EventEmitter {
                     this.emit("change");
                 }
 
+            }).catch((err) => {
             });
 
         }

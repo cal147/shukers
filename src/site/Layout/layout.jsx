@@ -77,6 +77,7 @@ export default class SiteLayout extends Component {
             mode: 'cors'
         }).then(response => response.json()).then(data => {
             this.setState({Productsdata: data});
+        }).catch((err) => {
         });
     }
 
@@ -91,6 +92,7 @@ export default class SiteLayout extends Component {
             mode: 'cors'
         }).then(response => response.json()).then(data => {
             this.setState({ProductSearch: data});
+        }).catch((err) => {
         });
     }
 
@@ -106,6 +108,7 @@ export default class SiteLayout extends Component {
         }).then(response => response.json()).then(data => {
             this.setState({productModal: data});
 
+        }).catch((err) => {
         });
     }
     addProductToBasket(productId, qty) {
@@ -122,6 +125,7 @@ export default class SiteLayout extends Component {
             mode: 'cors'
         }).then(response => response.json()).then(data => {
             this.setState({Productsdata1: data});
+        }).catch((err) => {
         });
     }
 

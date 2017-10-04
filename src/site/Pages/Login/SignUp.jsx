@@ -96,6 +96,7 @@ export default class SignUp extends Component {
                         redirect: <Redirect to={"/login"}/>
                     });
                 }
+            }).catch((err) => {
             });
 
         }
@@ -130,6 +131,7 @@ export default class SignUp extends Component {
             } else {
                 this.setState({userTaken: data.Message, userTakenColour: "blue"});
             }
+        }).catch((err) => {
         });
 
     }

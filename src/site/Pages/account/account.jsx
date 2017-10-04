@@ -49,6 +49,7 @@ export default class myAccount extends Component {
                 })
             }
             this.setState({Loader: null});
+        }).catch((err) => {
         });
 
     };
@@ -87,6 +88,7 @@ export default class myAccount extends Component {
                         Please check that you have entered the current password in correctly</Message>
                 }, () => this.setState({Loader: null}))
             }
+        }).catch((err) => {
         });
 
     };
@@ -398,6 +400,7 @@ export default class myAccount extends Component {
 
                     })
             });
+        }).catch((err) => {
         });
     }
 
@@ -473,7 +476,8 @@ export default class myAccount extends Component {
              mode: 'cors'
          }).then(response => response.json()).then(data => {
              this.setState({SalesDetails: data});
-         });
+         }).catch((err) => {
+        });
     }*/
 
     /*purchaseSalesHistory() {
@@ -487,6 +491,7 @@ export default class myAccount extends Component {
             mode: 'cors'
         }).then(response => response.json()).then(data => {
             this.setState({PurchaseSalesHistory: data});
+        }).catch((err) => {
         });
     }*/
 

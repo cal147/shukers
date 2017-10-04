@@ -30,6 +30,7 @@ export default class product extends Component {
                 mode: 'cors'
             }).then(response => response.json()).then(data => {
                 this.setState({salesID: data});
+            }).catch((err) => {
             });
         if (this.state.counter === 0) {
             this.urlchange();
@@ -60,6 +61,7 @@ export default class product extends Component {
             mode: 'cors'
         }).then(response => response.json()).then(data => {
             this.setState({Productsdata: data});
+        }).catch((err) => {
         });
     }
 
@@ -81,6 +83,7 @@ export default class product extends Component {
             mode: 'cors'
         }).then(response => response.json()).then(data => {
             this.setState({Productsdata1: data});
+        }).catch((err) => {
         });
     }
 

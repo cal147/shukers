@@ -26,6 +26,9 @@ export default class home extends Component {
                 action: "GET_HOMEPRODUCTS"
             }),
             mode: 'cors'
+        }).then(response => response.json()).then(data => {
+            this.setState({Productsdata: data})
+        }).catch((err) => {
         });
     }
 
