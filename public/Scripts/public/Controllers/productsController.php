@@ -16,19 +16,15 @@ if ($_postData['action'] == 'GET_HOMEPRODUCTS') {
 
     $prodArray = [];
     try {
-        $stmt = $conn->prepare("SELECT p.id, p.name, p.description, p.price, p.onOffer, p.imgPath, c.cat FROM products AS p JOIN category AS c ON p.catId = c.id WHERE p.forSale = 1 ORDER BY rand() LIMIT 3");
+        $stmt = $conn->prepare("SELECT name, price, imgPath FROM products WHERE forSale = 1 ORDER BY rand() LIMIT 3");
         $stmt->execute();
 
         if ($result = $stmt->get_result()) {
             while ($row = $result->fetch_assoc()) {
                 array_push($prodArray, [
-                    'id' => $row['id'],
                     'name' => $row['name'],
-                    'desc' => $row['description'],
                     'price' => $row['price'],
-                    'onOffer' => $row['onOffer'],
                     'imgPath' => $row['imgPath'],
-                    'cat' => $row['cat']
                 ]);
             }
             echo json_encode($prodArray);
