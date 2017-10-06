@@ -22,13 +22,16 @@ export default class SignUp extends Component {
         DelpostCode: '',
         message: null,
         deliveryAddressChecked: true,
-        homeAddressChecked: true
+        homeAddressChecked: true,
+        terms: false
     };
 
     formSubmitUser = e => {
+        this.setState({postCode: this.state.postCode.toUpperCase()});
         if (this.state.password.length < 6 || this.state.password !== this.state.confirmPassword ||
             !this.state.password.match(/^[A-Za-z0-9\-!"£$%^&*()]{6,20}$/) ||
-            !this.state.postCode.match(/^[A-Z]{1,2}[0-9]{1,2} ?[0-9][A-Z]{2}$/)) {
+            !this.state.postCode.match(/^[A-Z]{1,2}[0-9]{1,2} ?[0-9][A-Z]{2}$/) ||
+            this.state.terms === false) {
             if (this.state.password.length < 6) {
                 this.setState({
                     message: <Message error><Message.Header>Password not long enough</Message.Header>Password must be 6
@@ -53,8 +56,15 @@ export default class SignUp extends Component {
 
             if (!this.state.postCode.match(/^[A-Z]{1,2}[0-9]{1,2} ?[0-9][A-Z]{2}$/)) {
                 this.setState({
-                    message: <Message error><Message.Header>Post Code is incorrect</Message.Header>Please check you have
+                    message: <Message error><Message.Header>Post Code is incorrect - Must </Message.Header>Please check
+                        you have
                         entered your postcode and address in correctly</Message>
+                })
+            }
+
+            if (this.state.terms === false) {
+                this.setState({
+                    message: <Message error><Message.Header>Terms Checkbox not accepted</Message.Header></Message>
                 })
             }
         } else {
@@ -186,6 +196,7 @@ export default class SignUp extends Component {
 
     render() {
         let deliveryAddress = null;
+        let termMessage = null;
         if (this.state.deliveryAddressChecked === false) {
             deliveryAddress =
                 <Segment inverted tertiary>
@@ -207,12 +218,15 @@ export default class SignUp extends Component {
                     </Form.Group>
                 </Segment>;
         }
+        if (this.state.terms === false) {
+            termMessage = <Message warning>please accept the terms of delivery</Message>
+        }
         return (
             <div>
                 <Segment inverted color="red">
                     {this.state.Loader}
                     <h2>Please enter all the information required</h2>
-                    <Form onSubmit={this.formSubmitUser} error>
+                    <Form onSubmit={this.formSubmitUser} warning>
                         <Form.Group>
                             <Form.Input label='First Name*' placeholder='First Name' value={this.state.firstName}
                                         width={4} required onChange={this.handleChangeFName.bind(this)}/>
@@ -265,20 +279,23 @@ export default class SignUp extends Component {
                             <Checkbox defaultChecked label="Delivery Address"
                                       onChange={() => this.setState({deliveryAddressChecked: !this.state.deliveryAddressChecked})}/>
                         </Form.Group>
-                        <Form.Group>
-                            {/*TODO - make checkbox a requirement*/}
-                            <Form.Checkbox defaultChecked={false} className="signUpCheckbox" required
-                                      label="I understand that Shukers Butchers can only deliver in the local region of the shop. Covering Liverpool,
+                        <Segment inverted tertiary>
+                            <Form.Group>
+                                <Checkbox
+                                    className="signUpCheckbox"
+                                    label="I understand that Shukers Butchers can only deliver in the local region of the shop. Covering Liverpool,
                                       St. Helens and Warrington. If you purchase our products from out of the delivering area YOU WILL NEED TO COLLECT!"
-                            />
-                        </Form.Group>
+                                    onChange={() => this.setState({terms: !this.state.terms})}
+                                />
+                            </Form.Group>
+                            {termMessage}
+                        </Segment>
                         {deliveryAddress}
-                        {this.state.message}
                         <Button type='submit' color="black">Sign Up</Button>
                     </Form>
+                    {this.state.message}
                 </Segment>
                 <Button as={Link} to="/login" negative>Already have an account login here</Button>
-                {this.state.redirect}
             </div>
         )
     }
