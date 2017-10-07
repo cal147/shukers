@@ -8,6 +8,8 @@ import login from "./site/Pages/Login/login";
 import signUp from "./site/Pages/Login/SignUp";
 import ForgottenPassword from "./site/Pages/Login/ForgottenPassword";
 import product from "./site/Pages/products/products";
+import threeforten from "./site/Pages/products/threeforten";
+import offers from "./site/Pages/products/offers";
 import myAccount from "./site/Pages/account/account";
 import confirmation from "./site/Pages/confirmation/confirmation";
 import SiteLayout from './site/Layout/layout'
@@ -25,6 +27,8 @@ const Site = () => {
                         <Route path="/findUs" component={findUs}/>
                         <Route path="/basket" component={basket}/>
                         <Route path="/products" component={product}/>
+                        <Route path="/threeforten" component={threeforten}/>
+                        <Route path="/offers" component={offers}/>
                         <Route path="/login" component={login}/>
                         <Route path="/signUp" component={signUp}/>
                         <Route path="/ForgottenPassword" component={ForgottenPassword}/>

@@ -267,6 +267,11 @@ export default class SiteLayout extends Component {
                                     onClick={this.handleItemClick}>{product.cat}</Dropdown.Item>)}
                             </Dropdown.Menu>
                         </Dropdown>
+                        <Menu.Item name='3 for 10' active={activeItem === '3 for 10'} onClick={this.handleItemClick}
+                                   as={Link}
+                                   to='/threeforten'/>
+                        <Menu.Item name='Offers' active={activeItem === 'Offers'} onClick={this.handleItemClick}
+                                   as={Link} to='/offers'/>
                         {loggedIn}
                         {userloggedin}
                         <Menu.Menu>
@@ -319,6 +324,11 @@ export default class SiteLayout extends Component {
                                         {product.cat}</Dropdown.Item>)}
                                 </Dropdown.Menu>
                             </Dropdown>
+                            <Menu.Item name='3 for 10' active={activeItem === '3 for 10'} onClick={this.handleItemClick}
+                                       as={Link}
+                                       to='/threeforten'/>
+                            <Menu.Item name='Offers' active={activeItem === 'Offers'} onClick={this.handleItemClick}
+                                       as={Link} to='/offers'/>
                             {userloggedin}
                         </Sidebar>
                         <Sidebar.Pusher>

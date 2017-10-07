@@ -16,7 +16,7 @@ if ($_postData['action'] == 'GET_HOMEPRODUCTS') {
 
     $prodArray = [];
     try {
-        $stmt = $conn->prepare("SELECT name, price, imgPath FROM products WHERE forSale = 1 ORDER BY rand() LIMIT 3");
+        $stmt = $conn->prepare("SELECT name, price, imgPath FROM products WHERE forSale = 1 AND onOffer = 1 ORDER BY rand() LIMIT 6");
         $stmt->execute();
 
         if ($result = $stmt->get_result()) {
@@ -124,6 +124,62 @@ if ($_postData['action'] == 'SELECT_SPECIFICCATEGORY') {
             echo('fail');
             return false;
         }
+    }
+}
+
+if ($_postData['action'] == 'GET_THREEFORTEN') {
+
+    $productArray = [];
+    try {
+        $stmt = $conn->prepare("SELECT id, name, price, description, onOffer, 3for10, imgPath, units FROM products WHERE forSale = 1 AND 3for10 = 1");
+        $stmt->execute();
+
+        if ($result = $stmt->get_result()) {
+            while ($row = $result->fetch_assoc()) {
+                array_push($productArray, [
+                    'id' => $row['id'],
+                    'name' => $row['name'],
+                    'desc' => $row['description'],
+                    'price' => $row['price'],
+                    'onOffer' => $row['onOffer'],
+                    'threeForTen' => $row['3for10'],
+                    'imgPath' => $row['imgPath'],
+                    'units' => $row['units']
+                ]);
+            }
+        }
+        echo json_encode($productArray);
+    } catch (Exception $e) {
+        echo('fail');
+        return false;
+    }
+}
+
+if ($_postData['action'] == 'GET_OFFERS') {
+
+    $productArray = [];
+    try {
+        $stmt = $conn->prepare("SELECT id, name, price, description, onOffer, 3for10, imgPath, units FROM products WHERE forSale = 1 AND onOffer = 1");
+        $stmt->execute();
+
+        if ($result = $stmt->get_result()) {
+            while ($row = $result->fetch_assoc()) {
+                array_push($productArray, [
+                    'id' => $row['id'],
+                    'name' => $row['name'],
+                    'desc' => $row['description'],
+                    'price' => $row['price'],
+                    'onOffer' => $row['onOffer'],
+                    'threeForTen' => $row['3for10'],
+                    'imgPath' => $row['imgPath'],
+                    'units' => $row['units']
+                ]);
+            }
+        }
+        echo json_encode($productArray);
+    } catch (Exception $e) {
+        echo('fail');
+        return false;
     }
 }
 

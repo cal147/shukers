@@ -4,7 +4,7 @@ import {Button, Grid, Icon, Image, Label, Modal} from 'semantic-ui-react'
 
 import PublicUserStore from '../UserStore/PublicUserStore'
 
-export default class product extends Component {
+export default class threeforten extends Component {
 
     constructor() {
         super();
@@ -20,43 +20,27 @@ export default class product extends Component {
     }
 
     componentWillMount() {
-            fetch(serverScriptsPublic + "Controllers/productsController.php", {
-                method: 'POST',
-                headers: {"Content-type": "application/x-www-form-urlencoded; charset=UTF-8"},
-                body: JSON.stringify({
-                    action: "GET_SALEID",
-                    User: this.state.user.id
-                }),
-                mode: 'cors'
-            }).then(response => response.json()).then(data => {
-                this.setState({salesID: data});
-            }).catch((err) => {
-            });
-        if (this.state.counter === 0) {
-            this.urlchange();
-            this.setState({counter: 1})
-        }
-    }
-
-    componentDidMount() {
-        if (this.state.counter === 1) {
-            this.setState({counter: 0})
-        }
-    }
-
-    componentDidUpdate() {
-        if (this.state.hash !== window.location.hash) {
-            window.location.reload()
-        }
-    }
-
-    getSpecificProducts(cat) {
         fetch(serverScriptsPublic + "Controllers/productsController.php", {
             method: 'POST',
             headers: {"Content-type": "application/x-www-form-urlencoded; charset=UTF-8"},
             body: JSON.stringify({
-                action: "SELECT_SPECIFICCATEGORY",
-                category: cat
+                action: "GET_SALEID",
+                User: this.state.user.id
+            }),
+            mode: 'cors'
+        }).then(response => response.json()).then(data => {
+            this.setState({salesID: data});
+        }).catch((err) => {
+        });
+        this.getThreeForTenProducts();
+    }
+
+    getThreeForTenProducts() {
+        fetch(serverScriptsPublic + "Controllers/productsController.php", {
+            method: 'POST',
+            headers: {"Content-type": "application/x-www-form-urlencoded; charset=UTF-8"},
+            body: JSON.stringify({
+                action: "GET_THREEFORTEN"
             }),
             mode: 'cors'
         }).then(response => response.json()).then(data => {
@@ -85,13 +69,6 @@ export default class product extends Component {
             this.setState({Productsdata1: data});
         }).catch((err) => {
         });
-    }
-
-    urlchange() {
-        let str = window.location.hash;
-        const category = str.substring(11);
-
-        this.getSpecificProducts(category);
     }
 
     handelQtyChange(e) {
@@ -154,7 +131,7 @@ export default class product extends Component {
                                     {addedToBasket}
                                 </Modal.Actions>
                             </Modal>
-                            <br/><h4>Price: £{product.price +"-"+ product.units}</h4><br/></div>
+                            <br/><h4>Price: £{product.price + "-" + product.units}</h4><br/></div>
                     </Grid>) : null}
             </Grid>
         } else {
@@ -192,7 +169,7 @@ export default class product extends Component {
                                     <h3>Please sign in to order this product</h3>
                                 </Modal.Actions>
                             </Modal>
-                            <br/><h4>Price: £{product.price+"-"+product.units}</h4><br/></div>
+                            <br/><h4>Price: £{product.price + "-" + product.units}</h4><br/></div>
                     </Grid>) : null}
             </Grid>
         }
