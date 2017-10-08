@@ -57,7 +57,9 @@ export default class home extends Component {
                                 <strong>Thursday</strong>: 9.00 - 16.00<br/>
                                 <strong>Friday</strong>: 9.00 - 16.00<br/>
                                 <strong>Saturday</strong>: 9.00 - 16.00<br/>
-                                <strong>Sunday</strong>: <strong className="openingTime_Closed">CLOSED</strong></h4>
+                                <strong>Sunday</strong>: <strong className="openingTime_Closed">CLOSED</strong>
+                                Mobile: 07511165778
+                            </h4>
                         </Grid.Column>
                     </Grid.Row>
                 </Grid>
