@@ -234,7 +234,7 @@ if ($_postData['action'] == 'SEARCH_PRODUCTS') {
                     array_push($prodArray, [
                         'title' => $row['name'],
                         'price' => $row['price'],
-                        'image' => 'http://localhost/shukers/public/Images/Products/' . $row['imgPath'],
+                        'image' => '/public/Images/Products/' . $row['imgPath'],
                     ]);
                 }
                 echo json_encode($prodArray);
@@ -324,10 +324,8 @@ if ($_postData['action'] == 'GET_USERSALESHISTORY') {
 
         $cleanUserID = strip_tags($cUserID);
 
-        //TODO - Look at this to have several orders on without joining - currently shows individual orders but all order details ///// think about remove
-
         try {
-            $stmt = $conn->prepare("SELECT id, DATE_FORMAT(saleDate, \"%W %d %M %Y\") AS saleDate, totalPrice FROM shukers.sales WHERE userId = ? AND paid = 1 ORDER BY saleDate ASC;");
+            $stmt = $conn->prepare("SELECT id, DATE_FORMAT(saleDate, \"%W %d %M %Y\") AS saleDate, totalPrice FROM sales WHERE userId = ? AND paid = 1 ORDER BY saleDate ASC;");
             $stmt->bind_param("i", $cleanUserID);
             $stmt->execute();
             if ($result = $stmt->get_result()) {
@@ -419,7 +417,7 @@ if ($_postData['action'] == 'GET_SALEID') {
         $cleanUserID = strip_tags($cUserID);
 
         try {
-            $stmt = $conn->prepare("SELECT id FROM shukers.sales WHERE paid = 0 AND userId = ?");
+            $stmt = $conn->prepare("SELECT id FROM sales WHERE paid = 0 AND userId = ?");
             $stmt->bind_param("i", $cleanUserID);
             $stmt->execute();
             $result = $stmt->get_result();
@@ -455,7 +453,8 @@ if ($_postData['action'] == 'REMOVEPRODUCTFROMBASKET') {
                 $stmt = $conn->prepare("UPDATE sales SET totalPrice = (SELECT sum(sd.qty * p.price) FROM salesdetails AS sd JOIN products AS p ON sd.productId = p.id WHERE saleId = ?) WHERE `id` = ?;");
                 $stmt->bind_param("ii", $SalesID, $SalesID);
                 if ($stmt->execute()) {
-                    $stmt = $conn->prepare("DELETE FROM sales WHERE totalPrice IS NULL;");
+                    $stmt = $conn->prepare("DELETE FROM sales WHERE totalPrice IS NULL AND id = ?;");
+                    $stmt->bind_param("i", $SalesID);
                     if ($stmt->execute()) {
                         echo json_encode(['Message' => 'sale removed due to having not products in sale', 'success' => true]);
                     } else {

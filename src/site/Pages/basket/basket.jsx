@@ -41,6 +41,7 @@ export default class basket extends Component {
         if (allThreeForTenProdsPrice == threeForTenRemainingCost) {
             threeForTenQualify = 0
         }
+
         return totalPrice - allThreeForTenProdsPrice + (threeForTenQualify * 10) + threeForTenRemainingCost;
     }
 
@@ -100,10 +101,9 @@ export default class basket extends Component {
             }),
             mode: 'cors'
         }).then(response => response.json()).then(data => {
-            this.setState({BasketData: data});
+            this.setState({BasketData: data}, () => this.setState({priceWithDiscount: this.calculatePrice(this.state.BasketData)}));
         }).catch((err) => {
         });
-
 
     }
 
@@ -166,8 +166,8 @@ export default class basket extends Component {
 
     render() {
 
-        let priceWithDiscount = this.calculatePrice(this.state.BasketData);
-        let discount = this.state.BasketTotalPrice - priceWithDiscount;
+        let priceWithDiscount = this.state.priceWithDiscount;
+        let discount = this.state.BasketTotalPrice - this.state.priceWithDiscount;
         let price = this.state.BasketTotalPrice;
 
         return (
