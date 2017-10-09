@@ -1,4 +1,4 @@
-export var serverScripts = "/Scripts/";
-export var serverScriptsPublic = "/Scripts/public/";
-export var imgResource  =  "/Images/";
-export var prodImgResourcePublic  =  "/Images/Products/";
+export var serverScripts = "http://localhost/shukers/public/Scripts/";
+export var serverScriptsPublic = "http://localhost/shukers/public/Scripts/public/";
+export var imgResource = "http://localhost/shukers/public/Images/";
+export var prodImgResourcePublic = "http://localhost/shukers/public/Images/Products/";

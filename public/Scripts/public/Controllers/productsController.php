@@ -164,10 +164,12 @@ if ($_postData['action'] == 'GET_OFFERS') {
 
         if ($result = $stmt->get_result()) {
             while ($row = $result->fetch_assoc()) {
+                $desc = $row['description'];
+                $descNoTags = str_replace("\\\\", "\\", $desc);
                 array_push($productArray, [
                     'id' => $row['id'],
                     'name' => $row['name'],
-                    'desc' => $row['description'],
+                    'desc' => $descNoTags,
                     'price' => $row['price'],
                     'onOffer' => $row['onOffer'],
                     'threeForTen' => $row['3for10'],
