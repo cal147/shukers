@@ -106,10 +106,12 @@ if ($_postData['action'] == 'SELECT_SPECIFICCATEGORY') {
 
             if ($result = $stmt->get_result()) {
                 while ($row = $result->fetch_assoc()) {
+                    $desc = $row['description'];
+                    $descNoTags = str_replace('\n', "\r\n", $desc);
                     array_push($productArray, [
                         'id' => $row['id'],
                         'name' => $row['name'],
-                        'desc' => $row['description'],
+                        'desc' => $descNoTags,
                         'price' => $row['price'],
                         'onOffer' => $row['onOffer'],
                         'threeForTen' => $row['3for10'],
@@ -136,10 +138,12 @@ if ($_postData['action'] == 'GET_THREEFORTEN') {
 
         if ($result = $stmt->get_result()) {
             while ($row = $result->fetch_assoc()) {
+                $desc = $row['description'];
+                $descNoTags = str_replace('\n', "\r\n", $desc);
                 array_push($productArray, [
                     'id' => $row['id'],
                     'name' => $row['name'],
-                    'desc' => $row['description'],
+                    'desc' => $descNoTags,
                     'price' => $row['price'],
                     'onOffer' => $row['onOffer'],
                     'threeForTen' => $row['3for10'],
@@ -165,7 +169,7 @@ if ($_postData['action'] == 'GET_OFFERS') {
         if ($result = $stmt->get_result()) {
             while ($row = $result->fetch_assoc()) {
                 $desc = $row['description'];
-                $descNoTags = str_replace("\\\\", "\\", $desc);
+                $descNoTags = str_replace('\n', "\r\n", $desc);
                 array_push($productArray, [
                     'id' => $row['id'],
                     'name' => $row['name'],
@@ -178,7 +182,7 @@ if ($_postData['action'] == 'GET_OFFERS') {
                 ]);
             }
         }
-        echo json_encode($productArray);
+        echo json_encode($productArray, JSON_HEX_TAG);
     } catch (Exception $e) {
         echo('fail');
         return false;
@@ -192,10 +196,12 @@ if ($_postData['action'] == 'GET_PRODUCTS') {
         $stmt->execute();
         if ($result = $stmt->get_result()) {
             while ($row = $result->fetch_assoc()) {
+                $desc = $row['description'];
+                $descNoTags = str_replace('\n', "\r\n", $desc);
                 array_push($prodArray, [
                     'id' => $row['id'],
                     'name' => $row['name'],
-                    'desc' => $row['description'],
+                    'desc' => $descNoTags,
                     'price' => $row['price'],
                     'onOffer' => $row['onOffer'],
                     'imgPath' => $row['imgPath'],
@@ -255,10 +261,12 @@ if ($_postData['action'] == 'GET_PRODUCTMODALDETAILS') {
         $stmt->execute();
         if ($result = $stmt->get_result()) {
             while ($row = $result->fetch_assoc()) {
+                $desc = $row['description'];
+                $descNoTags = str_replace('\n', "\r\n", $desc);
                 array_push($prodArray, [
                     'id' => $row['id'],
                     'title' => $row['name'],
-                    'description' => $row['description'],
+                    'description' => $descNoTags,
                     'price' => $row['price'],
                     'image' => $row['imgPath'],
                     'units' => $row['units']

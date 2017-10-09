@@ -32,10 +32,10 @@ export default class offers extends Component {
             this.setState({salesID: data});
         }).catch((err) => {
         });
-        this.getThreeForTenProducts();
+        this.getOffersProducts();
     }
 
-    getThreeForTenProducts() {
+    getOffersProducts() {
         fetch(serverScriptsPublic + "Controllers/productsController.php", {
             method: 'POST',
             headers: {"Content-type": "application/x-www-form-urlencoded; charset=UTF-8"},
@@ -44,6 +44,7 @@ export default class offers extends Component {
             }),
             mode: 'cors'
         }).then(response => response.json()).then(data => {
+
             this.setState({Productsdata: data});
         }).catch((err) => {
         });

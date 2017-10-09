@@ -128,7 +128,8 @@
 }
 
 .modal_description {
-    padding: 10px;
+    padding: 0px 10px;
+    white-space: pre-wrap;
 }
 
 .findUs_OpeningTime {
