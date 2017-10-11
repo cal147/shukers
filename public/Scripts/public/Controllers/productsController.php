@@ -234,7 +234,7 @@ if ($_postData['action'] == 'SEARCH_PRODUCTS') {
                     array_push($prodArray, [
                         'title' => $row['name'],
                         'price' => $row['price'],
-                        'image' => '/public/Images/Products/' . $row['imgPath'],
+                        'image' => '/Images/Products/' . $row['imgPath'],
                     ]);
                 }
                 echo json_encode($prodArray);
@@ -265,7 +265,7 @@ if ($_postData['action'] == 'GET_PRODUCTMODALDETAILS') {
                 $descNoTags = str_replace('\n', "\r\n", $desc);
                 array_push($prodArray, [
                     'id' => $row['id'],
-                    'title' => $row['name'],
+                    'name' => $row['name'],
                     'description' => $descNoTags,
                     'price' => $row['price'],
                     'image' => $row['imgPath'],

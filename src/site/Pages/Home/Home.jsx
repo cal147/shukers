@@ -41,7 +41,7 @@ export default class home extends Component {
                         <Grid.Column>
                             <h3 className="homeAbout">We are a family butchers selling high quality meats at quality
                                 price.<br/>We are located at 17H West Side,<br/>off Jackson Street, St. Helens,<br/>WA9
-                                3AT.
+                                3AT. <br/><br/>Shop Number: 01744 29534<br/>Email: shukersbutchers@gmail.com
                             </h3>
                         </Grid.Column>
                         <Grid.Column>
@@ -58,8 +58,7 @@ export default class home extends Component {
                                 <strong>Friday</strong>: 9.00 - 16.00<br/>
                                 <strong>Saturday</strong>: 9.00 - 16.00<br/>
                                 <strong>Sunday</strong>: <strong
-                                    className="openingTime_Closed">CLOSED</strong><br/><br/>
-                                Shop Number: 01744 29534
+                                    className="openingTime_Closed">CLOSED</strong>
                             </h4>
                         </Grid.Column>
                     </Grid.Row>

@@ -15,7 +15,8 @@ export default class offers extends Component {
             counter: 0,
             isLoggedInlocal: false,
             user: PublicUserStore.getUser(),
-            Qty: 1
+            Qty: 1,
+            AllergensandIngredients: "If you have any questions about the potential allergens in any of our products please contact us via our Facebook page, drop us an email to shukersbutchers@gmail.com or call the shop direct on 01744 29534 and we will happily advise you or discuss your dietary needs."
         }
     }
 
@@ -111,7 +112,8 @@ export default class offers extends Component {
                                     <Image size="medium" src={prodImgResourcePublic + product.imgPath}
                                            alt={product.name}/>
                                     <Modal.Description>
-                                        <h4 className="modal_description">{product.desc}</h4>
+                                        <h4 className="modal_description">{product.desc}<br/><br/><br/><span
+                                            className="Allergens">{this.state.AllergensandIngredients}</span></h4>
                                     </Modal.Description>
                                 </Modal.Content>
                                 <Modal.Actions>
@@ -163,7 +165,8 @@ export default class offers extends Component {
                                     <Image className="prodImg" src={prodImgResourcePublic + product.imgPath}
                                            alt={product.name}/>
                                     <Modal.Description>
-                                        <h4 className="modal_description">{product.desc}</h4>
+                                        <h4 className="modal_description">{product.desc}<br/><br/><br/><span
+                                            className="Allergens">{this.state.AllergensandIngredients}</span></h4>
                                     </Modal.Description>
                                 </Modal.Content>
                                 <Modal.Actions>

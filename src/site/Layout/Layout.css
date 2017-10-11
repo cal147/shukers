@@ -170,3 +170,14 @@
 .collectButton {
     color: black !important;
 }
+
+.Allergens {
+    font-size: small;
+    font-style: italic;
+    color: red;
+}
+
+.Allergens_Email {
+    color: blue;
+    text-decoration: underline;
+}
