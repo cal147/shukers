@@ -235,9 +235,8 @@ export default class basket extends Component {
                             <input type="hidden" name="discount_amount" value={discount}/>
                             <input type="hidden" name="amount" value={price}/>
 
-                            <input type="hidden" name="notify_url"
-                                   value="https://shukersbutchers.co.uk/paypal/paypalVerify.php"/>
-                            <input type="hidden" name="return" value="https://webserver.clps.uk/#/confirmation"/>
+                            <input type="hidden" name="notify_url" value="https://www.shukersbutchers.co.uk/paypal/paypalverify.php"/>
+                            <input type="hidden" name="return" value="https://www.shukersbutchers.co.uk/#/confirmation"/>
                             {/*Display the payment button.*/}
                             <div className="PayPal_Button">
                                 <input type="image" name="submit"
@@ -265,8 +264,8 @@ export default class basket extends Component {
                             <input type="hidden" name="amount" value={price}/>
 
                             <input type="hidden" name="notify_url"
-                                   value="https://shukersbutchers.co.uk/paypal/paypalVerify.php"/>
-                            <input type="hidden" name="return" value="https://webserver.clps.uk/#/confirmation"/>
+                                   value="https://www.shukersbutchers.co.uk/paypal/paypalverify.php"/>
+                            <input type="hidden" name="return" value="https://www.shukersbutchers.co.uk/#/confirmation"/>
                             {/*Display the payment button.*/}
                             <div>
                                 <Popup
