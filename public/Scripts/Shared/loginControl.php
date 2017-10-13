@@ -15,7 +15,7 @@ class loginControl{
     //Queries the database for the user that has requested login and validates their password.
     public function validateUser($name, $pass){
 
-        if(preg_match('/^[A-Za-z0-9\-_]{5,10}$/', stripcslashes(trim($name))) && preg_match('/^[A-Za-z0-9\-!"£$%\^&*()]{5,10}$/', stripcslashes(trim($pass))) ) {
+        if (preg_match('/^[A-Za-z0-9\-_]{2,20}$/', stripcslashes(trim($name))) && preg_match('/^[A-Za-z0-9\-!"£$%\^&*()]{5,10}$/', stripcslashes(trim($pass)))) {
 
             $cName = $this->conn->real_escape_string(trim($name));
             $cleanName = strip_tags($cName);

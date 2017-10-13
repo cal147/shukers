@@ -220,7 +220,7 @@ export default class basket extends Component {
                 </Table>
 
 
-                {priceWithDiscount > 0 ?
+                {priceWithDiscount > 25 ?
                     <div>
                         <form action="https://www.paypal.com/cgi-bin/webscr" method="post"
                               onSubmit={() => this.sendDiscountPrice(priceWithDiscount)}>
@@ -250,6 +250,9 @@ export default class basket extends Component {
                             </div>
 
                         </form>
+                    </div> : <h3 className="PayPal_Button">Delivery only available over £25</h3>}
+                {priceWithDiscount > 0 ?
+                    <div>
                         <form action="https://www.paypal.com/cgi-bin/webscr" method="post"
                               onSubmit={() => this.collectInStore(priceWithDiscount)}>
 
