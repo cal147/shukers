@@ -449,18 +449,18 @@ if ($_postData['action'] == 'REMOVEPRODUCTFROMBASKET') {
             $stmt->bind_param("i", $cleanID);
 
             if ($stmt->execute()) {
-                echo json_encode(['Message' => 'product deleted', 'success' => true]);
+                //echo json_encode(['Message' => 'product deleted', 'success' => true]);
                 $stmt = $conn->prepare("UPDATE sales SET totalPrice = (SELECT sum(sd.qty * p.price) FROM salesdetails AS sd JOIN products AS p ON sd.productId = p.id WHERE saleId = ?) WHERE `id` = ?;");
                 $stmt->bind_param("ii", $SalesID, $SalesID);
                 if ($stmt->execute()) {
                     $stmt = $conn->prepare("DELETE FROM sales WHERE totalPrice IS NULL AND id = ?;");
                     $stmt->bind_param("i", $SalesID);
                     if ($stmt->execute()) {
-                        echo json_encode(['Message' => 'sale removed due to having not products in sale', 'success' => true]);
+//                        echo json_encode(['Message' => 'sale removed', 'success' => true]);
                     } else {
-                        echo json_encode(['Message' => 'sale unable to be removed', 'success' => false]);
+//                        echo json_encode(['Message' => 'sale unable to be removed', 'success' => false]);
                     }
-                    echo json_encode(['Message' => 'Price Updated', 'success' => true]);
+                    echo json_encode(['Message' => 'item removed', 'success' => true]);
                 } else {
                     echo json_encode(['Message' => 'Sales table unable to update', 'success' => false]);
                 }

@@ -67,7 +67,7 @@ export default class product extends Component {
     }
 
     addProductToBasket(productId, qty, name) {
-        alert(name + ' has been added to yout basket');
+        alert(name + ' has been added to your basket');
         {
             this.state.salesID != null ? setTimeout(() => window.location.reload(), 10) : null
         }

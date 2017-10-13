@@ -119,7 +119,9 @@ export default class basket extends Component {
             }),
             mode: 'cors'
         }).then(response => response.json()).then(data => {
-            this.setState({BasketData: data}, () => window.location.reload());
+            if (data.Message === "item removed") {
+                setTimeout(window.location.reload, 10);
+            }
         }).catch((err) => {
         });
     }
